@@ -10,6 +10,10 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.financialfinalproject.domain.enums.UserRole.*;
 import static com.example.financialfinalproject.domain.enums.UserRole.USER;
 
 
@@ -32,15 +36,23 @@ public class User extends BaseEntity {
     @Column(length = 10, columnDefinition = "varchar(10) default 'USER'")
     private UserRole userRole;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Post> posts = new ArrayList<>();
-
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
         this.userRole = this.userRole == null ? USER : this.userRole;
     }
 
+    public User promoteRole(User user) {
+        user.userRole = ADMIN;
+        return user;
+    }
+
+    public User demoteRole(User user) {
+        user.userRole = USER;
+        return user;
+    }
     @Builder
     public User(Integer id, String userName, String password, UserRole userRole) {
         this.id = id;
@@ -48,4 +60,6 @@ public class User extends BaseEntity {
         this.password = password;
         this.userRole = userRole;
     }
+
+
 }
