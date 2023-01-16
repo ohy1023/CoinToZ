@@ -1,14 +1,29 @@
+server:
+  servlet:
+    encoding:
+      force-response: true
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/likelion-db
+    url: localhost
     username: root
-    password:
+    password: 1q2w3e4r
+
+logging:
+  level:
+    org.hibernate.SQL: debug    # Logger
+    org.hibernate.type: trace   # Show Query Parameter
+
+jwt:
+  secret: hello
