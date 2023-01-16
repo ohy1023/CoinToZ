@@ -17,16 +17,19 @@ import java.time.LocalDateTime;
 @Where(clause = "deleted_at is NULL")
 
 public class Post extends BaseEntity {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String body;
 
     @ManyToOne
-    @JoinColumn(name = "User_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDateTime deletedAt;
+    public void updatePost(String updatedTitle, String updatedBody) {
+        this.title = updatedTitle;
+        this.body = updatedBody;
+    }
 
 }

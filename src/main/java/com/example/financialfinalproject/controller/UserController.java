@@ -5,15 +5,14 @@ import com.example.financialfinalproject.domain.request.UserLoginRequest;
 import com.example.financialfinalproject.domain.response.Response;
 import com.example.financialfinalproject.domain.response.UserJoinResponse;
 import com.example.financialfinalproject.domain.response.UserLoginResponse;
+import com.example.financialfinalproject.domain.response.UserRoleResponse;
 import com.example.financialfinalproject.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -36,6 +35,13 @@ public class UserController {
     public ResponseEntity<Response<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
         String token = userService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
         return ResponseEntity.ok().body(Response.success(new UserLoginResponse(token)));
+    }
+
+    @ApiOperation(value = "역할 변경")
+    @PostMapping("/{userId}/role")
+    public ResponseEntity<Response<UserRoleResponse>> changeRole(@PathVariable Integer userId, Authentication authentication) {
+        UserRoleResponse response = userService.changeRole(userId, authentication.getName());
+        return ResponseEntity.ok().body(Response.success(response));
     }
 
 //    @ApiOperation("알림 목록 조회")

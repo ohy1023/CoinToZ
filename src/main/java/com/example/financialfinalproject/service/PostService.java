@@ -1,4 +1,5 @@
 package com.example.financialfinalproject.service;
+
 import com.example.financialfinalproject.domain.dto.PostDetailDto;
 import com.example.financialfinalproject.domain.dto.PostDto;
 import com.example.financialfinalproject.domain.entity.Post;
@@ -7,19 +8,23 @@ import com.example.financialfinalproject.domain.request.UserPostEditRequest;
 import com.example.financialfinalproject.domain.request.UserPostRequest;
 import com.example.financialfinalproject.domain.response.UserPostDetailResponse;
 import com.example.financialfinalproject.exception.AppException;
-import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.repository.PostRepository;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.financialfinalproject.domain.enums.UserRole.*;
+import static com.example.financialfinalproject.exception.ErrorCode.*;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -28,9 +33,10 @@ public class PostService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public PostDto write(UserPostRequest userPostRequest, String name) {
 
-        User user = userRepository.findByUserName(name).orElseThrow(() -> new AppException(ErrorCode.INVALID_TOKEN, "잘못된 token 입니다."));
+        User user = userRepository.findByUserName(name).orElseThrow(() -> new AppException(INVALID_TOKEN, "잘못된 token 입니다."));
 
         Post post = Post.builder()
                 .user(user)
@@ -46,7 +52,7 @@ public class PostService {
 
     public PostDetailDto detail(Long postId) {
 
-        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND, "해당 포스트가 없습니다."));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(POST_NOT_FOUND, "해당 포스트가 없습니다."));
 
         PostDetailDto postDetailDto = PostDetailDto.builder()
                 .id(post.getId())
@@ -61,17 +67,20 @@ public class PostService {
 
     }
 
+    @Transactional
     public PostDto delete(Long id, String name) {
 
-        Optional<Post> post = postRepository.findById(id);
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new AppException(POST_NOT_FOUND, "해당 포스트가 없습니다."));
 
         User user = userRepository.findByUserName(name)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "Not founded"));
+                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "Not founded"));
 
+        log.info("isNotAdmin:{}", !user.getUserRole().equals(ADMIN));
+        log.info("isNotMatchName:{}", !name.equals(post.getUser().getUserName()));
 
-        if (post.isEmpty()) throw new AppException(ErrorCode.POST_NOT_FOUND, "해당 포스트가 없습니다.");
-        if (!(user.getUserName().equals(post.get().getUser().getUserName())))
-            throw new AppException(ErrorCode.INVALID_PERMISSION, "사용자가 권한이 없습니다.");
+        if (checkAuth(name, post, user))
+            throw new AppException(INVALID_PERMISSION, "사용자가 권한이 없습니다.");
 
         postRepository.deleteById(id);
 
@@ -98,34 +107,36 @@ public class PostService {
         return responseList;
     }
 
-    public PostDto edit(Long id, String name, UserPostEditRequest userPostEditRequest) {
 
-        Optional<Post> post = postRepository.findById(id);
+
+    @Transactional
+    public PostDto edit(Long id, String name, UserPostEditRequest userPostEditRequest) {
+        log.info(userPostEditRequest.getTitle());
+        log.info(userPostEditRequest.getBody());
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new AppException(POST_NOT_FOUND, "해당 포스트가 없습니다."));
 
         User user = userRepository.findByUserName(name)
-                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOT_FOUND, "Not founded"));
+                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "Not founded"));
 
-        if (post.isEmpty()) throw new AppException(ErrorCode.POST_NOT_FOUND, "해당 포스트가 없습니다.");
-        if (!(user.getUserName().equals(post.get().getUser().getUserName())))
-            throw new AppException(ErrorCode.INVALID_PERMISSION, "사용자가 권한이 없습니다.");
+        log.info("isNotAdmin:{}", !user.getUserRole().equals(ADMIN));
+        log.info("isNotMatchName:{}", !name.equals(post.getUser().getUserName()));
 
+        if (checkAuth(name, post, user))
+            throw new AppException(INVALID_PERMISSION, "사용자가 권한이 없습니다.");
 
-        Post postEdit = new Post();
-
-//        postEdit.setId(id);
-//        postEdit.setTitle(userPostEditRequest.getTitle());
-//        postEdit.setBody(userPostEditRequest.getBody());
-//        postEdit.setUser(user);
-//        postEdit.getRegisteredAt(LocalDateTime.now());
-
-
-        Post saved = postRepository.saveAndFlush(postEdit);
+        post.updatePost(userPostEditRequest.getTitle(), userPostEditRequest.getBody());
 
         return PostDto.builder()
-                .id(saved.getId())
-                .title(saved.getTitle())
-                .body(saved.getBody())
+                .id(post.getId())
+                .title(post.getTitle())
+                .body(post.getBody())
                 .build();
+    }
+
+    private static boolean checkAuth(String userName, Post post, User user) {
+        return !user.getUserRole().equals(ADMIN) && !userName.equals(post.getUser().getUserName());
     }
 
 
