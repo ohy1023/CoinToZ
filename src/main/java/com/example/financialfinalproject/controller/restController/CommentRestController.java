@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.controller;
+package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.dto.CommentDto;
 import com.example.financialfinalproject.domain.request.CommentCreateRequest;
@@ -7,7 +7,6 @@ import com.example.financialfinalproject.domain.response.CommentResponse;
 import com.example.financialfinalproject.domain.response.CommentUpdateResponse;
 import com.example.financialfinalproject.domain.response.Response;
 import com.example.financialfinalproject.service.CommentService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/posts")
-public class CommentController {
+public class CommentRestController {
 
     private final CommentService commentService;
 
