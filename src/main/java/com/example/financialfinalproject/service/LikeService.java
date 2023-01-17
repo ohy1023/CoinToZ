@@ -37,6 +37,11 @@ public class LikeService {
                     throw new AppException(DUPLICATED_LIKE_COUNT, DUPLICATED_LIKE_COUNT.getMessage());
                 });
 
+        DisLikeRepository.findByPostAndUser(post, user)
+                .ifPresent((Dislike) -> {
+                    throw new AppException(DUPLICATED_DISLIKE_COUNT, DUPLICATED_DISLIKE_COUNT.getMessage());
+                });
+
         likeRepository.save(Like.builder()
                 .post(post)
                 .user(user)
@@ -71,6 +76,11 @@ public class LikeService {
         DisLikeRepository.findByPostAndUser(post, user)
                 .ifPresent((Dislike) -> {
                     throw new AppException(DUPLICATED_DISLIKE_COUNT, DUPLICATED_DISLIKE_COUNT.getMessage());
+                });
+
+        likeRepository.findByPostAndUser(post, user)
+                .ifPresent((like) -> {
+                    throw new AppException(DUPLICATED_LIKE_COUNT, DUPLICATED_LIKE_COUNT.getMessage());
                 });
 
         DisLikeRepository.save(DisLike.builder()

@@ -11,14 +11,14 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name = "Dislike_count")
+@Table(name = "dislike_count")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE Dislike_count SET deleted_at = CURRENT_TIMESTAMP WHERE Dislike_id = ?")
+@SQLDelete(sql = "UPDATE dislike_count SET deleted_at = CURRENT_TIMESTAMP WHERE Dislike_id = ?")
 public class DisLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Dislike_id")
+    @Column(name = "dislike_id")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
