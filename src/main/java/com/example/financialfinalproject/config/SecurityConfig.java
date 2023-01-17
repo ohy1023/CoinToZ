@@ -3,6 +3,7 @@ package com.example.financialfinalproject.config;
 import com.example.financialfinalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,13 +29,14 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.GET, "api/v1/posts/**").permitAll()
+                .antMatchers(HttpMethod.GET).permitAll()
                 .antMatchers(HttpMethod.GET, "api/v1/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/v1/users/join", "/api/v1/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/**").authenticated()
                 .antMatchers( "/api/v1/users/{userId}/role").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT).authenticated()
                 .antMatchers(HttpMethod.DELETE).authenticated()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

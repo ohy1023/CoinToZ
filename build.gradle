@@ -28,6 +28,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // Spring Security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'

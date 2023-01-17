@@ -16,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.Objects;
 
+import static com.example.financialfinalproject.domain.enums.UserRole.ADMIN;
 import static com.example.financialfinalproject.exception.ErrorCode.*;
 
 @Service
@@ -45,7 +47,7 @@ public class CommentService {
 //                .targetId(post.getId())
 //                .build());
 
-       return CommentDto.toCommentDto(savedComment);
+        return CommentDto.toCommentDto(savedComment);
     }
 
     public Page<CommentDto> getAllItems(Long postId, Pageable pageable) {
@@ -67,12 +69,12 @@ public class CommentService {
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
 
-        if (isMismatch(userName, comment)) {
+        if (checkAuth(userName, comment, user)) {
             throw new AppException(INVALID_PERMISSION, INVALID_PERMISSION.getMessage());
         }
-        comment.setComment(commentUpdateRequest.getComment());
-        Comment updateComment = commentRepository.save(comment);
-        return CommentUpdateResponse.toResponse(updateComment);
+
+        comment.updateComment(commentUpdateRequest.getComment());
+        return CommentUpdateResponse.toResponse(comment);
     }
 
     public boolean deleteComment(Long postId, Integer commentId, String userName) {
@@ -85,7 +87,7 @@ public class CommentService {
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
 
-        if (isMismatch(userName, comment)) {
+        if (checkAuth(userName, comment, user)) {
             throw new AppException(INVALID_PERMISSION, INVALID_PERMISSION.getMessage());
         }
         commentRepository.delete(comment);
@@ -94,8 +96,8 @@ public class CommentService {
 
     }
 
-    private static boolean isMismatch(String userName, Comment comment) {
-        return !Objects.equals(comment.getUser().getUserName(), userName);
+    private static boolean checkAuth(String userName, Comment comment, User user) {
+        return !user.getUserRole().equals(ADMIN) && !userName.equals(comment.getUser().getUserName());
     }
 
 

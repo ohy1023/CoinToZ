@@ -65,6 +65,7 @@ public class UserService {
             throw new AppException(INVALID_PERMISSION, INVALID_PERMISSION.getMessage());
         }
 
+
         if (targetUser.getUserRole() == USER) targetUser.promoteRole(targetUser);
         else if (targetUser.getUserRole() == ADMIN) targetUser.demoteRole(targetUser);
 

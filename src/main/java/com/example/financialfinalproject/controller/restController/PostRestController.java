@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.controller;
+package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.dto.PostDetailDto;
 import com.example.financialfinalproject.domain.dto.PostDto;
@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/posts")
 @RequiredArgsConstructor
-public class PostController {
+public class PostRestController {
 
     private final PostService postService;
     @PostMapping("")
