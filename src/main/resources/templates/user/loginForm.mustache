@@ -10,16 +10,16 @@
                     <form action="/">
                         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                             <p class="lead fw-normal mb-0 me-3">Sign in with</p>
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-facebook-f"></i>
+                            <button type="button" class="btn btn-primary btn-floating mx-1" onclick=" location.href = '/oauth2/authorization/naver' ">
+                                <i class="fab fa-naver">네이버</i>
                             </button>
 
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-twitter"></i>
+                            <button type="button" class="btn btn-primary btn-floating mx-1" onclick=" location.href = '/oauth2/authorization/google' ">
+                                <i class="fab fa-google">구글</i>
                             </button>
 
-                            <button type="button" class="btn btn-primary btn-floating mx-1">
-                                <i class="fab fa-linkedin-in"></i>
+                            <button type="button" class="btn btn-primary btn-floating mx-1" onclick=" location.href = '/oauth2/authorization/kakao' ">
+                                <i class="fab fa-kakao">카카오</i>
                             </button>
                         </div>
 
@@ -29,9 +29,9 @@
 
                         <!-- Email input -->
                         <div class="form-outline mb-4">
-                            <input type="text" id="userName" class="form-control form-control-lg"
-                                    placeholder="Enter a userName" />
-                            <label class="form-label" for="userName">userName</label>
+                            <input type="email" id="email" class="form-control form-control-lg"
+                                    placeholder="Enter a email" />
+                            <label class="form-label" for="email">Email</label>
                         </div>
 
                         <!-- Password input -->
@@ -43,19 +43,19 @@
 
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Checkbox -->
-                            <div class="form-check mb-0">
-                                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-                                <label class="form-check-label" for="form2Example3">
-                                    Remember me
-                                </label>
-                            </div>
+<!--                            <div class="form-check mb-0">-->
+<!--                                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />-->
+<!--                                <label class="form-check-label" for="form2Example3">-->
+<!--                                    Remember me-->
+<!--                                </label>-->
+<!--                            </div>-->
                             <a href="#!" class="text-body">Forgot password?</a>
                         </div>
 
                         <div class="text-center text-lg-start mt-4 pt-2">
                             <button type="button" class="btn btn-primary btn-lg" id="login-but"
                                     style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
+                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/joinForm"
                                                                                               class="link-danger">Register</a></p>
                         </div>
 

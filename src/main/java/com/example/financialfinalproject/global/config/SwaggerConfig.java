@@ -31,6 +31,7 @@ public class SwaggerConfig {
                 .paths(PathSelectors.any())
                 .build();
     }
+
     public ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Z세대들을 위한 커뮤니티 기반 가상화폐 매매 및 매매일지 서비스")

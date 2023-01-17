@@ -8,15 +8,14 @@ const login = {
     },
     login: function () {
         const data = {
-            userName: $('#userName').val(),
+            email: $('#email').val(),
             password: $('#password').val(),
         };
 
         $.ajax({
             type: 'POST',
             url: '/api/v1/users/login',
-            dataType: 'json',
-            contentType: 'application/json; charset=utf-8',
+            contentType: 'application/json',
             data: JSON.stringify(data)
         }).done(function () {
             alert('로그인에 성공하셨습니다.');
