@@ -39,6 +39,10 @@ dependencies {
 
     // swagger
     implementation "io.springfox:springfox-boot-starter:3.0.0"
+
+    //FeignClient(Upbit API 사용)
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
+
 }
 
 tasks.named('test') {
