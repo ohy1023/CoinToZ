@@ -33,8 +33,8 @@ public class UserRestController {
     @ApiOperation(value = "로그인", notes = "jwt 반환")
     @PostMapping("/login")
     public ResponseEntity<Response<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
-        log.info("userName:{}",userLoginRequest.getUserName());
-        String token = userService.login(userLoginRequest.getUserName(), userLoginRequest.getPassword());
+        log.info("input password:{}",userLoginRequest.getPassword());
+        String token = userService.login(userLoginRequest.getEmail(), userLoginRequest.getPassword());
         return ResponseEntity.ok().body(Response.success(new UserLoginResponse(token)));
     }
 

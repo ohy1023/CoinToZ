@@ -9,7 +9,9 @@ const join = {
     join: function () {
         const data = {
             userName: $('#userName').val(),
+            email: $('#email').val(),
             password: $('#password').val(),
+
         };
 
         $.ajax({

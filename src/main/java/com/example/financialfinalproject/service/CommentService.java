@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 
 import static com.example.financialfinalproject.domain.enums.UserRole.ADMIN;
 import static com.example.financialfinalproject.exception.ErrorCode.*;
@@ -30,12 +30,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
 //    private final AlarmRepository alarmRepository;
 
-    public CommentDto createComment(Long postId, String userName, CommentCreateRequest commentCreateRequest) {
+    @Transactional
+    public CommentDto createComment(Long postId, String email, CommentCreateRequest commentCreateRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
 
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
         Comment savedComment = commentRepository.save(commentCreateRequest.toEntity(user, post));
 
@@ -50,6 +51,7 @@ public class CommentService {
         return CommentDto.toCommentDto(savedComment);
     }
 
+    @Transactional(readOnly = true)
     public Page<CommentDto> getAllItems(Long postId, Pageable pageable) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
@@ -59,17 +61,18 @@ public class CommentService {
         return commentDtos;
     }
 
-    public CommentUpdateResponse updateComment(Long postId, Integer commentId, CommentUpdateRequest commentUpdateRequest, String userName) {
+    @Transactional
+    public CommentUpdateResponse updateComment(Long postId, Integer commentId, CommentUpdateRequest commentUpdateRequest, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new AppException(COMMENT_NOT_FOUND, COMMENT_NOT_FOUND.getMessage()));
 
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
-        if (checkAuth(userName, comment, user)) {
+        if (checkAuth(email, comment, user)) {
             throw new AppException(INVALID_PERMISSION, INVALID_PERMISSION.getMessage());
         }
 
@@ -77,17 +80,18 @@ public class CommentService {
         return CommentUpdateResponse.toResponse(comment);
     }
 
-    public boolean deleteComment(Long postId, Integer commentId, String userName) {
+    @Transactional
+    public boolean deleteComment(Long postId, Integer commentId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new AppException(COMMENT_NOT_FOUND, COMMENT_NOT_FOUND.getMessage()));
 
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
-        if (checkAuth(userName, comment, user)) {
+        if (checkAuth(email, comment, user)) {
             throw new AppException(INVALID_PERMISSION, INVALID_PERMISSION.getMessage());
         }
         commentRepository.delete(comment);
@@ -96,8 +100,8 @@ public class CommentService {
 
     }
 
-    private static boolean checkAuth(String userName, Comment comment, User user) {
-        return !user.getUserRole().equals(ADMIN) && !userName.equals(comment.getUser().getUserName());
+    private static boolean checkAuth(String email, Comment comment, User user) {
+        return !user.getUserRole().equals(ADMIN) && !email.equals(comment.getUser().getEmail());
     }
 
 

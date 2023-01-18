@@ -34,9 +34,9 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public PostDto write(UserPostRequest userPostRequest, String name) {
+    public PostDto write(UserPostRequest userPostRequest, String email) {
 
-        User user = userRepository.findByUserName(name).orElseThrow(() -> new AppException(INVALID_TOKEN, "잘못된 token 입니다."));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(INVALID_TOKEN, "잘못된 token 입니다."));
 
         Post post = Post.builder()
                 .user(user)
@@ -50,6 +50,7 @@ public class PostService {
 
     }
 
+    @Transactional(readOnly = true)
     public PostDetailDto detail(Long postId) {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(POST_NOT_FOUND, "해당 포스트가 없습니다."));
@@ -68,18 +69,18 @@ public class PostService {
     }
 
     @Transactional
-    public PostDto delete(Long id, String name) {
+    public PostDto delete(Long id, String email) {
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, "해당 포스트가 없습니다."));
 
-        User user = userRepository.findByUserName(name)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "Not founded"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, "Not founded"));
 
         log.info("isNotAdmin:{}", !user.getUserRole().equals(ADMIN));
-        log.info("isNotMatchName:{}", !name.equals(post.getUser().getUserName()));
+        log.info("isNotMatchName:{}", !email.equals(post.getUser().getUserName()));
 
-        if (checkAuth(name, post, user))
+        if (checkAuth(email, post, user))
             throw new AppException(INVALID_PERMISSION, "사용자가 권한이 없습니다.");
 
         postRepository.deleteById(id);
@@ -89,6 +90,7 @@ public class PostService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<UserPostDetailResponse> list(Pageable pageable) {
 
         Page<Post> list = postRepository.findAll(pageable);
@@ -108,22 +110,21 @@ public class PostService {
     }
 
 
-
     @Transactional
-    public PostDto edit(Long id, String name, UserPostEditRequest userPostEditRequest) {
+    public PostDto edit(Long id, String email, UserPostEditRequest userPostEditRequest) {
         log.info(userPostEditRequest.getTitle());
         log.info(userPostEditRequest.getBody());
 
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, "해당 포스트가 없습니다."));
 
-        User user = userRepository.findByUserName(name)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "Not founded"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, "Not founded"));
 
         log.info("isNotAdmin:{}", !user.getUserRole().equals(ADMIN));
-        log.info("isNotMatchName:{}", !name.equals(post.getUser().getUserName()));
+        log.info("isNotMatchName:{}", !email.equals(post.getUser().getUserName()));
 
-        if (checkAuth(name, post, user))
+        if (checkAuth(email, post, user))
             throw new AppException(INVALID_PERMISSION, "사용자가 권한이 없습니다.");
 
         post.updatePost(userPostEditRequest.getTitle(), userPostEditRequest.getBody());
@@ -136,7 +137,7 @@ public class PostService {
     }
 
     private static boolean checkAuth(String userName, Post post, User user) {
-        return !user.getUserRole().equals(ADMIN) && !userName.equals(post.getUser().getUserName());
+        return !user.getUserRole().equals(ADMIN) && !userName.equals(post.getUser().getEmail());
     }
 
 
