@@ -8,7 +8,11 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "UserName이 중복됩니다."),
+
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT, "Email이 중복됩니다."),
     USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 UserName이 없습니다."),
+
+    EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 Email이 없습니다."),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "패스워드가 잘못되었습니다."),
 
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 토큰입니다."),

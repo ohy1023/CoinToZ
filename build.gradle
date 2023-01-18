@@ -28,7 +28,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     // Spring Security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
@@ -37,8 +37,15 @@ dependencies {
     // JWT
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
+    // OAuth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     // swagger
     implementation "io.springfox:springfox-boot-starter:3.0.0"
+
+    //FeignClient(Upbit API 사용)
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
+
 }
 
 tasks.named('test') {

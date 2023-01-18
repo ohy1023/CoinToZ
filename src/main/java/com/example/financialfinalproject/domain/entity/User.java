@@ -1,5 +1,6 @@
 package com.example.financialfinalproject.domain.entity;
 
+import com.example.financialfinalproject.domain.enums.SocialType;
 import com.example.financialfinalproject.domain.enums.UserRole;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.financialfinalproject.domain.enums.UserRole.*;
-import static com.example.financialfinalproject.domain.enums.UserRole.USER;
 
 
 @Entity
@@ -32,12 +32,26 @@ public class User extends BaseEntity {
 
     private String password;
 
+    private String email;
+
+    private String nickname;
+
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 10, columnDefinition = "varchar(10) default 'USER'")
     private UserRole userRole;
 
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType; // KAKAO, NAVER, GOOGLE
+
+    private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+
+    private String refreshToken; // 리프레시 토큰
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
+
 
     @PrePersist
     public void prePersist() {
@@ -53,13 +67,23 @@ public class User extends BaseEntity {
         user.userRole = USER;
         return user;
     }
+
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
+
     @Builder
-    public User(Integer id, String userName, String password, UserRole userRole) {
+    public User(Integer id, String userName, String password, String email, String nickname, String imageUrl, UserRole userRole, SocialType socialType, String socialId, String refreshToken, List<Post> posts) {
         this.id = id;
         this.userName = userName;
         this.password = password;
+        this.email = email;
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
         this.userRole = userRole;
+        this.socialType = socialType;
+        this.socialId = socialId;
+        this.refreshToken = refreshToken;
+        this.posts = posts;
     }
-
-
 }

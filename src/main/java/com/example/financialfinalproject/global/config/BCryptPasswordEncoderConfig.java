@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.config;
+package com.example.financialfinalproject.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

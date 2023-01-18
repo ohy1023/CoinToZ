@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserLoginRequest {
 
-    private String userName;
+    private String email;
     private String password;
 
     @Builder
-    public UserLoginRequest(String userName, String password) {
-        this.userName = userName;
+    public UserLoginRequest(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 }
