@@ -26,11 +26,11 @@ public class LikeService {
     private final DisLikeRepository DisLikeRepository;
 
 
-    public boolean addLikeCount(Long postId, String userName) {
+    public boolean addLikeCount(Long postId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
         likeRepository.findByPostAndUser(post, user)
                 .ifPresent((like) -> {
@@ -49,11 +49,11 @@ public class LikeService {
         return true;
     }
 
-    public boolean deleteLikeCount(Long postId, String userName) {
+    public boolean deleteLikeCount(Long postId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
         Like like = likeRepository.findByPostAndUser(post, user)
                 .orElseThrow(() -> new AppException(LIKE_NOT_FOUND, LIKE_NOT_FOUND.getMessage()));
         likeRepository.delete(like);
@@ -67,11 +67,11 @@ public class LikeService {
         return likeRepository.countByPost(post);
     }
 
-    public boolean addDisLikeCount(Long postId, String userName) {
+    public boolean addDisLikeCount(Long postId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
         DisLikeRepository.findByPostAndUser(post, user)
                 .ifPresent((Dislike) -> {
@@ -90,11 +90,11 @@ public class LikeService {
         return true;
     }
 
-    public boolean deleteDisLikeCount(Long postId, String userName) {
+    public boolean deleteDisLikeCount(Long postId, String email) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
-        User user = userRepository.findByUserName(userName)
-                .orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, USERNAME_NOT_FOUND.getMessage()));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
         DisLike Dislike = DisLikeRepository.findByPostAndUser(post, user)
                 .orElseThrow(() -> new AppException(DISLIKE_NOT_FOUND, DISLIKE_NOT_FOUND.getMessage()));
         DisLikeRepository.delete(Dislike);
