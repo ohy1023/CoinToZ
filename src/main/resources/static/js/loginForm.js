@@ -17,7 +17,9 @@ const login = {
             url: '/api/v1/users/login',
             contentType: 'application/json',
             data: JSON.stringify(data)
-        }).done(function () {
+        }).done(function (data, textStatus, response) {
+            localStorage.setItem("access", response.getResponseHeader("Authorization"));
+            localStorage.setItem("refresh", response.getResponseHeader("Authorization-refresh"));
             alert('로그인에 성공하셨습니다.');
             window.location.href = '/';
         }).fail(function (error) {

@@ -1,14 +1,13 @@
 package com.example.financialfinalproject.global.jwt.service;
 
 import com.example.financialfinalproject.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,13 +50,13 @@ public class JwtService {
      * AccessToken 생성 메소드
      */
     public String createAccessToken(String email) {
-        Date now = new Date();
         Claims claims = Jwts.claims();
         claims.put("email", email);
         return Jwts.builder()
-                .setSubject(ACCESS_TOKEN_SUBJECT)
-                .setExpiration(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .setClaims(claims)
+                .setSubject(ACCESS_TOKEN_SUBJECT)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationPeriod))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 //        return JWT.create() // JWT 토큰을 생성하는 빌더 반환
@@ -76,10 +75,9 @@ public class JwtService {
      * RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
      */
     public String createRefreshToken() {
-        Date now = new Date();
         return Jwts.builder()
                 .setSubject(REFRESH_TOKEN_SUBJECT)
-                .setExpiration(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpirationPeriod))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
@@ -158,7 +156,10 @@ public class JwtService {
     /**
      * RefreshToken DB 저장(업데이트)
      */
+    @Transactional
     public void updateRefreshToken(String email, String refreshToken) {
+        log.info("email:{}", email);
+        log.info("update:{}", refreshToken);
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
                         user -> user.updateRefreshToken(refreshToken),
@@ -168,6 +169,13 @@ public class JwtService {
 
     public boolean isTokenValid(String token) {
         return Jwts.parser().isSigned(token);
+    }
+
+    public boolean isExpired(String token) {
+        Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        Date expiredDate = body.getExpiration();
+        log.info("만료 시간:{}", body.getExpiration());
+        return expiredDate.before(new Date());
     }
 
 

@@ -45,6 +45,11 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(response));
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok().body("SUCCESS");
+    }
+
 //    @ApiOperation("알림 목록 조회")
 //    @GetMapping("/alarm")
 //    public ResponseEntity<Response<Page<AlarmDto>>> getAlarms(Authentication authentication, @PageableDefault(size = 20) @SortDefault(sort = "registeredAt", direction = Sort.Direction.DESC) Pageable pageable) {
