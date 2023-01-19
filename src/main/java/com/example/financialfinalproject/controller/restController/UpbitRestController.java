@@ -1,8 +1,5 @@
 package com.example.financialfinalproject.controller.restController;
-import com.example.financialfinalproject.domain.upbit.dto.CandleDayDto;
-import com.example.financialfinalproject.domain.upbit.dto.CandleMinuteDto;
-import com.example.financialfinalproject.domain.upbit.dto.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.dto.MarketDto;
+import com.example.financialfinalproject.domain.upbit.dto.*;
 import com.example.financialfinalproject.service.UpbitService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +43,12 @@ public class UpbitRestController {
     public List<CandleWeekDto> getCandlesWeek(@RequestParam(value = "market", required = true) String market, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "count", required = false) String count) {
         List<CandleWeekDto> weekCandles = upbitService.getCandlesWeek(market, to, count);
         return weekCandles;
+    }
+
+    @GetMapping("/getCandlesMonth")
+    @ApiOperation(value = "월(Month) 캔들 조회", notes = "시세 월(Month) 캔들 조회")
+    public List<CandleMonthDto> getCandlesMonth(@RequestParam(value = "market", required = true) String market, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "count", required = false) String count) {
+        List<CandleMonthDto> monthCandles = upbitService.getCandlesMonth(market, to, count);
+        return monthCandles;
     }
 }

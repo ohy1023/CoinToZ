@@ -1,9 +1,6 @@
 package com.example.financialfinalproject.service;
 
-import com.example.financialfinalproject.domain.upbit.dto.CandleDayDto;
-import com.example.financialfinalproject.domain.upbit.dto.CandleMinuteDto;
-import com.example.financialfinalproject.domain.upbit.dto.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.dto.MarketDto;
+import com.example.financialfinalproject.domain.upbit.dto.*;
 import com.example.financialfinalproject.feign.UpbitFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,5 +28,9 @@ public class UpbitService {
 
     public List<CandleWeekDto> getCandlesWeek(String market, String to, String count) {
         return upbitFeignClient.getCandlesWeek(market, to, count);
+    }
+
+    public List<CandleMonthDto> getCandlesMonth(String market, String to, String count) {
+        return upbitFeignClient.getCandlesMonth(market, to, count);
     }
 }
