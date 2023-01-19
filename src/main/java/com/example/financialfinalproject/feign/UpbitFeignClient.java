@@ -2,6 +2,7 @@ package com.example.financialfinalproject.feign;
 
 import com.example.financialfinalproject.domain.upbit.dto.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.dto.CandleMinuteDto;
+import com.example.financialfinalproject.domain.upbit.dto.CandleWeekDto;
 import com.example.financialfinalproject.domain.upbit.dto.MarketDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,4 +22,7 @@ public interface UpbitFeignClient {
 
     @GetMapping("candles/days")
     List<CandleDayDto> getCandlesDay(@RequestParam String market, @RequestParam String to, @RequestParam String count, @RequestParam String convertingPriceUnit);
+
+    @GetMapping("candles/weeks")
+    List<CandleWeekDto> getCandlesWeek(@RequestParam String market, @RequestParam String to, @RequestParam String count);
 }

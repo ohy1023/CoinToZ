@@ -2,6 +2,7 @@ package com.example.financialfinalproject.service;
 
 import com.example.financialfinalproject.domain.upbit.dto.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.dto.CandleMinuteDto;
+import com.example.financialfinalproject.domain.upbit.dto.CandleWeekDto;
 import com.example.financialfinalproject.domain.upbit.dto.MarketDto;
 import com.example.financialfinalproject.feign.UpbitFeignClient;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +27,9 @@ public class UpbitService {
 
     public List<CandleDayDto> getCandlesDay(String market, String to, String count, String convertingPriceUnit) {
         return upbitFeignClient.getCandlesDay(market, to, count, convertingPriceUnit);
+    }
+
+    public List<CandleWeekDto> getCandlesWeek(String market, String to, String count) {
+        return upbitFeignClient.getCandlesWeek(market, to, count);
     }
 }
