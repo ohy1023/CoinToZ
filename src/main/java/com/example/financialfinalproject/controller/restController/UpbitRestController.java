@@ -1,4 +1,5 @@
 package com.example.financialfinalproject.controller.restController;
+import com.example.financialfinalproject.domain.upbit.dto.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.dto.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.dto.MarketDto;
 import com.example.financialfinalproject.service.UpbitService;
@@ -26,9 +27,16 @@ public class UpbitRestController {
     }
 
     @GetMapping("/getCandlesMinute/{unit}")
-    @ApiOperation(value = "분 캔들 조회", notes = "시세 분(Minute) 캔들 조회")
+    @ApiOperation(value = "분(Minute) 캔들 조회", notes = "시세 분(Minute) 캔들 조회")
     public List<CandleMinuteDto> getCandlesMinute(@PathVariable("unit") Integer unit, @RequestParam(value = "market", required = true) String market, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "count", required = false) String count) {
-        List<CandleMinuteDto> candles = upbitService.getCandlesMinute(unit, market, to, count);
-        return candles;
+        List<CandleMinuteDto> minuteCandles = upbitService.getCandlesMinute(unit, market, to, count);
+        return minuteCandles;
+    }
+
+    @GetMapping("/getCandlesDay")
+    @ApiOperation(value = "일(Day) 캔들 조회", notes = "시세 일(Day) 캔들 조회")
+    public List<CandleDayDto> getCandlesDay(@RequestParam(value = "market", required = true) String market, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "count", required = false) String count, @RequestParam(value = "convertingPriceUnit", required = false) String convertingPriceUnit) {
+        List<CandleDayDto> dayCandles = upbitService.getCandlesDay(market, to, count, convertingPriceUnit);
+        return dayCandles;
     }
 }
