@@ -1,5 +1,5 @@
 {{>layout/header}}
-<h1>Z세대들을 위한 커뮤니티 기반 가상화폐 매매 및 매매일지 서비스</h1>
+<h1>업비트에서 거래 가능한 마켓 목록</h1>
 <div class="col-md-12">
     <table class="table table-horizontal table-bordered">
         <thead class="thead-strong">
@@ -19,5 +19,9 @@
         {{/markets}}
         </tbody>
     </table>
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="?page={{previous}}">Previou </li>
+        <li class="page-item"><a class="page-link" href="?page={{next}}">Next </li>
+    </ul>
 </div>
 {{>layout/footer}}
