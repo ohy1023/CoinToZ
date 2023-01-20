@@ -1,0 +1,27 @@
+{{>layout/header}}
+<h1>업비트에서 거래 가능한 마켓 목록</h1>
+<div class="col-md-12">
+    <table class="table table-horizontal table-bordered">
+        <thead class="thead-strong">
+        <tr>
+            <th>market</th>
+            <th>korean_name</th>
+            <th>english_name</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        {{#markets}}
+            <tr>
+                <td>{{market}}</td>
+                <td>{{korean_name}}</td>
+                <td>{{english_name}}</td>
+            </tr>
+        {{/markets}}
+        </tbody>
+    </table>
+    <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="?page={{previous}}">Previou </li>
+        <li class="page-item"><a class="page-link" href="?page={{next}}">Next </li>
+    </ul>
+</div>
+{{>layout/footer}}
