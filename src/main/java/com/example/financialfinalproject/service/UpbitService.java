@@ -1,5 +1,8 @@
 package com.example.financialfinalproject.service;
 
+import com.example.financialfinalproject.domain.upbit.OrderBook;
+import com.example.financialfinalproject.domain.upbit.Ticker;
+import com.example.financialfinalproject.domain.upbit.Trade;
 import com.example.financialfinalproject.domain.upbit.dto.*;
 import com.example.financialfinalproject.feign.UpbitFeignClient;
 import lombok.Getter;
