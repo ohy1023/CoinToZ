@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.example.financialfinalproject.domain.enums.SocialType.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -74,7 +76,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if(KAKAO.equals(registrationId)) {
             return SocialType.KAKAO;
         }
-        return SocialType.GOOGLE;
+        return GOOGLE;
     }
 
     /**
