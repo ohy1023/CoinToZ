@@ -1,7 +1,10 @@
 package com.example.financialfinalproject.global.oauth2.userinfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 
+@Slf4j
 public class NaverOAuth2UserInfo extends OAuth2UserInfo {
 
     public NaverOAuth2UserInfo(Map<String, Object> attributes) {
@@ -21,12 +24,13 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     @Override
     public String getNickname() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        log.info("response:{}", response);
 
         if (response == null) {
             return null;
         }
 
-        return (String) response.get("nickname");
+        return (String) response.get("name");
     }
 
     @Override

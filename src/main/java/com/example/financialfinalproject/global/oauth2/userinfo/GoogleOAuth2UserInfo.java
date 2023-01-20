@@ -1,7 +1,10 @@
 package com.example.financialfinalproject.global.oauth2.userinfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 
+@Slf4j
 public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 
     public GoogleOAuth2UserInfo(Map<String, Object> attributes) {
@@ -15,6 +18,7 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getNickname() {
+        log.info("{}",attributes);
         return (String) attributes.get("name");
     }
 
