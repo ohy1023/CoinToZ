@@ -3,6 +3,7 @@ package com.example.financialfinalproject.controller;
 import com.example.financialfinalproject.domain.upbit.upbitDto.TickerResponse;
 import com.example.financialfinalproject.domain.upbit.upbitDto.TradeResponse;
 import com.example.financialfinalproject.service.UpbitViewService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
