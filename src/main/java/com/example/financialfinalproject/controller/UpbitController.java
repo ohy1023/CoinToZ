@@ -2,9 +2,13 @@ package com.example.financialfinalproject.controller;
 
 import com.example.financialfinalproject.domain.upbit.upbitDto.TickerResponse;
 import com.example.financialfinalproject.domain.upbit.upbitDto.TradeResponse;
+import com.example.financialfinalproject.service.UpbitService;
 import com.example.financialfinalproject.service.UpbitViewService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
