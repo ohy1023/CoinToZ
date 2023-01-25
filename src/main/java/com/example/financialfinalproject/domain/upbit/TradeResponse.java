@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.domain.upbit.upbitDto;
+package com.example.financialfinalproject.domain.upbit;
 
 import lombok.*;
 

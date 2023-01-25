@@ -1,7 +1,7 @@
 package com.example.financialfinalproject.controller;
 
-import com.example.financialfinalproject.domain.upbit.upbitDto.TickerResponse;
-import com.example.financialfinalproject.domain.upbit.upbitDto.TradeResponse;
+import com.example.financialfinalproject.domain.upbit.TickerResponse;
+import com.example.financialfinalproject.domain.upbit.TradeResponse;
 import com.example.financialfinalproject.service.UpbitViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.List;
 
 @Controller
+
 public class UpbitController {
     @Autowired
     UpbitViewService upbitViewService;
@@ -34,6 +35,15 @@ public class UpbitController {
         model.addAttribute("tickerInfo", tickerResponse);
         return "upbit/tickerTable";
     }
+
+
+
+
+
+
+
+
+
 }
 
 

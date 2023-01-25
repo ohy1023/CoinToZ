@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.domain.upbit.dto;
+package com.example.financialfinalproject.domain.upbit;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

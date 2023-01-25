@@ -1,24 +1,20 @@
 package com.example.financialfinalproject.controller.restController;
 
-import com.example.financialfinalproject.domain.upbit.OrderBook;
-import com.example.financialfinalproject.domain.upbit.Ticker;
-import com.example.financialfinalproject.domain.upbit.Trade;
-import com.example.financialfinalproject.service.UpbitService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import com.example.financialfinalproject.domain.upbit.dto.*;
+import com.example.financialfinalproject.domain.upbit.*;
+import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
 import com.example.financialfinalproject.service.UpbitService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 @RestController
 public class UpbitRestController {
 
@@ -78,7 +74,23 @@ public class UpbitRestController {
         List<Trade> tradeResponse = upbitService.getTrade(coin, count);
         return tradeResponse;
     }
+
+
+    @GetMapping("/token")
+    public UpbitToken getToken(String accesskey, String secretKey){
+        UpbitToken upbitToken = upbitService.getToken(accesskey,secretKey);
+        return upbitToken;
     }
+
+
+    @GetMapping("/acount")
+    public List<Acount> getAcount(@RequestParam String token){
+        List<Acount> acounts = upbitService.getAcount(token);
+        return acounts;
+    }
+
+
+}
 
 
 
