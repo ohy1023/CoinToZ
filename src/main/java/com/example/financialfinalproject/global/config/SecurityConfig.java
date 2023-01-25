@@ -71,6 +71,7 @@ public class SecurityConfig {
                 .antMatchers("api/v1/users/test").authenticated()
                 .antMatchers(UI).permitAll()
                 .antMatchers(SWAGGER).permitAll()
+                .antMatchers("/api/v1/hello").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/v1/users/join", "/api/v1/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/**").authenticated()
