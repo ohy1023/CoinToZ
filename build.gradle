@@ -46,6 +46,10 @@ dependencies {
     //FeignClient(Upbit API 사용)
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+
 }
 
 tasks.named('test') {
