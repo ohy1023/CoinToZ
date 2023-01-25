@@ -26,9 +26,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
 //    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 
     // Spring Security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
@@ -52,6 +53,8 @@ dependencies {
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    //email 인증 의존성 추가
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.0'
 
 }
 
