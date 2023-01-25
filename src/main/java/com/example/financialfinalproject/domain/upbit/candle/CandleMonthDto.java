@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.domain.upbit.dto;
+package com.example.financialfinalproject.domain.upbit.candle;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class CandleWeekDto {
+public class CandleMonthDto {
     private String market; //마켓명
     private String candle_date_time_utc; //	캔들 기준 시각(UTC 기준),  포맷: yyyy-MM-dd'T'HH:mm:ss
     private String candle_date_time_kst; //	캔들 기준 시각(KST 기준),  포맷: yyyy-MM-dd'T'HH:mm:ss

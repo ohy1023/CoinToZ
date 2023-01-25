@@ -1,12 +1,14 @@
 package com.example.financialfinalproject.feign;
-import com.example.financialfinalproject.domain.upbit.OrderBook;
-import com.example.financialfinalproject.domain.upbit.Ticker;
-import com.example.financialfinalproject.domain.upbit.Trade;
 
-import com.example.financialfinalproject.domain.upbit.dto.*;
+import com.example.financialfinalproject.domain.upbit.*;
+import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -37,6 +39,10 @@ public interface UpbitFeignClient {
 
     @GetMapping("/trades/ticks") // 체결 정보
     List<Trade> getTrade(@RequestParam("market") String coin, @RequestParam("count") Integer count);
+
+
+    @GetMapping("/accounts") // 전체 계좌 조회
+    List<Acount> getAcount(@RequestHeader("Authorization") String token);
 
 
 }
