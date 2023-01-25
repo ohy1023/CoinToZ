@@ -47,8 +47,6 @@ public class User extends BaseEntity {
 
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
-    private String refreshToken; // 리프레시 토큰
-
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
@@ -68,12 +66,8 @@ public class User extends BaseEntity {
         return user;
     }
 
-    public void updateRefreshToken(String updateRefreshToken) {
-        this.refreshToken = updateRefreshToken;
-    }
-
     @Builder
-    public User(Integer id, String userName, String password, String email, String nickname, String imageUrl, UserRole userRole, SocialType socialType, String socialId, String refreshToken, List<Post> posts) {
+    public User(Integer id, String userName, String password, String email, String nickname, String imageUrl, UserRole userRole, SocialType socialType, String socialId, List<Post> posts) {
         this.id = id;
         this.userName = userName;
         this.password = password;
@@ -83,7 +77,6 @@ public class User extends BaseEntity {
         this.userRole = userRole;
         this.socialType = socialType;
         this.socialId = socialId;
-        this.refreshToken = refreshToken;
         this.posts = posts;
     }
 }

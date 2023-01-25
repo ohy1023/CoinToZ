@@ -78,7 +78,7 @@ public class UpbitRestController {
         List<Trade> tradeResponse = upbitService.getTrade(coin, count);
         return tradeResponse;
     }
-    }
+}
 
 
 

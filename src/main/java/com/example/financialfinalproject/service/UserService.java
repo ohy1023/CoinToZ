@@ -10,6 +10,7 @@ import com.example.financialfinalproject.global.jwt.service.JwtService;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,8 @@ public class UserService {
     private final BCryptPasswordEncoder encoder;
 
     private final JwtService jwtService;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
@@ -48,6 +51,7 @@ public class UserService {
 
         if (isWrongPassword(password, user))
             throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
+
 
         return jwtService.createAccessToken(user.getEmail());
     }

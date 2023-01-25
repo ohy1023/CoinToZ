@@ -1,8 +1,7 @@
-package com.example.financialfinalproject.controller;
+package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.upbit.dto.MarketDto;
 import com.example.financialfinalproject.service.UpbitService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
