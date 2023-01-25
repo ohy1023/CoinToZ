@@ -6,6 +6,7 @@ import com.example.financialfinalproject.global.jwt.util.PasswordUtil;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -41,11 +42,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-bundle.js",
             "/swagger-resources/configuration/ui", "/swagger-ui/favicon-32x32.png",
             "/swagger-resources/configuration/security", "/swagger-resources",
-            "/v3/api-docs", "api/v1/users/login","/"
+            "/v3/api-docs", "api/v1/users/login", "/"
     };
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
@@ -57,6 +60,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
         }
 
+        if (request.getRequestURI().equals("/api/v1/users/logout")) {
+            jwtService.logout(request);
+            log.info("로그아웃 성공");
+            return;
+        }
+
+
         // 사용자 요청 헤더에서 RefreshToken 추출
         // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
         // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
@@ -65,11 +75,12 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
 
+
         // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
         // 일치한다면 AccessToken을 재발급해준다.
         if (refreshToken != null) {
-            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+            checkRefreshTokenAndReIssueAccessToken(request, response, refreshToken);
             return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
         }
 
@@ -88,14 +99,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * reIssueRefreshToken()로 리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
      * 그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
      */
-    public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-        log.info("refreshToken:{}",refreshToken);
-        userRepository.findByRefreshToken(refreshToken)
-                .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
-                            reIssuedRefreshToken);
-                });
+    public void checkRefreshTokenAndReIssueAccessToken(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
+        log.info("refreshToken:{}", refreshToken);
+
+        String accessToken = jwtService.extractAccessToken(request)
+                .filter((jwtService::isTokenValid))
+                .orElse(null);
+        String email = jwtService.extractEmail(accessToken);
+        String reIssuedRefreshToken = reIssueRefreshToken(email);
+        jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(email),
+                reIssuedRefreshToken);
     }
 
     /**
@@ -103,11 +116,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
      * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
      */
-    private String reIssueRefreshToken(User user) {
+    private String reIssueRefreshToken(String email) {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
-        log.info("refresh-token-re:{}",reIssuedRefreshToken);
-        user.updateRefreshToken(reIssuedRefreshToken);
-        userRepository.saveAndFlush(user);
+        log.info("refresh-token-re:{}", reIssuedRefreshToken);
+        redisTemplate.opsForValue().set("RT:" + email, reIssuedRefreshToken);
         return reIssuedRefreshToken;
     }
 
@@ -122,9 +134,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid).flatMap(jwtService::extractEmail).flatMap(userRepository::findByEmail).ifPresent(this::saveAuthentication);
-
+        String accessToken = jwtService.extractAccessToken(request)
+                .filter(jwtService::isTokenValid)
+                .orElse(null);
+        String email = jwtService.extractEmail(accessToken);
+        userRepository.findByEmail(email).ifPresent(this::saveAuthentication);
         filterChain.doFilter(request, response);
     }
 

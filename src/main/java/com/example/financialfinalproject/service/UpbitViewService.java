@@ -94,9 +94,9 @@ public class UpbitViewService { // UpbitController
                 tickerResponse.setGap_price("" + tickerResponse.getGap_price());
 
             return tickerResponse;
-        }
-
     }
+
+}
 
 
 

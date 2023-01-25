@@ -18,16 +18,16 @@ public interface UpbitFeignClient {
     List<MarketDto> getMarKet(@RequestParam("isDetails") Boolean isDetails);
 
     @GetMapping("/candles/minutes/{unit}") //unit(분 단위), 가능한 값 : [1, 3, 5, 15, 10, 30, 60, 240]
-    List<CandleMinuteDto> getCandlesMinute(@PathVariable Integer unit, @RequestParam String market, @RequestParam String to, @RequestParam String count);
+    List<CandleMinuteDto> getCandlesMinute(@PathVariable("unit") Integer unit, @RequestParam("market") String market, @RequestParam("to") String to, @RequestParam("count") String count);
 
     @GetMapping("candles/days")
-    List<CandleDayDto> getCandlesDay(@RequestParam String market, @RequestParam String to, @RequestParam String count, @RequestParam String convertingPriceUnit);
+    List<CandleDayDto> getCandlesDay(@RequestParam("markets") String market, @RequestParam("to") String to, @RequestParam("count") String count, @RequestParam("convertingPriceUnit") String convertingPriceUnit);
 
     @GetMapping("candles/weeks")
-    List<CandleWeekDto> getCandlesWeek(@RequestParam String market, @RequestParam String to, @RequestParam String count);
+    List<CandleWeekDto> getCandlesWeek(@RequestParam("markets") String market, @RequestParam("to") String to, @RequestParam("count") String count);
 
     @GetMapping("candles/months")
-    List<CandleMonthDto> getCandlesMonth(@RequestParam String market, @RequestParam String to, @RequestParam String count);
+    List<CandleMonthDto> getCandlesMonth(@RequestParam("markets") String market, @RequestParam("to") String to, @RequestParam("count") String count);
 
     @GetMapping("/ticker") // 현재가 정보
     List<Ticker> getTicker(@RequestParam("markets") String coin);

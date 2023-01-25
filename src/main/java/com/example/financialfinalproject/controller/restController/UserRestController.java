@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
     private final UserService userService;
 
-//    private final AlarmService alarmService;
-
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
     public ResponseEntity<Response<UserJoinResponse>> joinUser(@RequestBody UserJoinRequest userJoinRequest) {
@@ -30,13 +28,14 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(userJoinResponse));
     }
 
-    @ApiOperation(value = "로그인", notes = "jwt 반환")
-    @PostMapping("/login")
-    public ResponseEntity<Response<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
-        log.info("input password:{}",userLoginRequest.getPassword());
-        String token = userService.login(userLoginRequest.getEmail(), userLoginRequest.getPassword());
-        return ResponseEntity.ok().body(Response.success(new UserLoginResponse(token)));
-    }
+//    @ApiOperation(value = "로그인", notes = "jwt 반환")
+//    @PostMapping("/login")
+//    public ResponseEntity<Response<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
+//        log.info("input password:{}",userLoginRequest.getPassword());
+//        String token = userService.login(userLoginRequest.getEmail(), userLoginRequest.getPassword());
+//        log.info("login Token:{}",token);
+//        return ResponseEntity.ok().body(Response.success(new UserLoginResponse(token)));
+//    }
 
     @ApiOperation(value = "역할 변경")
     @PostMapping("/{userId}/role")
@@ -50,11 +49,5 @@ public class UserRestController {
         return ResponseEntity.ok().body("SUCCESS");
     }
 
-//    @ApiOperation("알림 목록 조회")
-//    @GetMapping("/alarm")
-//    public ResponseEntity<Response<Page<AlarmDto>>> getAlarms(Authentication authentication, @PageableDefault(size = 20) @SortDefault(sort = "registeredAt", direction = Sort.Direction.DESC) Pageable pageable) {
-//        Page<AlarmDto> alarmDtos = alarmService.getAlarms(authentication.getName(), pageable);
-//        return ResponseEntity.ok().body(Response.success(alarmDtos));
-//    }
 
 }
