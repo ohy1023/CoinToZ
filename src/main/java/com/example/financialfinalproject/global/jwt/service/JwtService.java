@@ -6,18 +6,21 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
 
+@Slf4j
+@Getter
 @Service
 @RequiredArgsConstructor
-@Getter
-@Slf4j
 public class JwtService {
 
     @Value("${jwt.secretKey}")
@@ -46,6 +49,8 @@ public class JwtService {
 
     private final UserRepository userRepository;
 
+    private final RedisTemplate<String, String> redisTemplate;
+
     /**
      * AccessToken 생성 메소드
      */
@@ -59,15 +64,6 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpirationPeriod))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-//        return JWT.create() // JWT 토큰을 생성하는 빌더 반환
-//                .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
-//                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
-//
-//                //클레임으로는 저희는 email 하나만 사용합니다.
-//                //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
-//                //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
-//                .withClaim(EMAIL_CLAIM, email)
-//                .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
     }
 
     /**
@@ -128,13 +124,15 @@ public class JwtService {
     /**
      * AccessToken에서 Email 추출
      **/
-    public Optional<String> extractEmail(String token) {
+    public String extractEmail(String token) {
         try {
-            return Optional.ofNullable(Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-                    .getBody().get("email", String.class));
+            Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+                    .getBody();
+            log.info("token info:{}",body);
+            return body.get("email", String.class);
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
-            return Optional.empty();
+            return null;
         }
 
     }
@@ -160,23 +158,39 @@ public class JwtService {
     public void updateRefreshToken(String email, String refreshToken) {
         log.info("email:{}", email);
         log.info("update:{}", refreshToken);
-        userRepository.findByEmail(email)
-                .ifPresentOrElse(
-                        user -> user.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
-                );
+        redisTemplate.opsForValue().set("RT:" + email, refreshToken);
+
     }
 
     public boolean isTokenValid(String token) {
-        return Jwts.parser().isSigned(token);
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            log.info("로그아웃 테스트 :{}",token);
+            ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
+            if (logoutValueOperations.get("blackList "+token) != null) {
+                log.info("로그아웃 된 토큰입니다.");
+                return false;
+            }
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    public boolean isExpired(String token) {
+    public Date getExpiredTime(String token) {
         Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-        Date expiredDate = body.getExpiration();
-        log.info("만료 시간:{}", body.getExpiration());
-        return expiredDate.before(new Date());
+        return body.getExpiration();
     }
 
+    @Transactional
+    public void logout(HttpServletRequest request) {
+        String accessToken = extractAccessToken(request)
+                .filter((this::isTokenValid))
+                .orElse(null);
+        String email = extractEmail(accessToken);
+        long expiredAccessTokenTime = getExpiredTime(accessToken).getTime() - new Date().getTime();
+        redisTemplate.opsForValue().set("blackList " + accessToken, email, Duration.ofMillis(expiredAccessTokenTime));
+        redisTemplate.delete("RT:" + email); // Redis에서 유저 리프레시 토큰 삭제
+    }
 
 }
