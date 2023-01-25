@@ -2,8 +2,8 @@ package com.example.financialfinalproject.service;
 
 import com.example.financialfinalproject.domain.upbit.Ticker;
 import com.example.financialfinalproject.domain.upbit.Trade;
-import com.example.financialfinalproject.domain.upbit.upbitDto.TickerResponse;
-import com.example.financialfinalproject.domain.upbit.upbitDto.TradeResponse;
+import com.example.financialfinalproject.domain.upbit.TickerResponse;
+import com.example.financialfinalproject.domain.upbit.TradeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

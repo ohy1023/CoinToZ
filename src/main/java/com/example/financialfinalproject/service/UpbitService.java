@@ -1,10 +1,12 @@
 package com.example.financialfinalproject.service;
 
-import com.example.financialfinalproject.domain.upbit.OrderBook;
-import com.example.financialfinalproject.domain.upbit.Ticker;
-import com.example.financialfinalproject.domain.upbit.Trade;
-import com.example.financialfinalproject.domain.upbit.dto.*;
+import com.example.financialfinalproject.domain.upbit.*;
+import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
+import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
 import com.example.financialfinalproject.feign.UpbitFeignClient;
+import com.example.financialfinalproject.global.jwt.service.UpbitJwtService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 public class UpbitService { // UpbitRestController
 
     private final UpbitFeignClient upbitFeignClient;
+    private final UpbitJwtService upbitJwtService;
 
     public List<MarketDto> getMarket(Boolean isDetails) {
         return upbitFeignClient.getMarKet(isDetails);
@@ -56,5 +59,16 @@ public class UpbitService { // UpbitRestController
 
         return tradeList;
     }
+
+    public UpbitToken getToken(String accessKey, String secretKey){
+    UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
+    return upbitToken;
+    }
+
+    public List<Acount> getAcount(String token){
+        List<Acount> acounts = upbitFeignClient.getAcount(token);
+        return acounts;
+    }
+
 
 }
