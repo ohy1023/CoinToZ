@@ -39,6 +39,7 @@ class CommentServiceTest {
 
     User user = User.builder()
             .id(1)
+            .email("test_email")
             .userName("개발의민족")
             .password("1234")
             .build();
@@ -58,13 +59,13 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 작성 실패 : 유저가 존재하지 않음")
     void createComment_fail() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
         when(postRepository.findById(any())).thenReturn(Optional.of(post));
         when(commentRepository.save(any())).thenReturn(comment);
 
         AppException exception = assertThrows(AppException.class, () ->
                 commentService.createComment(post.getId(),user.getUserName(),commentCreateRequest));
-        assertEquals(ErrorCode.USERNAME_NOT_FOUND, exception.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
@@ -82,13 +83,13 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 수정 실패 : 유저가 존재하지 않음")
     void updateComment_fail() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
         when(postRepository.findById(any())).thenReturn(Optional.of(post));
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
 
         AppException exception = assertThrows(AppException.class, () ->
                 commentService.updateComment(post.getId(),comment.getId(),commentUpdateRequest, user.getUserName()));
-        assertEquals(ErrorCode.USERNAME_NOT_FOUND, exception.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
@@ -118,13 +119,13 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 삭제 실패 : 유저가 존재하지 않음")
     void deleteComment_fail() {
-        when(userRepository.findByUserName(user.getUserName())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
 
         AppException exception = assertThrows(AppException.class, () ->
                 commentService.deleteComment(post.getId(),comment.getId(), user.getUserName()));
-        assertEquals(ErrorCode.USERNAME_NOT_FOUND, exception.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
