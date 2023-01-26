@@ -28,14 +28,11 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(userJoinResponse));
     }
 
-//    @ApiOperation(value = "로그인", notes = "jwt 반환")
-//    @PostMapping("/login")
-//    public ResponseEntity<Response<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
-//        log.info("input password:{}",userLoginRequest.getPassword());
-//        String token = userService.login(userLoginRequest.getEmail(), userLoginRequest.getPassword());
-//        log.info("login Token:{}",token);
-//        return ResponseEntity.ok().body(Response.success(new UserLoginResponse(token)));
-//    }
+    @ApiOperation(value = "로그인", notes = "jwt 반환")
+    @PostMapping("/login")
+    public String login(@RequestBody UserLoginRequest userLoginRequest) {
+        return "ok";
+    }
 
     @ApiOperation(value = "역할 변경")
     @PostMapping("/{userId}/role")
@@ -44,8 +41,8 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(response));
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
+    @GetMapping("/reissuance")
+    public ResponseEntity<String> reissue() {
         return ResponseEntity.ok().body("SUCCESS");
     }
 
