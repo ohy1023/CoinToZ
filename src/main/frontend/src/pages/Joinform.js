@@ -52,7 +52,7 @@ const Joinform = () => {
     await axios
       .post('/api/v1/users/join', postData)
       .then(function (response) {
-        console.log(response, '성공');
+        alert("회원가입이 완료되었습니다.")
         navigate('/login');
       })
       .catch(function (err) {
