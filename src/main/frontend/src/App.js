@@ -2,8 +2,9 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Navbar,Nav} from 'react-bootstrap';
 import {Route, Routes, useNavigate} from 'react-router-dom';
-import Joinform from './pages/Joinform';
-import SignIn from './pages/SignIn';
+import Joinform from './components/pages/Join/Joinform';
+import SignIn from './components/pages/SignIn/SignIn';
+import MainPage from "./components/pages/Mainpage/Mainpage";
 
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
                 </Nav>
             </Navbar>
             <Routes>
-                <Route path='/' element={<>메인 페이지</>}/>
+                <Route path='/' element={<MainPage/>}/>
                 <Route path='/join' element={<Joinform/>}/>
                 <Route path='/login' element={<SignIn/>}/>
             </Routes>

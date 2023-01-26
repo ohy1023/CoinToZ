@@ -14,9 +14,9 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import NaverBut from './img/btnG_축약형.png'
-import GoogleBut from './img/btn_google_signin_dark_focus_web@2x.png'
-import KakaoBut from './img/kakao_login_small.png'
+import NaverBut from '../../../assets/signIn/btnG_축약형.png'
+import GoogleBut from '../../../assets/signIn/btn_google_signin_dark_focus_web@2x.png'
+import KakaoBut from '../../../assets/signIn/kakao_login_small.png'
 
 const theme = createTheme();
 
@@ -129,7 +129,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="frontend/src/components/pages/SignIn#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
