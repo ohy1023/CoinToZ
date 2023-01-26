@@ -71,12 +71,12 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 작성 실패 : 포스트가 존재하지 않음")
     void createComment_fail2() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         when(postRepository.findById(any())).thenReturn(Optional.empty());
         when(commentRepository.save(any())).thenReturn(comment);
 
         AppException exception = assertThrows(AppException.class, () ->
-                commentService.createComment(post.getId(),user.getUserName(),commentCreateRequest));
+                commentService.createComment(post.getId(),user.getEmail(),commentCreateRequest));
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
     }
 
@@ -95,24 +95,24 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 수정 실패 : 댓글이 존재하지 않음")
     void updateComment_fail2() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         when(postRepository.findById(any())).thenReturn(Optional.of(post));
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.empty());
 
         AppException exception = assertThrows(AppException.class, () ->
-                commentService.updateComment(post.getId(),comment.getId(),commentUpdateRequest, user.getUserName()));
+                commentService.updateComment(post.getId(),comment.getId(),commentUpdateRequest, user.getEmail()));
         assertEquals(ErrorCode.COMMENT_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("댓글 수정 실패 : 포스트가 존재하지 않음")
     void updateComment_fail3() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         when(postRepository.findById(any())).thenReturn(Optional.empty());
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.of(comment));
 
         AppException exception = assertThrows(AppException.class, () ->
-                commentService.updateComment(post.getId(),comment.getId(),commentUpdateRequest, user.getUserName()));
+                commentService.updateComment(post.getId(),comment.getId(),commentUpdateRequest, user.getEmail()));
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
     }
 
@@ -131,25 +131,25 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글 삭제 실패 : 댓글이 존재하지 않음")
     void deleteComment_fail2() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         when(postRepository.findById(any())).thenReturn(Optional.of(post));
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.empty());
 
 
         AppException exception = assertThrows(AppException.class, () ->
-                commentService.deleteComment(post.getId(),comment.getId(), user.getUserName()));
+                commentService.deleteComment(post.getId(),comment.getId(), user.getEmail()));
         assertEquals(ErrorCode.COMMENT_NOT_FOUND, exception.getErrorCode());
     }
 
     @Test
     @DisplayName("댓글 삭제 실패 : 포스트가 존재하지 않음")
     void deleteComment_fail3() {
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         when(postRepository.findById(any())).thenReturn(Optional.empty());
         when(commentRepository.findById(comment.getId())).thenReturn(Optional.empty());
 
         AppException exception = assertThrows(AppException.class, () ->
-                commentService.deleteComment(post.getId(),comment.getId(), user.getUserName()));
+                commentService.deleteComment(post.getId(),comment.getId(), user.getEmail()));
         assertEquals(ErrorCode.POST_NOT_FOUND, exception.getErrorCode());
     }
 

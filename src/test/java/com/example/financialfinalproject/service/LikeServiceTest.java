@@ -93,12 +93,12 @@ class LikeServiceTest {
         @Test
         @DisplayName("좋아요 입력 실패 : 포스트 아이디가 없음")
         void addLikeCount_fail3() {
-            when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+            when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
             when(postRepository.findById(any())).thenReturn(Optional.empty());
             when(likeRepository.findByPostAndUser(post, user)).thenReturn(Optional.empty());
 
             AppException appException = assertThrows(AppException.class, () -> {
-                likeService.addLikeCount(post.getId(), user.getUserName());
+                likeService.addLikeCount(post.getId(), user.getEmail());
             });
             assertEquals(ErrorCode.POST_NOT_FOUND, appException.getErrorCode());
         }
@@ -173,12 +173,12 @@ class LikeServiceTest {
         @Test
         @DisplayName("싫어요 입력 실패 : 포스트 아이디가 없음")
         void addDisLikeCount_fail3() {
-            when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+            when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
             when(postRepository.findById(any())).thenReturn(Optional.empty());
             when(likeRepository.findByPostAndUser(post, user)).thenReturn(Optional.empty());
 
             AppException appException = assertThrows(AppException.class, () -> {
-                likeService.addDisLikeCount(post.getId(), user.getUserName());
+                likeService.addDisLikeCount(post.getId(), user.getEmail());
             });
             assertEquals(ErrorCode.POST_NOT_FOUND, appException.getErrorCode());
         }
