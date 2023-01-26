@@ -56,10 +56,6 @@ dependencies {
 }
 
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
 // React 빌드 스크립트
 def frontendDir = "$projectDir/src/main/frontend"
 
@@ -105,4 +101,9 @@ task copyReactBuildFiles(type: Copy) {
 // 프로젝트가 만들어지고 배포되는 시점(bootJar) 실행되는 시점에만 React 빌드 파일이 포함
 tasks.bootJar {
     dependsOn "copyReactBuildFiles"
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
