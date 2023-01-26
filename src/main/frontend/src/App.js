@@ -1,22 +1,32 @@
-// src/main/frontend/src/App.js
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Navbar,Nav} from 'react-bootstrap';
+import {Route, Routes, useNavigate} from 'react-router-dom';
+import Joinform from './pages/Joinform';
 
-import React, {useEffect, useState} from 'react';
-import axios from 'axios';
 
 function App() {
-   const [hello, setHello] = useState('')
 
-    useEffect(() => {
-        axios.get('api/v1/hello')
-        .then(response => setHello("hello world"))
-        .catch(error => console.log(error))
-    }, []);
+    const navigate = useNavigate();
 
     return (
-        <div>
-            백엔드에서 가져온 데이터입니다 : {hello}
-        </div>
+        <>
+            <Navbar bg="dark" variant="dark">
+                <Navbar.Brand style={{margin:'10px'}}><Nav.Link onClick={()=>{navigate('/')}} >Justock</Nav.Link></Navbar.Brand>
+                <Nav className="me-auto">
+                    <Nav.Link onClick={()=>{navigate('/join')}}>회원가입</Nav.Link>
+                    {/* <Nav.Link onClick={()=>{navigate('/login')}}>로그인</Nav.Link> */}
+                </Nav>
+            </Navbar>
+            <Routes>
+                <Route path='/' element={<>메인 페이지</>}/>
+                <Route path='/join' element={<Joinform/>}/>
+            </Routes>
+        </>
     );
+
 }
+
+
 
 export default App;

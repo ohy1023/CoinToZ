@@ -158,7 +158,7 @@ public class JwtService {
     public void updateRefreshToken(String email, String refreshToken) {
         log.info("email:{}", email);
         log.info("update:{}", refreshToken);
-        redisTemplate.opsForValue().set("RT:" + email, refreshToken);
+        redisTemplate.opsForValue().set("RT:" + email, refreshToken,Duration.ofMillis(refreshTokenExpirationPeriod));
 
     }
 
@@ -167,7 +167,7 @@ public class JwtService {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             log.info("로그아웃 테스트 :{}",token);
             ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
-            if (logoutValueOperations.get("blackList "+token) != null) {
+            if (logoutValueOperations.get("blackList:"+token) != null) {
                 log.info("로그아웃 된 토큰입니다.");
                 return false;
             }
@@ -189,8 +189,7 @@ public class JwtService {
                 .orElse(null);
         String email = extractEmail(accessToken);
         long expiredAccessTokenTime = getExpiredTime(accessToken).getTime() - new Date().getTime();
-        redisTemplate.opsForValue().set("blackList " + accessToken, email, Duration.ofMillis(expiredAccessTokenTime));
+        redisTemplate.opsForValue().set("blackList:" + accessToken, email, Duration.ofMillis(expiredAccessTokenTime));
         redisTemplate.delete("RT:" + email); // Redis에서 유저 리프레시 토큰 삭제
     }
-
 }
