@@ -1,19 +1,23 @@
 package com.example.financialfinalproject.feign;
 
-import com.example.financialfinalproject.domain.upbit.*;
 import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
+import com.example.financialfinalproject.domain.upbit.exchange.Acount;
+import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
+import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
+import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
+import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
+import com.example.financialfinalproject.domain.upbit.quotation.Trade;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @FeignClient(name="upbit", url = "https://api.upbit.com/v1")
+
 public interface UpbitFeignClient {
 
     @GetMapping("/market/all")
@@ -44,5 +48,9 @@ public interface UpbitFeignClient {
     @GetMapping("/accounts") // 전체 계좌 조회
     List<Acount> getAcount(@RequestHeader("Authorization") String token);
 
+
+    @PostMapping("/orders")
+    @ResponseBody
+    OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
 
 }

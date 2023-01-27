@@ -1,16 +1,26 @@
 package com.example.financialfinalproject.controller.restController;
 
-import com.example.financialfinalproject.domain.upbit.*;
 import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
+import com.example.financialfinalproject.domain.upbit.exchange.Acount;
+import com.example.financialfinalproject.domain.upbit.exchange.OrderRequest;
+import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
+import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
+import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
+import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
+import com.example.financialfinalproject.domain.upbit.quotation.Trade;
+import com.example.financialfinalproject.global.jwt.service.UpbitJwtService;
 import com.example.financialfinalproject.service.UpbitService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,6 +29,7 @@ import java.util.List;
 public class UpbitRestController {
 
     private final UpbitService upbitService;
+    private final UpbitJwtService upbitJwtService;
 
     @GetMapping("/getMarket")
     @ApiOperation(value = "마켓 코드 조회", notes = "업비트에서 거래 가능한 마켓 목록")
@@ -76,19 +87,17 @@ public class UpbitRestController {
     }
 
 
-    @GetMapping("/token")
-    public UpbitToken getToken(String accesskey, String secretKey){
-        UpbitToken upbitToken = upbitService.getToken(accesskey,secretKey);
-        return upbitToken;
-    }
-
-
-    @GetMapping("/acount")
-    public List<Acount> getAcount(@RequestParam String token){
-        List<Acount> acounts = upbitService.getAcount(token);
+    @GetMapping("/acount") //전체 계좌조회
+    public List<Acount> getAcount(@RequestParam String accessKey, @RequestParam String secretKey){
+        List<Acount> acounts = upbitService.getAcount(accessKey,secretKey);
         return acounts;
     }
 
+    @PostMapping("/order") // 주문하기
+    public OrderResponse getOrder(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+        OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest);
+        return response;
+    }
 
 }
 
