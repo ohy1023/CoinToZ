@@ -1,8 +1,8 @@
 package com.example.financialfinalproject.controller;
 
-import com.example.financialfinalproject.domain.upbit.MarketDto;
-import com.example.financialfinalproject.domain.upbit.TickerResponse;
-import com.example.financialfinalproject.domain.upbit.TradeResponse;
+import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
+import com.example.financialfinalproject.domain.upbit.quotation.TickerResponse;
+import com.example.financialfinalproject.domain.upbit.quotation.TradeResponse;
 import com.example.financialfinalproject.service.UpbitService;
 import com.example.financialfinalproject.service.UpbitViewService;
 import io.swagger.annotations.ApiOperation;
