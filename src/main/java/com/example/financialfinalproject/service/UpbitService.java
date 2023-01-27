@@ -14,12 +14,14 @@ import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
 import com.example.financialfinalproject.domain.upbit.quotation.Trade;
 import com.example.financialfinalproject.feign.UpbitFeignClient;
 import com.example.financialfinalproject.global.jwt.service.UpbitJwtService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -76,14 +78,29 @@ public class UpbitService {
     }
 
     //주문하는 Token 생성
-    public OrderResponse getOrder(String accessKey, String secretKey, OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public OrderResponse getOrder(String accessKey, String secretKey, OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         UpbitToken upbitToken = upbitJwtService.getOrderToken(accessKey,secretKey,orderRequest);
-        OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),
-                orderRequest.getMarket(),
-                orderRequest.getSide(),
-                orderRequest.getVolume(),
-                orderRequest.getPrice(),
-                orderRequest.getOrd_type());
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("market", orderRequest.getMarket());
+        params.put("side", orderRequest.getSide());
+        params.put("volume", String.valueOf(orderRequest.getVolume()));
+        params.put("price", String.valueOf(orderRequest.getPrice()));
+        params.put("ord_type", orderRequest.getOrd_type());
+
+
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = objectMapper.writeValueAsString(orderRequest);
+//        System.out.println(json);
+
+        OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
+
+
+//                orderRequest.getMarket(),
+//                orderRequest.getSide(),
+//                orderRequest.getVolume(),
+//                orderRequest.getPrice(),
+//                orderRequest.getOrd_type());
 
         return orderResponse;
     }

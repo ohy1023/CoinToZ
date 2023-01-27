@@ -50,6 +50,7 @@ public class UpbitJwtService {
         }
 
         String queryString = String.join("&", queryElements.toArray(new String[0]));
+        System.out.println(queryString);
 
 
         // 암호화

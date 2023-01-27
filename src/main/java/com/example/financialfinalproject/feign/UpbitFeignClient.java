@@ -13,6 +13,7 @@ import com.example.financialfinalproject.domain.upbit.quotation.Trade;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @FeignClient(name="upbit", url = "https://api.upbit.com/v1")
@@ -47,12 +48,9 @@ public interface UpbitFeignClient {
     @GetMapping("/accounts") // 전체 계좌 조회
     List<Acount> getAcount(@RequestHeader("Authorization") String token);
 
+
     @PostMapping("/orders")
-    OrderResponse getOrder(@RequestHeader("Authorization") String token,
-                           @RequestParam("market") String market,
-                           @RequestParam("side") String side,
-                           @RequestParam("volume") String volume,
-                           @RequestParam("price") String price,
-                           @RequestParam("ord_type") String ordType);
+    @ResponseBody
+    OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
 
 }

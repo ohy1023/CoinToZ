@@ -13,6 +13,7 @@ import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
 import com.example.financialfinalproject.domain.upbit.quotation.Trade;
 import com.example.financialfinalproject.global.jwt.service.UpbitJwtService;
 import com.example.financialfinalproject.service.UpbitService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,7 @@ public class UpbitRestController {
     }
 
     @PostMapping("/order") // 주문하기
-    public OrderResponse getOrder(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public OrderResponse getOrder(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest);
         return response;
     }
