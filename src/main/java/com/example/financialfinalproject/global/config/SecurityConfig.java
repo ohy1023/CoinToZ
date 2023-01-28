@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
+                .mvcMatchers("/**").permitAll()
                 .antMatchers("api/v1/users/test").authenticated()
                 .antMatchers(UI).permitAll()
                 .antMatchers(SWAGGER).permitAll()

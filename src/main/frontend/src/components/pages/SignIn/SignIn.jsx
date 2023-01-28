@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -17,19 +15,17 @@ import { useNavigate } from 'react-router-dom';
 import NaverBut from '../../../assets/signIn/btnG_축약형.png'
 import GoogleBut from '../../../assets/signIn/btn_google_signin_dark_focus_web@2x.png'
 import KakaoBut from '../../../assets/signIn/kakao_login_small.png'
+import {setCookie} from "../util/cookie";
+import {useRecoilState} from 'recoil';
+import {userState } from '../util/GlobalState';
 
 const theme = createTheme();
-
-// 쿠키 생성하기
-const setCookie = (name, value, expiredays) => {
-  const today = new Date();
-  today.setDate(today.getDate() + expiredays);
-  document.cookie = `${name}=${escape(value)}; path=/; expires=${today.toGMTString()};`;
-};
 
 
 export default function SignIn() {
   const navigate = useNavigate();
+
+  const [user, setUser] = useRecoilState(userState);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -47,12 +43,17 @@ export default function SignIn() {
     const { email, password } = data;
     const postData = { email, password };
 
+    
+
     // post
     await axios
       .post('/api/v1/users/login', postData)
       .then(function (response) {
         setCookie("access", response.headers.get("Authorization"));
         setCookie("refresh", response.headers.get("Authorization-refresh"));
+        localStorage.setItem("email", email);
+        setUser(localStorage.getItem("email"));
+        console.log(user)
         alert("로그인이 완료되었습니다.")
         navigate('/');
       })
@@ -82,15 +83,15 @@ export default function SignIn() {
           </Typography>
           <br></br>
           <Grid>
-              <p class="lead fw-normal mb-0 me-3">Sign in with
+              <p className="lead fw-normal mb-0 me-3">Sign in with
                 <Link href="/oauth2/authorization/naver">
-                  <img style={{display: 'inline-block', width : "60px", height: "30px", marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} className="phoneImage" alt="naver" src={NaverBut} />
+                  <img style={{display: 'inline-block', width : "60px", height: "30px", marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} alt="naver" src={NaverBut} />
                 </Link>
                 <Link href="/oauth2/authorization/kakao">
-                  <img style={{display: 'inline-block', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} className="phoneImage" alt="kakao" src={KakaoBut} />
+                  <img style={{display: 'inline-block', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}}alt="kakao" src={KakaoBut} />
                 </Link>
                 <Link href="/oauth2/authorization/google">
-                  <img style={{display: 'inline-block',height:'30px', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} className="phoneImage" alt="google" src={GoogleBut} />
+                  <img style={{display: 'inline-block',height:'30px', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} alt="google" src={GoogleBut} />
                 </Link>
                 </p>
             </Grid>
@@ -115,10 +116,6 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
               fullWidth
@@ -129,7 +126,7 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="frontend/src/components/pages/SignIn#" variant="body2">
+                <Link href="#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>

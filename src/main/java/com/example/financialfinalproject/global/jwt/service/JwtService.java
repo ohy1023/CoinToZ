@@ -55,6 +55,7 @@ public class JwtService {
      * AccessToken 생성 메소드
      */
     public String createAccessToken(String email) {
+        log.info(email);
         Claims claims = Jwts.claims();
         claims.put("email", email);
         return Jwts.builder()
@@ -117,8 +118,8 @@ public class JwtService {
      */
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .filter(accessHeader -> accessHeader.startsWith(BEARER))
+                .map(accessHeader -> accessHeader.replace(BEARER, ""));
     }
 
     /**
@@ -165,7 +166,6 @@ public class JwtService {
     public boolean isTokenValid(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            log.info("로그아웃 테스트 :{}",token);
             ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
             if (logoutValueOperations.get("blackList:"+token) != null) {
                 log.info("로그아웃 된 토큰입니다.");
