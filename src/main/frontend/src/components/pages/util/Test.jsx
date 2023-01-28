@@ -21,9 +21,9 @@ export default function Test() {
   return (
     <>
       <Button
+      variant="primary"
       onClick={getInfo}
       type="submit"
-      variant="contained"
       sx={{ mt: 3, mb: 2 }}
       >
         Test
