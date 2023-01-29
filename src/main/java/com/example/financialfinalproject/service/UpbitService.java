@@ -112,7 +112,7 @@ public class UpbitService {
 
     // 코인 출금하기
     public CoinWithDrawResponse askWithdrawCoin(String accessKey, String secretKey, CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        UpbitToken upbitToken = upbitJwtService.getWithDrawToken(accessKey,secretKey,coinWithDrawRequest);
+        UpbitToken upbitToken = upbitJwtService.getWithDrawCoinToken(accessKey,secretKey,coinWithDrawRequest);
 
         HashMap<String, String> params = new HashMap<>();
         params.put("currency", coinWithDrawRequest.getCurrency());
@@ -123,5 +123,16 @@ public class UpbitService {
 
         CoinWithDrawResponse coinWithDrawResponse = upbitFeignClient.askWithdrawCoin(upbitToken.getUpbitToken(),params);
         return coinWithDrawResponse;
+    }
+
+    public KrwWithDrawResponse askWithdrawKrw(String accessKey, String secretKey, KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getWithDrawKrwToken(accessKey,secretKey,krwWithDrawRequest);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("amount", krwWithDrawRequest.getAmount());
+        params.put("two_factor_type", krwWithDrawRequest.getTwo_factor_type());
+
+        KrwWithDrawResponse krwWithDrawResponse = upbitFeignClient.askWithdrawKrw(upbitToken.getUpbitToken(),params);
+        return krwWithDrawResponse;
     }
 }

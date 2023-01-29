@@ -4,10 +4,7 @@ import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.exchange.Acount;
-import com.example.financialfinalproject.domain.upbit.exchange.CoinWithDrawResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.WithDraw;
+import com.example.financialfinalproject.domain.upbit.exchange.*;
 import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
 import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
 import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
@@ -64,4 +61,8 @@ public interface UpbitFeignClient {
     @PostMapping("/withdraws/coin") // 출금 - 코인 출금하기
     @ResponseBody
     CoinWithDrawResponse askWithdrawCoin(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @PostMapping("/withdraws/krw") // 출금 - 원화 출금하기
+    @ResponseBody
+    KrwWithDrawResponse askWithdrawKrw(String upbitToken, HashMap<String, String> params);
 }

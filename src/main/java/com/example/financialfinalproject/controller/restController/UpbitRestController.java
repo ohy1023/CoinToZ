@@ -112,6 +112,12 @@ public class UpbitRestController {
         CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
         return response;
     }
+
+    @PostMapping("/withdraws/krw") // 원화 출금하기
+    public KrwWithDrawResponse askWithdrawKrw(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+        KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey,secretKey,krwWithDrawRequest);
+        return response;
+    }
 }
 
 
