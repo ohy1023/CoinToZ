@@ -4,10 +4,7 @@ import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.exchange.Acount;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderRequest;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.UpbitToken;
+import com.example.financialfinalproject.domain.upbit.exchange.*;
 import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
 import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
 import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
@@ -18,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +29,8 @@ public class UpbitService {
 
     private final UpbitFeignClient upbitFeignClient;
     private final UpbitJwtService upbitJwtService;
+
+    // QUOTATION API
 
     public List<MarketDto> getMarket(Boolean isDetails) {
         return upbitFeignClient.getMarKet(isDetails);
@@ -65,11 +65,11 @@ public class UpbitService {
 
 
     public List<Trade> getTrade(String coin, Integer count) { // 체결 정보 - 리스트
-
         List<Trade> tradeList = upbitFeignClient.getTrade("KRW-" + coin.toUpperCase(), count);
-
         return tradeList;
     }
+
+    // EXCHANGE API
 
     public List<Acount> getAcount(String accessKey, String secretKey){ // 전체계좌조회
         UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
@@ -88,13 +88,11 @@ public class UpbitService {
         params.put("price", String.valueOf(orderRequest.getPrice()));
         params.put("ord_type", orderRequest.getOrd_type());
 
-
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String json = objectMapper.writeValueAsString(orderRequest);
 //        System.out.println(json);
 
         OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
-
 
 //                orderRequest.getMarket(),
 //                orderRequest.getSide(),
@@ -103,5 +101,27 @@ public class UpbitService {
 //                orderRequest.getOrd_type());
 
         return orderResponse;
+    }
+
+    // 출금 리스트 조회
+    public List<WithDraw> getWithdraws(String accessKey, String secretKey, String currency, String state, List<String> uuids, List<String> txids, Integer limit, Integer page, String orderBy) {
+        UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
+        List<WithDraw> withDraws = upbitFeignClient.getWithdraws(upbitToken.getUpbitToken(), currency, state, uuids, txids, limit, page, orderBy);
+        return withDraws;
+    }
+
+    // 코인 출금하기
+    public CoinWithDrawResponse askWithdrawCoin(String accessKey, String secretKey, CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getWithDrawToken(accessKey,secretKey,coinWithDrawRequest);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("currency", coinWithDrawRequest.getCurrency());
+        params.put("amount", coinWithDrawRequest.getAmount());
+        params.put("address", String.valueOf(coinWithDrawRequest.getAddress()));
+        params.put("secondary_address", String.valueOf(coinWithDrawRequest.getSecondary_address()));
+        params.put("transaction_type", coinWithDrawRequest.getTransaction_type());
+
+        CoinWithDrawResponse coinWithDrawResponse = upbitFeignClient.askWithdrawCoin(upbitToken.getUpbitToken(),params);
+        return coinWithDrawResponse;
     }
 }
