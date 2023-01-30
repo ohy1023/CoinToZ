@@ -15,16 +15,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import NaverBut from '../../../assets/signIn/btnG_축약형.png'
 import GoogleBut from '../../../assets/signIn/btn_google_signin_dark_focus_web@2x.png'
 import KakaoBut from '../../../assets/signIn/kakao_login_small.png'
-import {setCookie} from "../util/cookie";
-import {useRecoilState} from 'recoil';
-import {userState } from '../util/GlobalState';
+import { setCookie } from "../util/cookie";
+import { useSetRecoilState } from 'recoil';
+import { userState } from '../util/GlobalState';
 import queryString from 'query-string';
 
 const theme = createTheme();
 
 
 export default function SignIn({location}) {   
-  const [user, setUser] = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
   const navigate = useNavigate();
   const { search } = useLocation();
 
