@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,21 +11,44 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import NaverBut from '../../../assets/signIn/btnG_축약형.png'
 import GoogleBut from '../../../assets/signIn/btn_google_signin_dark_focus_web@2x.png'
 import KakaoBut from '../../../assets/signIn/kakao_login_small.png'
 import {setCookie} from "../util/cookie";
 import {useRecoilState} from 'recoil';
 import {userState } from '../util/GlobalState';
+import queryString from 'query-string';
 
 const theme = createTheme();
 
 
-export default function SignIn() {
-  const navigate = useNavigate();
-
+export default function SignIn({location}) {   
   const [user, setUser] = useRecoilState(userState);
+  const navigate = useNavigate();
+  const { search } = useLocation();
+
+  useEffect(() => {
+    
+    const handleQuery= () => {
+      const query = queryString.parse(search);
+      const {accessToken,refreshToken,email} = query;
+    
+      if (accessToken) {
+        setCookie("access",accessToken);
+        setCookie("refresh",refreshToken);
+        localStorage.setItem("email", email);
+        setUser(localStorage.getItem("email"));
+        alert("로그인이 완료되었습니다.");
+      }
+    }
+
+    if (search) {
+      handleQuery();
+      navigate('/');
+    }
+  },[]);
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -53,7 +76,6 @@ export default function SignIn() {
         setCookie("refresh", response.headers.get("Authorization-refresh"));
         localStorage.setItem("email", email);
         setUser(localStorage.getItem("email"));
-        console.log(user)
         alert("로그인이 완료되었습니다.")
         navigate('/');
       })
@@ -64,8 +86,9 @@ export default function SignIn() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+    
+    <ThemeProvider theme={theme} >
+      <Container component="main" maxWidth="xs" >
         <CssBaseline />
         <Box
           sx={{
@@ -84,13 +107,13 @@ export default function SignIn() {
           <br></br>
           <Grid>
               <p className="lead fw-normal mb-0 me-3">Sign in with
-                <Link href="/oauth2/authorization/naver">
+                <Link href="http://localhost:8080/oauth2/authorization/naver">
                   <img style={{display: 'inline-block', width : "60px", height: "30px", marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} alt="naver" src={NaverBut} />
                 </Link>
-                <Link href="/oauth2/authorization/kakao">
+                <Link href="http://localhost:8080/oauth2/authorization/kakao">
                   <img style={{display: 'inline-block', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}}alt="kakao" src={KakaoBut} />
                 </Link>
-                <Link href="/oauth2/authorization/google">
+                <Link href="http://localhost:8080/oauth2/authorization/google">
                   <img style={{display: 'inline-block',height:'30px', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} alt="google" src={GoogleBut} />
                 </Link>
                 </p>

@@ -20,11 +20,12 @@ const CustomNav = () => {
       removeCookie('refresh');
       localStorage.removeItem('email');
       setUser('');
-      alert("로그아웃이 완료되었습니다.")
+      alert("로그아웃이 완료되었습니다.");
+      navigate('/');
     })
     .catch(function (err) {
       console.log(err);
-      alert("로그아웃 실패!")
+      alert("로그아웃 실패!");
     });
     
   }
