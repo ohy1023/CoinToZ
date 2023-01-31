@@ -17,7 +17,7 @@ function App() {
                 <Routes>
                     <Route path='/' element={<MainPage/>}/>
                     <Route path='/join' element={<Joinform/>}/>
-                    <Route path='/login' element={<SignIn/>}/>
+                    <Route path='/login/:accessToken?/:refreshToken?/:email?' element={<SignIn/>}/>
                     <Route path='/test' element={<Test/>}/>
                 </Routes>
             </RecoilRoot>

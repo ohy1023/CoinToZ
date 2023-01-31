@@ -129,7 +129,7 @@ public class JwtService {
         try {
             Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                     .getBody();
-            log.info("token info:{}",body);
+            log.info("token info:{}", body);
             return body.get("email", String.class);
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
@@ -159,7 +159,7 @@ public class JwtService {
     public void updateRefreshToken(String email, String refreshToken) {
         log.info("email:{}", email);
         log.info("update:{}", refreshToken);
-        redisTemplate.opsForValue().set("RT:" + email, refreshToken,Duration.ofMillis(refreshTokenExpirationPeriod));
+        redisTemplate.opsForValue().set("RT:" + email, refreshToken, Duration.ofMillis(refreshTokenExpirationPeriod));
 
     }
 
@@ -167,11 +167,21 @@ public class JwtService {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
-            if (logoutValueOperations.get("blackList:"+token) != null) {
+            if (logoutValueOperations.get("blackList:" + token) != null) {
                 log.info("로그아웃 된 토큰입니다.");
                 return false;
             }
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isRefreshTokenValid(String token, String email) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            String dbToken = redisTemplate.opsForValue().get("RT:" + email);
+            return dbToken.equals(token) && !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }

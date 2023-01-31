@@ -26,7 +26,7 @@ const refresh = async (config) => {
     setCookie("access", res.headers.get("Authorization"));
     setCookie("refresh", res.headers.get("Authorization-refresh"));
 
-    config.headers["Authorization"] = `Bearer ${accessToken}`; // 토큰 교체
+    config.headers["Authorization"] = `Bearer ${getCookie("access")}`; // 토큰 교체
 
   }
   else {
