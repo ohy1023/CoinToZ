@@ -74,4 +74,122 @@ public class UpbitJwtService {
                 .upbitToken(authenticationToken)
                 .build();
     }
+
+    public  UpbitToken getOrderDeleteToken(String accessKey, String secretKey,String uuid) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("uuid", uuid);
+
+        ArrayList<String> queryElements = new ArrayList<>();
+        for (Map.Entry<String, String> entity : params.entrySet()) {
+            queryElements.add(entity.getKey() + "=" + entity.getValue());
+        }
+
+        String queryString = String.join("&", queryElements.toArray(new String[0]));
+        System.out.println(queryString);
+
+
+        // 암호화
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(queryString.getBytes("UTF-8"));
+        String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+
+        // 토큰 생성
+        String jwtToken = JWT.create()
+                .withClaim("access_key", accessKey)
+                .withClaim("nonce", UUID.randomUUID().toString())
+                .withClaim("query_hash", queryHash)
+                .withClaim("query_hash_alg", "SHA512")
+                .sign(algorithm);
+
+        String authenticationToken = "Bearer " + jwtToken;
+
+        return UpbitToken.builder()
+                .upbitToken(authenticationToken)
+                .build();
+    }
+
+
+
+    public UpbitToken getOrderListToken(String accessKey, String secretKey, String state) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        //주문값 형태 변경
+        HashMap<String, String> params = new HashMap<>();
+        params.put("state", state);
+
+        ArrayList<String> queryElements = new ArrayList<>();
+        for (Map.Entry<String, String> entity : params.entrySet()) {
+            queryElements.add(entity.getKey() + "=" + entity.getValue());
+        }
+
+        String queryString = String.join("&", queryElements.toArray(new String[0]));
+        System.out.println(queryString);
+
+
+        // 암호화
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(queryString.getBytes("UTF-8"));
+        String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+
+        // 토큰 생성
+        String jwtToken = JWT.create()
+                .withClaim("access_key", accessKey)
+                .withClaim("nonce", UUID.randomUUID().toString())
+                .withClaim("query_hash", queryHash)
+                .withClaim("query_hash_alg", "SHA512")
+                .sign(algorithm);
+
+        String authenticationToken = "Bearer " + jwtToken;
+
+        return UpbitToken.builder()
+                .upbitToken(authenticationToken)
+                .build();
+    }
+
+
+
+
+    public UpbitToken getDepositToken(String accessKey, String secretKey, String amount, String tow_factor_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("amount", amount);
+        params.put("tow_factor_type", tow_factor_type);
+
+        ArrayList<String> queryElements = new ArrayList<>();
+        for (Map.Entry<String, String> entity : params.entrySet()) {
+            queryElements.add(entity.getKey() + "=" + entity.getValue());
+        }
+
+        String queryString = String.join("&", queryElements.toArray(new String[0]));
+        System.out.println(queryString);
+
+
+        // 암호화
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(queryString.getBytes("UTF-8"));
+        String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+
+        // 토큰 생성
+        String jwtToken = JWT.create()
+                .withClaim("access_key", accessKey)
+                .withClaim("nonce", UUID.randomUUID().toString())
+                .withClaim("query_hash", queryHash)
+                .withClaim("query_hash_alg", "SHA512")
+                .sign(algorithm);
+
+        String authenticationToken = "Bearer " + jwtToken;
+
+        return UpbitToken.builder()
+                .upbitToken(authenticationToken)
+                .build();
+    }
+
+
+
 }

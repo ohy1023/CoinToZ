@@ -4,10 +4,7 @@ import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.exchange.Acount;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderRequest;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.UpbitToken;
+import com.example.financialfinalproject.domain.upbit.exchange.*;
 import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
 import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
 import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
@@ -31,6 +28,8 @@ public class UpbitService {
 
     private final UpbitFeignClient upbitFeignClient;
     private final UpbitJwtService upbitJwtService;
+
+   // private final TradingDiaryService tradingDiaryService;
 
     public List<MarketDto> getMarket(Boolean isDetails) {
         return upbitFeignClient.getMarKet(isDetails);
@@ -70,14 +69,14 @@ public class UpbitService {
 
         return tradeList;
     }
-
+    // 계좌조회
     public List<Acount> getAcount(String accessKey, String secretKey){ // 전체계좌조회
         UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
         List<Acount> acounts = upbitFeignClient.getAcount(upbitToken.getUpbitToken());
         return acounts;
     }
 
-    //주문하는 Token 생성
+    // 주문
     public OrderResponse getOrder(String accessKey, String secretKey, OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         UpbitToken upbitToken = upbitJwtService.getOrderToken(accessKey,secretKey,orderRequest);
 
@@ -88,20 +87,50 @@ public class UpbitService {
         params.put("price", String.valueOf(orderRequest.getPrice()));
         params.put("ord_type", orderRequest.getOrd_type());
 
-
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = objectMapper.writeValueAsString(orderRequest);
-//        System.out.println(json);
-
         OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
 
-
-//                orderRequest.getMarket(),
-//                orderRequest.getSide(),
-//                orderRequest.getVolume(),
-//                orderRequest.getPrice(),
-//                orderRequest.getOrd_type());
+//        tradingDiaryService.write(orderResponse);
 
         return orderResponse;
     }
+
+    // 주문취소
+    public OrderResponse getOrderDelete(String accessKey, String secretKey, String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getOrderDeleteToken(accessKey,secretKey,uuid);
+        OrderResponse orderResponse = upbitFeignClient.getOrderDelete(upbitToken.getUpbitToken(),uuid);
+
+        return orderResponse;
+    }
+
+
+    // 주문리스트
+    public List<OrderResponse> getOrderList(String accessKey, String secretKey, String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getOrderListToken(accessKey,secretKey,state);
+        List<OrderResponse> orderResponses = upbitFeignClient.getOrderList(upbitToken.getUpbitToken(),state);
+
+        return orderResponses;
+    }
+
+
+    // 입금
+    public DepositResponse getDeposit(String accessKey, String secretKey, String amount, String tow_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getDepositToken(accessKey,secretKey,amount, tow_factor_type);
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("amount", amount);
+        params.put("tow_factor_type", tow_factor_type);
+
+        DepositResponse depositResponse = upbitFeignClient.getDeposit(upbitToken.getUpbitToken(),params);
+
+        return depositResponse;
+    }
+
+    // 입금리스트
+    public List<DepositResponse> getDepositList(String accessKey, String secretKey){
+        UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
+        List<DepositResponse> depositResponses = upbitFeignClient.getDepositList(upbitToken.getUpbitToken());
+
+        return  depositResponses;
+    }
+
 }

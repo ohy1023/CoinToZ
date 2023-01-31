@@ -5,6 +5,7 @@ import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
 import com.example.financialfinalproject.domain.upbit.exchange.Acount;
+import com.example.financialfinalproject.domain.upbit.exchange.DepositResponse;
 import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
 import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
 import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
@@ -48,9 +49,21 @@ public interface UpbitFeignClient {
     @GetMapping("/accounts") // 전체 계좌 조회
     List<Acount> getAcount(@RequestHeader("Authorization") String token);
 
-
-    @PostMapping("/orders")
+    @PostMapping("/orders") // 주문하기
     @ResponseBody
     OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @DeleteMapping("/order")
+    OrderResponse getOrderDelete(@RequestHeader("Authorization") String token, @RequestParam String uuid);
+
+    @GetMapping("/orders") // 주문리스트
+    List<OrderResponse> getOrderList(@RequestHeader("Authorization") String token, @RequestParam String state);
+
+    @PostMapping("/deposits/krw") // 입금하기
+    @ResponseBody
+    DepositResponse getDeposit(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @GetMapping("/deposits") // 입금리스트
+    List<DepositResponse> getDepositList(@RequestHeader("Authorization") String token);
 
 }
