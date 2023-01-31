@@ -51,26 +51,11 @@ public interface UpbitFeignClient {
     @GetMapping("/accounts") // 자산 - 전체 계좌 조회
     List<Acount> getAcount(@RequestHeader("Authorization") String token);
 
-    @PostMapping("/orders") // 주문 - 주문하기
+    @PostMapping("/orders") // 주문
     @ResponseBody
     OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
 
-    @GetMapping("/withdraws") // 출금 - 출금 리스트 조회
-    List<WithDraw> getWithdraws(@RequestHeader("Authorization") String token, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam("limit") Integer limit, @RequestParam("page") Integer page, @RequestParam("order_by") String orderBy);
-
-    @PostMapping("/withdraws/coin") // 출금 - 코인 출금하기
-    @ResponseBody
-    CoinWithDrawResponse askWithdrawCoin(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
-
-    @PostMapping("/withdraws/krw") // 출금 - 원화 출금하기
-    @ResponseBody
-    KrwWithDrawResponse askWithdrawKrw(@RequestHeader("Authorization")String token, @RequestBody HashMap<String, String> params);
-
-    @PostMapping("/orders") // 주문하기
-    @ResponseBody
-    OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
-
-    @DeleteMapping("/order")
+    @DeleteMapping("/order") // 주문취소
     OrderResponse getOrderDelete(@RequestHeader("Authorization") String token, @RequestParam String uuid);
 
     @GetMapping("/orders") // 주문리스트
@@ -82,5 +67,18 @@ public interface UpbitFeignClient {
 
     @GetMapping("/deposits") // 입금리스트
     List<DepositResponse> getDepositList(@RequestHeader("Authorization") String token);
+
+    @PostMapping("/withdraws/krw") // 출금 - 원화 출금하기
+    @ResponseBody
+    KrwWithDrawResponse askWithdrawKrw(@RequestHeader("Authorization")String token, @RequestBody HashMap<String, String> params);
+
+
+    @GetMapping("/withdraws") // 출금 - 출금 리스트 조회
+    List<WithDraw> getWithdraws(@RequestHeader("Authorization") String token, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam("limit") Integer limit, @RequestParam("page") Integer page, @RequestParam("order_by") String orderBy);
+
+
+    @PostMapping("/withdraws/coin") // 출금 - 코인 출금하기
+    @ResponseBody
+    CoinWithDrawResponse askWithdrawCoin(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
 
 }
