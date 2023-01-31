@@ -7,10 +7,10 @@ RUN gradle build -x test --parallel --continue > /dev/null 2>&1 || true
 
 # 빌더 이미지에서 애플리케이션 빌드
 COPY . /build
-#
-#FROM node
-#
-#WORKDIR /usr/src/app
+
+FROM node
+
+WORKDIR /usr/src/app
 #
 #COPY package.json ./
 #
