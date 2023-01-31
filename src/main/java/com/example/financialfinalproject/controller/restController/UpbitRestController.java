@@ -67,21 +67,21 @@ public class UpbitRestController {
     }
 
     @GetMapping("/ticker") // 현재가 정보
-    public Ticker getTicker(@RequestParam String coin){
+    public Ticker getTicker(@RequestParam("coin") String coin){
         Ticker tickerList = upbitService.getTicker(coin);
         return tickerList;
 
     }
 
     @GetMapping("/orderbook")
-    public OrderBook getOrderBook(@RequestParam String coin){
+    public OrderBook getOrderBook(@RequestParam("coin") String coin){
         OrderBook orderbookUnitsList = upbitService.getOrderBook(coin);
         return orderbookUnitsList;
     }
 
 
     @GetMapping("/trade")
-    public List<Trade> getTrade(@RequestParam String coin, @RequestParam Integer count){
+    public List<Trade> getTrade(@RequestParam("coin") String coin, @RequestParam("count") Integer count){
         List<Trade> tradeResponse = upbitService.getTrade(coin, count);
         return tradeResponse;
     }
@@ -90,7 +90,7 @@ public class UpbitRestController {
     // EXCHANGE API
 
     @GetMapping("/acount") //전체 계좌조회
-    public List<Acount> getAcount(@RequestParam String accessKey, @RequestParam String secretKey){
+    public List<Acount> getAcount(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey){
         List<Acount> acounts = upbitService.getAcount(accessKey,secretKey);
         return acounts;
     }
@@ -102,19 +102,19 @@ public class UpbitRestController {
     }
 
     @GetMapping("/withdraws") // 출금 리스트 조회
-    public List<WithDraw> getWithdraws(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
+    public List<WithDraw> getWithdraws(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
         List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
         return withDraws;
     }
 
     @PostMapping("/withdraws/coin") // 코인 출금하기
-    public CoinWithDrawResponse askWithdrawCoin(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public CoinWithDrawResponse askWithdrawCoin(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
         return response;
     }
 
     @PostMapping("/withdraws/krw") // 원화 출금하기
-    public KrwWithDrawResponse askWithdrawKrw(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public KrwWithDrawResponse askWithdrawKrw(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey,secretKey,krwWithDrawRequest);
         return response;
     }

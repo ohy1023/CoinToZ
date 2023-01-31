@@ -64,5 +64,5 @@ public interface UpbitFeignClient {
 
     @PostMapping("/withdraws/krw") // 출금 - 원화 출금하기
     @ResponseBody
-    KrwWithDrawResponse askWithdrawKrw(String upbitToken, HashMap<String, String> params);
+    KrwWithDrawResponse askWithdrawKrw(@RequestHeader("Authorization")String token, @RequestBody HashMap<String, String> params);
 }
