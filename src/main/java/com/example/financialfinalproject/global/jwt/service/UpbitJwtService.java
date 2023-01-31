@@ -2,8 +2,11 @@ package com.example.financialfinalproject.global.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.financialfinalproject.domain.upbit.exchange.CoinWithDrawRequest;
+import com.example.financialfinalproject.domain.upbit.exchange.KrwWithDrawRequest;
 import com.example.financialfinalproject.domain.upbit.exchange.OrderRequest;
 import com.example.financialfinalproject.domain.upbit.exchange.UpbitToken;
+import com.example.financialfinalproject.service.UpbitService;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
@@ -75,6 +78,16 @@ public class UpbitJwtService {
                 .build();
     }
 
+
+    public UpbitToken getWithDrawCoinToken(String accessKey, String secretKey, CoinWithDrawRequest coinWithDrawRequest) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        //출금 요청 형태 변경
+        HashMap<String, String> params = new HashMap<>();
+        params.put("currency", coinWithDrawRequest.getCurrency());
+        params.put("amount", coinWithDrawRequest.getAmount());
+        params.put("address", String.valueOf(coinWithDrawRequest.getAddress()));
+        params.put("secondary_address", String.valueOf(coinWithDrawRequest.getSecondary_address()));
+        params.put("transaction_type", coinWithDrawRequest.getTransaction_type());
+
     public  UpbitToken getOrderDeleteToken(String accessKey, String secretKey,String uuid) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
         HashMap<String, String> params = new HashMap<>();
@@ -119,6 +132,7 @@ public class UpbitJwtService {
         HashMap<String, String> params = new HashMap<>();
         params.put("state", state);
 
+
         ArrayList<String> queryElements = new ArrayList<>();
         for (Map.Entry<String, String> entity : params.entrySet()) {
             queryElements.add(entity.getKey() + "=" + entity.getValue());
@@ -149,6 +163,13 @@ public class UpbitJwtService {
                 .upbitToken(authenticationToken)
                 .build();
     }
+
+
+    public UpbitToken getWithDrawKrwToken(String accessKey, String secretKey, KrwWithDrawRequest krwWithDrawRequest) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        //출금 요청 형태 변경
+        HashMap<String, String> params = new HashMap<>();
+        params.put("amount", krwWithDrawRequest.getAmount());
+        params.put("two_factor_type", krwWithDrawRequest.getTwo_factor_type());
 
 
 
@@ -159,6 +180,7 @@ public class UpbitJwtService {
         params.put("amount", amount);
         params.put("tow_factor_type", tow_factor_type);
 
+
         ArrayList<String> queryElements = new ArrayList<>();
         for (Map.Entry<String, String> entity : params.entrySet()) {
             queryElements.add(entity.getKey() + "=" + entity.getValue());
@@ -189,7 +211,5 @@ public class UpbitJwtService {
                 .upbitToken(authenticationToken)
                 .build();
     }
-
-
 
 }

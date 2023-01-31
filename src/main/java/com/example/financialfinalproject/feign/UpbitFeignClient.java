@@ -4,9 +4,7 @@ import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.exchange.Acount;
-import com.example.financialfinalproject.domain.upbit.exchange.DepositResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
+import com.example.financialfinalproject.domain.upbit.exchange.*;
 import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
 import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
 import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
@@ -20,6 +18,8 @@ import java.util.List;
 @FeignClient(name="upbit", url = "https://api.upbit.com/v1")
 
 public interface UpbitFeignClient {
+
+    // QUOTATION API
 
     @GetMapping("/market/all")
     List<MarketDto> getMarKet(@RequestParam("isDetails") Boolean isDetails);
@@ -46,8 +46,25 @@ public interface UpbitFeignClient {
     List<Trade> getTrade(@RequestParam("market") String coin, @RequestParam("count") Integer count);
 
 
-    @GetMapping("/accounts") // 전체 계좌 조회
+    // EXCHANGE API
+
+    @GetMapping("/accounts") // 자산 - 전체 계좌 조회
     List<Acount> getAcount(@RequestHeader("Authorization") String token);
+
+    @PostMapping("/orders") // 주문 - 주문하기
+    @ResponseBody
+    OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @GetMapping("/withdraws") // 출금 - 출금 리스트 조회
+    List<WithDraw> getWithdraws(@RequestHeader("Authorization") String token, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam("limit") Integer limit, @RequestParam("page") Integer page, @RequestParam("order_by") String orderBy);
+
+    @PostMapping("/withdraws/coin") // 출금 - 코인 출금하기
+    @ResponseBody
+    CoinWithDrawResponse askWithdrawCoin(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @PostMapping("/withdraws/krw") // 출금 - 원화 출금하기
+    @ResponseBody
+    KrwWithDrawResponse askWithdrawKrw(@RequestHeader("Authorization")String token, @RequestBody HashMap<String, String> params);
 
     @PostMapping("/orders") // 주문하기
     @ResponseBody

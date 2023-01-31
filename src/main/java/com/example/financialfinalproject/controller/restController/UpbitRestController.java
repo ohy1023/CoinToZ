@@ -4,10 +4,7 @@ import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleWeekDto;
-import com.example.financialfinalproject.domain.upbit.exchange.Acount;
-import com.example.financialfinalproject.domain.upbit.exchange.DepositResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderRequest;
-import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
+import com.example.financialfinalproject.domain.upbit.exchange.*;
 import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
 import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
 import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
@@ -31,6 +28,8 @@ public class UpbitRestController {
 
     private final UpbitService upbitService;
     private final UpbitJwtService upbitJwtService;
+
+    // QUOTATION API
 
     @GetMapping("/getMarket")
     @ApiOperation(value = "마켓 코드 조회", notes = "업비트에서 거래 가능한 마켓 목록")
@@ -91,6 +90,8 @@ public class UpbitRestController {
     }
 
 
+    // EXCHANGE API
+
     @GetMapping("/acount") //전체 계좌조회
     @ApiOperation(value = "전체계좌조회", notes = "전체계좌조회")
     public List<Acount> getAcount(@RequestParam String accessKey, @RequestParam String secretKey){
@@ -104,6 +105,23 @@ public class UpbitRestController {
         OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest);
         return response;
     }
+
+    @GetMapping("/withdraws") // 출금 리스트 조회
+    public List<WithDraw> getWithdraws(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
+        List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
+        return withDraws;
+    }
+
+    @PostMapping("/withdraws/coin") // 코인 출금하기
+    public CoinWithDrawResponse askWithdrawCoin(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+        CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
+        return response;
+    }
+
+    @PostMapping("/withdraws/krw") // 원화 출금하기
+    public KrwWithDrawResponse askWithdrawKrw(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+        KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey,secretKey,krwWithDrawRequest);
+        return response;
 
     @DeleteMapping // 주문취소
     @ApiOperation(value = "주문취소", notes = "주문취소")
