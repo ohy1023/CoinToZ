@@ -27,3 +27,15 @@ ENTRYPOINT [                                                \
     "-Dsun.net.inetaddr.ttl=0",                             \
     "app.jar"              \
 ]
+
+FROM node
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+
+RUN npm install
+
+COPY ./ ./
+
+CMD ["node", "index.js"]

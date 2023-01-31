@@ -106,23 +106,6 @@ public class UpbitRestController {
         return response;
     }
 
-    @GetMapping("/withdraws") // 출금 리스트 조회
-    public List<WithDraw> getWithdraws(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
-        List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
-        return withDraws;
-    }
-
-    @PostMapping("/withdraws/coin") // 코인 출금하기
-    public CoinWithDrawResponse askWithdrawCoin(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
-        CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
-        return response;
-    }
-
-    @PostMapping("/withdraws/krw") // 원화 출금하기
-    public KrwWithDrawResponse askWithdrawKrw(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
-        KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey,secretKey,krwWithDrawRequest);
-        return response;
-
     @DeleteMapping // 주문취소
     @ApiOperation(value = "주문취소", notes = "주문취소")
     public OrderResponse getOrderDelete(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -130,15 +113,13 @@ public class UpbitRestController {
         return orderResponse;
     }
 
-
     @GetMapping("/orders") // 주문리스트
     @ApiOperation(value = "주문리스트", notes = "주문리스트")
     public List<OrderResponse> getOrderList(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey,secretKey, state);
         return orderResponses;
     }
-    
-    
+
     @PostMapping("/deposit") // 입금하기
     @ApiOperation(value = "입금하기", notes = "입금하기")
     public DepositResponse getDeposit(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String amount, @RequestParam String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -152,6 +133,29 @@ public class UpbitRestController {
         List<DepositResponse> depositResponses = upbitService.getDepositList(accessKey,secretKey);
         return depositResponses;
     }
+
+
+    @PostMapping("/withdraws/krw") // 원화 출금하기
+    public KrwWithDrawResponse askWithdrawKrw(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+        KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey, secretKey, krwWithDrawRequest);
+        return response;
+
+    }
+
+    @PostMapping("/withdraws/coin") // 코인 출금하기
+    public CoinWithDrawResponse askWithdrawCoin(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+        CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
+        return response;
+    }
+
+
+    @GetMapping("/withdraws") // 출금 리스트 조회
+    public List<WithDraw> getWithdraws(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
+        List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
+        return withDraws;
+    }
+
+
 }
 
 
