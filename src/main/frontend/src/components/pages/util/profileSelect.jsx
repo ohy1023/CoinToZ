@@ -13,10 +13,10 @@ const MENU_OPTIONS = [
     label: 'Profile',
     icon: 'eva:person-fill',
   },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
+  // {
+  //   label: 'Settings',
+  //   icon: 'eva:settings-2-fill',
+  // },
 ];
 
 // ----------------------------------------------------------------------
@@ -28,19 +28,19 @@ export default function AccountPopover() {
 
   const logoutUser = async () => {
     await Api.get("/api/v1/users/logout")
-    .then(function (response) {
-      removeCookie('access');
-      removeCookie('refresh');
-      localStorage.removeItem('email');
-      setUser('');
-      console.log(user);
-      alert("로그아웃이 완료되었습니다.");
-      navigate('/');
-    })
-    .catch(function (err) {
-      console.log(err);
-      alert("로그아웃 실패!");
-    });
+      .then(function (response) {
+        removeCookie('access');
+        removeCookie('refresh');
+        localStorage.removeItem('email');
+        setUser('');
+        console.log(user);
+        alert("로그아웃이 완료되었습니다.");
+        navigate('/');
+      })
+      .catch(function (err) {
+        console.log(err);
+        alert("로그아웃 실패!");
+      });
   };
 
   const handleOpen = (event) => {
@@ -107,16 +107,22 @@ export default function AccountPopover() {
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option) => (
+          {/* {MENU_OPTIONS.map((option) => (
             <MenuItem key={option.label} onClick={handleClose}>
               {option.label}
             </MenuItem>
-          ))}
+          ))} */}
+          <MenuItem key={MENU_OPTIONS[0].label} onClick={() => {
+            navigate('/mypage')
+            handleClose()
+          }}>
+            {MENU_OPTIONS[0].label}
+          </MenuItem>
         </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={()=>{
+        <MenuItem onClick={() => {
           logoutUser()
           handleClose()
         }} sx={{ m: 1 }}>
