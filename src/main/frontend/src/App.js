@@ -6,6 +6,7 @@ import MainPage from "./components/pages/Mainpage/Mainpage";
 import Test from './components/pages/util/Test';
 import CustomNav from './components/pages/util/CustomNav';
 import {RecoilRoot} from 'recoil';
+import Mypage from './components/pages/Mypage/Mypage';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                     <Route path='/join' element={<Joinform/>}/>
                     <Route path='/login/:accessToken?/:refreshToken?/:email?' element={<SignIn/>}/>
                     <Route path='/test' element={<Test/>}/>
+                    <Route path='/mypage' element={<Mypage/>}/>
                 </Routes>
             </RecoilRoot>
         </>
