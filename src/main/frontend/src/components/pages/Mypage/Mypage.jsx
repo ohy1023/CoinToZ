@@ -28,7 +28,7 @@ const Mypage = () => {
             <div className={[styles.MemberCard, styles.Clearfix].join(" ")}>
               <div className={styles.MemberCardBody}>
                 <div className={[styles.Avatar, styles.TwMb2].join(" ")}>
-                  {account.imageURL}? (<img src={account.imageUrl} alt="profile_image" />):(<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="profile_image" />)
+                  {account.imageUrl !== null ? <img src={account.imageUrl} alt="profile_image" />:<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="profile_image" />}
                 </div>
                 <div>
                   <div className={[styles.TwFontBold, styles.TwMb1].join(" ")}>{account.userName}</div>
@@ -66,7 +66,7 @@ const Mypage = () => {
                     </li>
                     <li>
                         <label htmlFor="profile_image">프로필 사진</label>
-                        <div>{account.imageURL}</div>
+                        <div>{account.imageUrl !== null ? account.imageUrl : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'}</div>
                     </li>
                     <li>
                       <label>가입일</label>
