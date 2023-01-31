@@ -2,11 +2,13 @@ package com.example.financialfinalproject.service;
 
 
 import com.example.financialfinalproject.domain.dto.CommentDto;
+import com.example.financialfinalproject.domain.dto.ReplyCommentDto;
 import com.example.financialfinalproject.domain.entity.Comment;
 import com.example.financialfinalproject.domain.entity.Post;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.CommentCreateRequest;
 import com.example.financialfinalproject.domain.request.CommentUpdateRequest;
+import com.example.financialfinalproject.domain.request.ReplyCommentCreateRequest;
 import com.example.financialfinalproject.domain.response.CommentUpdateResponse;
 import com.example.financialfinalproject.exception.AppException;
 import com.example.financialfinalproject.repository.CommentRepository;
@@ -49,6 +51,23 @@ public class CommentService {
 //                .build());
 
         return CommentDto.toCommentDto(savedComment);
+    }
+
+    @Transactional
+    public ReplyCommentDto createReplyComment(Long postId, String email, ReplyCommentCreateRequest replyCommentCreateRequest, Integer parentId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(POST_NOT_FOUND, POST_NOT_FOUND.getMessage()));
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
+
+        Comment replyParent = commentRepository.findById(parentId)
+                .orElseThrow(()-> new AppException(COMMENT_NOT_FOUND, COMMENT_NOT_FOUND.getMessage()));
+
+        Comment savedComment = commentRepository.save(replyCommentCreateRequest.toEntity(user, post,replyParent));
+        ReplyCommentDto replyCommentDto = new ReplyCommentDto(savedComment, parentId, email, postId);
+
+        return replyCommentDto;
     }
 
     @Transactional(readOnly = true)

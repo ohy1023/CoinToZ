@@ -65,4 +65,22 @@ public interface UpbitFeignClient {
     @PostMapping("/withdraws/krw") // 출금 - 원화 출금하기
     @ResponseBody
     KrwWithDrawResponse askWithdrawKrw(@RequestHeader("Authorization")String token, @RequestBody HashMap<String, String> params);
+
+    @PostMapping("/orders") // 주문하기
+    @ResponseBody
+    OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @DeleteMapping("/order")
+    OrderResponse getOrderDelete(@RequestHeader("Authorization") String token, @RequestParam String uuid);
+
+    @GetMapping("/orders") // 주문리스트
+    List<OrderResponse> getOrderList(@RequestHeader("Authorization") String token, @RequestParam String state);
+
+    @PostMapping("/deposits/krw") // 입금하기
+    @ResponseBody
+    DepositResponse getDeposit(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
+
+    @GetMapping("/deposits") // 입금리스트
+    List<DepositResponse> getDepositList(@RequestHeader("Authorization") String token);
+
 }

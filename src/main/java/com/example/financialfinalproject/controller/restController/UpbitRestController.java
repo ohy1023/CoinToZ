@@ -67,21 +67,24 @@ public class UpbitRestController {
     }
 
     @GetMapping("/ticker") // 현재가 정보
-    public Ticker getTicker(@RequestParam("coin") String coin){
+    @ApiOperation(value = "현재가 정보", notes = "현재가 정보")
+    public Ticker getTicker(@RequestParam String coin){
         Ticker tickerList = upbitService.getTicker(coin);
         return tickerList;
 
     }
 
     @GetMapping("/orderbook")
-    public OrderBook getOrderBook(@RequestParam("coin") String coin){
+    @ApiOperation(value = "호가 정보", notes = "호가 정보")
+    public OrderBook getOrderBook(@RequestParam String coin){
         OrderBook orderbookUnitsList = upbitService.getOrderBook(coin);
         return orderbookUnitsList;
     }
 
 
     @GetMapping("/trade")
-    public List<Trade> getTrade(@RequestParam("coin") String coin, @RequestParam("count") Integer count){
+    @ApiOperation(value = "체결 정보", notes = "체결 정보")
+    public List<Trade> getTrade(@RequestParam String coin, @RequestParam Integer count){
         List<Trade> tradeResponse = upbitService.getTrade(coin, count);
         return tradeResponse;
     }
@@ -90,12 +93,14 @@ public class UpbitRestController {
     // EXCHANGE API
 
     @GetMapping("/acount") //전체 계좌조회
-    public List<Acount> getAcount(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey){
+    @ApiOperation(value = "전체계좌조회", notes = "전체계좌조회")
+    public List<Acount> getAcount(@RequestParam String accessKey, @RequestParam String secretKey){
         List<Acount> acounts = upbitService.getAcount(accessKey,secretKey);
         return acounts;
     }
 
     @PostMapping("/order") // 주문하기
+    @ApiOperation(value = "주문하기", notes = "주문하기")
     public OrderResponse getOrder(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest);
         return response;
@@ -117,6 +122,35 @@ public class UpbitRestController {
     public KrwWithDrawResponse askWithdrawKrw(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey,secretKey,krwWithDrawRequest);
         return response;
+
+    @DeleteMapping // 주문취소
+    @ApiOperation(value = "주문취소", notes = "주문취소")
+    public OrderResponse getOrderDelete(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        OrderResponse orderResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid);
+        return orderResponse;
+    }
+
+
+    @GetMapping("/orders") // 주문리스트
+    @ApiOperation(value = "주문리스트", notes = "주문리스트")
+    public List<OrderResponse> getOrderList(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey,secretKey, state);
+        return orderResponses;
+    }
+    
+    
+    @PostMapping("/deposit") // 입금하기
+    @ApiOperation(value = "입금하기", notes = "입금하기")
+    public DepositResponse getDeposit(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String amount, @RequestParam String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        DepositResponse depositResponse = upbitService.getDeposit(accessKey,secretKey,amount,two_factor_type);
+        return depositResponse;
+    }
+
+    @GetMapping("/deposits") // 입금리스트
+    @ApiOperation(value = "입금리스트", notes = "입금리스트")
+    public List<DepositResponse> getDepositList(@RequestParam String accessKey, @RequestParam  String secretKey){
+        List<DepositResponse> depositResponses = upbitService.getDepositList(accessKey,secretKey);
+        return depositResponses;
     }
 }
 
