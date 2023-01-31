@@ -8,6 +8,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -31,15 +33,24 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
+
     public void updateComment(String comment) {
         this.comment = comment;
     }
 
     @Builder
-    public Comment(Integer id, String comment, Post post, User user) {
+    public Comment(Integer id, String comment, Post post, User user, Comment parent) {
         this.id = id;
         this.comment = comment;
         this.post = post;
         this.user = user;
+        this.parent = parent;
     }
 }
