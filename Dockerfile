@@ -1,6 +1,12 @@
 FROM gradle:7.4-jdk11-alpine as builder
 WORKDIR /build
 
+RUN apt-get -qq update
+RUN apt-get -qq upgrade --yes
+RUN apt-get -qq install curl --yes
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get -qq install nodejs --yes
+
 # 그래들 파일이 변경되었을 때만 새롭게 의존패키지 다운로드 받게함.
 COPY build.gradle settings.gradle /build/
 RUN gradle build -x test --parallel --continue > /dev/null 2>&1 || true
@@ -9,6 +15,7 @@ RUN gradle build -x test --parallel --continue > /dev/null 2>&1 || true
 COPY . /build
 
 RUN gradle build -x test --parallel
+
 
 # APP
 FROM openjdk:11.0-slim
