@@ -7,18 +7,19 @@ const Mypage = () => {
 
   const getInfo = async () => {
     await Api.get("/api/v1/users/info")
-      .then(function (response) {
-        setAccount(response.data.result)
-      })
-      .catch(function (err) {
-        console.log(err);
-        alert("유저 정보 조회 실패");
-      })
+    .then(function (response) {
+      setAccount(response.data.result)
+    })
+    .catch(function (err) {
+      console.log(err);
+      alert("유저 정보 조회 실패");
+    })
   };
-
+  
   useEffect(() => {
     getInfo();
   }, []);
+
 
   return (
     <div className={styles.Layout}>
