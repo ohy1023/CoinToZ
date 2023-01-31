@@ -1,11 +1,9 @@
 package com.example.financialfinalproject.controller.restController;
 
+import com.example.financialfinalproject.domain.dto.UserDto;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
 import com.example.financialfinalproject.domain.request.UserLoginRequest;
-import com.example.financialfinalproject.domain.response.Response;
-import com.example.financialfinalproject.domain.response.UserJoinResponse;
-import com.example.financialfinalproject.domain.response.UserLoginResponse;
-import com.example.financialfinalproject.domain.response.UserRoleResponse;
+import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +30,15 @@ public class UserRestController {
     @PostMapping("/login")
     public String login(@RequestBody UserLoginRequest userLoginRequest) {
         return "ok";
+    }
+
+    @ApiOperation(value = "유저 정보 조회")
+    @GetMapping("/info")
+    public ResponseEntity<Response<UserGetResponse>> getUserInfo(Authentication authentication) {
+        String email = authentication.getName();
+        log.info("userEmail:{}",email);
+        UserGetResponse info = userService.getInfo(email);
+        return ResponseEntity.ok().body(Response.success(info));
     }
 
     @ApiOperation(value = "역할 변경")

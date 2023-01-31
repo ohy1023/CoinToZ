@@ -1,8 +1,25 @@
-import React from "react";
-import KakaoBut from '../../../assets/signIn/kakao_login_small.png'
+import { useState, useEffect } from "react";
 import styles from "./Mypage.module.css";
+import Api from "../util/customApi";
 
 const Mypage = () => {
+  const [account, setAccount] = useState([])
+
+  const getInfo = async () => {
+    await Api.get("/api/v1/users/info")
+      .then(function (response) {
+        setAccount(response.data.result)
+      })
+      .catch(function (err) {
+        console.log(err);
+        alert("유저 정보 조회 실패");
+      })
+  };
+
+  useEffect(() => {
+    getInfo();
+  }, []);
+
   return (
     <div className={styles.Layout}>
       <main className={[styles.Content, styles.Clearfix].join(" ")}>
@@ -11,9 +28,10 @@ const Mypage = () => {
             <div className={[styles.MemberCard, styles.Clearfix].join(" ")}>
               <div className={styles.MemberCardBody}>
                 <div className={[styles.Avatar, styles.TwMb2].join(" ")}>
-                  <img src={KakaoBut} alt="profile_image" />    </div>
+                  {account.imageURL}? (<img src={account.imageUrl} alt="profile_image" />):(<img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="profile_image" />)
+                </div>
                 <div>
-                  <div className={[styles.TwFontBold, styles.TwMb1].join(" ")}>Test</div>
+                  <div className={[styles.TwFontBold, styles.TwMb1].join(" ")}>{account.userName}</div>
                 </div>
               </div>
             </div>  <div className={[styles.MemberCard, styles.MemberMenu].join(" ")}>
@@ -39,18 +57,20 @@ const Mypage = () => {
                     <li>
                       <label htmlFor="email_address">이메일 주소<span className={styles.Required}>필수</span></label>
 
-                      <div>Test</div>                  </li><li>
+                      <div>{account.email}</div>
+                    </li>
+                    <li>
                       <label htmlFor="nick_name">닉네임<span className={styles.Required}>필수</span></label>
 
-                      <div>Test</div>                  </li><li>
-                      <label htmlFor="profile_image">프로필 사진</label>
-
-                      <div>Test</div>        </li>
-
-
+                      <div>{account.userName}</div>                  
+                    </li>
+                    <li>
+                        <label htmlFor="profile_image">프로필 사진</label>
+                        <div>{account.imageURL}</div>
+                    </li>
                     <li>
                       <label>가입일</label>
-                      <div>Test</div>
+                      <div>{account.createAt}</div>
                     </li>
                   </ul>
 
