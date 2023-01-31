@@ -1,3 +1,15 @@
+FROM node
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+
+RUN npm install
+
+COPY ./ ./
+
+CMD ["node", "index.js"]
+
 FROM gradle:7.4-jdk11-alpine as builder
 WORKDIR /build
 
@@ -28,14 +40,3 @@ ENTRYPOINT [                                                \
     "app.jar"              \
 ]
 
-FROM node
-
-WORKDIR /usr/src/app
-
-COPY package.json ./
-
-RUN npm install
-
-COPY ./ ./
-
-CMD ["node", "index.js"]
