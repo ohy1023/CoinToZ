@@ -1,8 +1,8 @@
 package com.example.financialfinalproject.service;
 
-import com.example.financialfinalproject.domain.dto.UserDto;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
+import com.example.financialfinalproject.domain.response.UserGetResponse;
 import com.example.financialfinalproject.domain.response.UserJoinResponse;
 import com.example.financialfinalproject.domain.response.UserRoleResponse;
 import com.example.financialfinalproject.exception.AppException;
@@ -10,10 +10,12 @@ import com.example.financialfinalproject.global.jwt.service.JwtService;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static com.example.financialfinalproject.domain.enums.UserRole.ADMIN;
 import static com.example.financialfinalproject.domain.enums.UserRole.USER;
@@ -27,8 +29,6 @@ public class UserService {
     private final BCryptPasswordEncoder encoder;
 
     private final JwtService jwtService;
-
-    private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${jwt.secretKey}")
     private String secretKey;
@@ -77,12 +77,23 @@ public class UserService {
         return UserRoleResponse.toResponse(targetUser);
     }
 
+    @Transactional(readOnly = true)
+    public UserGetResponse getInfo(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
 
-//    public UserDto getUserByUserName(String userName) {
-//        User user = userRepository.findByUserName(userName)
-//                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
-//        return UserDto.toUserDto(user);
-//    }
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+        String date = user.getRegisteredAt().format(formatter);
+        return UserGetResponse.builder()
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .imageUrl(user.getImageUrl())
+                .createAt(date)
+                .build();
+
+    }
 
     private boolean isWrongPassword(String password, User user) {
         return !encoder.matches(password, user.getPassword());

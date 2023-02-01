@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { userState } from './GlobalState';
 import { removeCookie } from './cookie';
 import Api from './customApi';
@@ -24,7 +24,23 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
-  const [user, setUser] = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
+  const [account,setAccount] = useState([])
+
+  const getInfo = async () => {
+    await Api.get("/api/v1/users/info")
+    .then(function (response) {
+      setAccount(response.data.result)
+    })
+    .catch(function (err) {
+      console.log(err);
+      alert("유저 정보 조회 실패");
+    })
+  };
+  
+  useEffect(() => {
+    getInfo();
+  }, []);
 
   const logoutUser = async () => {
     await Api.get("/api/v1/users/logout")
@@ -33,7 +49,6 @@ export default function AccountPopover() {
         removeCookie('refresh');
         localStorage.removeItem('email');
         setUser('');
-        console.log(user);
         alert("로그아웃이 완료되었습니다.");
         navigate('/');
       })
@@ -70,8 +85,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar alt="photoURL" />
-        {/* src={account.photoURL} */}
+        <Avatar src={account.imageUrl} alt="imageURL" />
       </IconButton>
 
       <Popover
@@ -95,12 +109,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {/* {account.displayName} */}
-            오형상
+            {account.userName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {/* {account.email} */}
-            zvyg1023@naver.com
+            {account.email}
           </Typography>
         </Box>
 
