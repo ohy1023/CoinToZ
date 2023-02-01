@@ -1,11 +1,11 @@
 package com.example.financialfinalproject.controller.restController;
 
+import com.example.financialfinalproject.domain.dto.UserDto;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
 import com.example.financialfinalproject.domain.request.UserLoginRequest;
-import com.example.financialfinalproject.domain.response.Response;
-import com.example.financialfinalproject.domain.response.UserJoinResponse;
-import com.example.financialfinalproject.domain.response.UserLoginResponse;
-import com.example.financialfinalproject.domain.response.UserRoleResponse;
+import com.example.financialfinalproject.domain.request.UserPasswordRequest;
+import com.example.financialfinalproject.domain.request.UserPutRequest;
+import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +28,39 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(userJoinResponse));
     }
 
-//    @ApiOperation(value = "로그인", notes = "jwt 반환")
-//    @PostMapping("/login")
-//    public ResponseEntity<Response<UserLoginResponse>> login(@RequestBody UserLoginRequest userLoginRequest) {
-//        log.info("input password:{}",userLoginRequest.getPassword());
-//        String token = userService.login(userLoginRequest.getEmail(), userLoginRequest.getPassword());
-//        log.info("login Token:{}",token);
-//        return ResponseEntity.ok().body(Response.success(new UserLoginResponse(token)));
-//    }
+    @ApiOperation(value = "로그인", notes = "jwt 반환")
+    @PostMapping("/login")
+    public String login(@RequestBody UserLoginRequest userLoginRequest) {
+        return "ok";
+    }
+
+    @ApiOperation(value = "유저 정보 조회")
+    @GetMapping("/info")
+    public ResponseEntity<Response<UserGetResponse>> getUserInfo(Authentication authentication) {
+        String email = authentication.getName();
+        log.info("userEmail:{}", email);
+        UserGetResponse info = userService.getInfo(email);
+        return ResponseEntity.ok().body(Response.success(info));
+    }
+
+    @ApiOperation(value = "비밀번호 일치 여부 검증")
+    @PostMapping("/password/validation")
+    public ResponseEntity<Response<Boolean>> validatePassword(@RequestBody UserPasswordRequest request, Authentication authentication) {
+        String email = authentication.getName();
+        log.info("userEmail:{}", email);
+        String password = request.getPassword();
+        boolean validation = userService.validate(email, password);
+        return ResponseEntity.ok().body(Response.success(validation));
+    }
+
+    @ApiOperation(value = "유저 정보 수정")
+    @PutMapping
+    public ResponseEntity<Response<UserPutResponse>> modifyUser(@RequestBody UserPutRequest request, Authentication authentication) {
+        String email = authentication.getName();
+        log.info("userEmail:{}", email);
+        UserPutResponse response = userService.modify(request,email);
+        return ResponseEntity.ok().body(Response.success(response));
+    }
 
     @ApiOperation(value = "역할 변경")
     @PostMapping("/{userId}/role")
@@ -44,9 +69,14 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(response));
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test() {
+    @GetMapping("/reissuance")
+    public ResponseEntity<String> reissue() {
         return ResponseEntity.ok().body("SUCCESS");
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "SUCCESS";
     }
 
 

@@ -21,7 +21,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://ec2-52-78-23-203.ap-northeast-2.compute.amazonaws.com:3306/team-db
+    url: ${SPRING_DATASOURCE_URL}
     username: root
     password: 12345678
   security:
@@ -84,8 +84,9 @@ jwt:
 
   access:
     expiration: 1800000 # 30분 (1000L(ms -> s) * 60L(s -> m) * 30L)
-    header: Authorization
+#    expiration: 60000 # 1분
+    header: "Authorization"
 
   refresh:
     expiration: 1209600000 # 2주 (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h) * 24L(h -> 하루) * 14(2주))
-    header: Authorization-refresh
+    header: "Authorization-refresh"

@@ -1,8 +1,8 @@
 package com.example.financialfinalproject.controller;
 
-import com.example.financialfinalproject.domain.upbit.MarketDto;
-import com.example.financialfinalproject.domain.upbit.TickerResponse;
-import com.example.financialfinalproject.domain.upbit.TradeResponse;
+import com.example.financialfinalproject.domain.upbit.quotation.MarketDto;
+import com.example.financialfinalproject.domain.upbit.quotation.TickerResponse;
+import com.example.financialfinalproject.domain.upbit.quotation.TradeResponse;
 import com.example.financialfinalproject.service.UpbitService;
 import com.example.financialfinalproject.service.UpbitViewService;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +29,7 @@ public class UpbitController {
 
     @GetMapping("/market")
     @ApiOperation(value = "마켓 코드 조회 페이지", notes = "업비트에서 거래 가능한 마켓 목록의 View를 띄운다.")
-    public String getMarket(Model model, Pageable pageable, @RequestParam(defaultValue = "false") Boolean isDetails){
+    public String getMarket(Model model, Pageable pageable, @RequestParam(value = "isDetails",defaultValue = "false") Boolean isDetails){
         List<MarketDto> markets = upbitService.getMarket(isDetails);
 
         //List -> Page
@@ -45,7 +45,7 @@ public class UpbitController {
     }
 
     @GetMapping("/tradeView")
-    public String tradeView(@RequestParam String coin, @RequestParam Integer count, Model model) throws ParseException {
+    public String tradeView(@RequestParam(value = "coin") String coin, @RequestParam(value = "count") Integer count, Model model) throws ParseException {
         List<TradeResponse> tradeResponses = upbitViewService.getTrade(coin, count);
 
         model.addAttribute("tradeList", tradeResponses);
@@ -54,7 +54,7 @@ public class UpbitController {
 
 
     @GetMapping("/tickerView")
-    public String tickerView(@RequestParam String coin, Model model) {
+    public String tickerView(@RequestParam(value = "coin") String coin, Model model) {
         TickerResponse tickerResponse = upbitViewService.getTicker(coin);
         model.addAttribute("tickerInfo", tickerResponse);
         return "upbit/tickerTable";

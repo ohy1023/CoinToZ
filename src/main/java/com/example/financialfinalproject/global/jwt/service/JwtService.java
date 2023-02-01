@@ -55,6 +55,7 @@ public class JwtService {
      * AccessToken 생성 메소드
      */
     public String createAccessToken(String email) {
+        log.info(email);
         Claims claims = Jwts.claims();
         claims.put("email", email);
         return Jwts.builder()
@@ -117,8 +118,8 @@ public class JwtService {
      */
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .filter(accessHeader -> accessHeader.startsWith(BEARER))
+                .map(accessHeader -> accessHeader.replace(BEARER, ""));
     }
 
     /**
@@ -128,7 +129,7 @@ public class JwtService {
         try {
             Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                     .getBody();
-            log.info("token info:{}",body);
+            log.info("token info:{}", body);
             return body.get("email", String.class);
         } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
@@ -158,20 +159,29 @@ public class JwtService {
     public void updateRefreshToken(String email, String refreshToken) {
         log.info("email:{}", email);
         log.info("update:{}", refreshToken);
-        redisTemplate.opsForValue().set("RT:" + email, refreshToken);
+        redisTemplate.opsForValue().set("RT:" + email, refreshToken, Duration.ofMillis(refreshTokenExpirationPeriod));
 
     }
 
     public boolean isTokenValid(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            log.info("로그아웃 테스트 :{}",token);
             ValueOperations<String, String> logoutValueOperations = redisTemplate.opsForValue();
-            if (logoutValueOperations.get("blackList "+token) != null) {
+            if (logoutValueOperations.get("blackList:" + token) != null) {
                 log.info("로그아웃 된 토큰입니다.");
                 return false;
             }
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isRefreshTokenValid(String token, String email) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            String dbToken = redisTemplate.opsForValue().get("RT:" + email);
+            return dbToken.equals(token) && !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }
@@ -189,8 +199,7 @@ public class JwtService {
                 .orElse(null);
         String email = extractEmail(accessToken);
         long expiredAccessTokenTime = getExpiredTime(accessToken).getTime() - new Date().getTime();
-        redisTemplate.opsForValue().set("blackList " + accessToken, email, Duration.ofMillis(expiredAccessTokenTime));
+        redisTemplate.opsForValue().set("blackList:" + accessToken, email, Duration.ofMillis(expiredAccessTokenTime));
         redisTemplate.delete("RT:" + email); // Redis에서 유저 리프레시 토큰 삭제
     }
-
 }

@@ -44,6 +44,7 @@ class PostServiceTest {
 
     User user = User.builder()
             .id(1)
+            .email("test_email")
             .userName("개발의민족")
             .password("1234")
             .build();
@@ -58,10 +59,10 @@ class PostServiceTest {
     @DisplayName("포스트 등록 성공")
     void write_success() {
 
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
         when(postRepository.save(any())).thenReturn(post);
 
-        PostDto postDto = postService.write(userPostRequest, name);
+        PostDto postDto = postService.write(userPostRequest, user.getEmail());
 
         assertEquals(testPostId, postDto.getId());
         assertEquals("test title", postDto.getTitle());
@@ -107,12 +108,12 @@ class PostServiceTest {
     @DisplayName("포스트 수정 실패 : 포스트 유저가 존재하지 않음")
     void update_fail2() {
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
-        when(userRepository.findByUserName(user.getUserName())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
         AppException appException = assertThrows(AppException.class, () ->
                 postService.edit(post.getId(), "testUser", new UserPostEditRequest("testTitle", "testBody")));
 
-        assertEquals(ErrorCode.USERNAME_NOT_FOUND, appException.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_NOT_FOUND, appException.getErrorCode());
     }
 
     @Test
@@ -120,15 +121,16 @@ class PostServiceTest {
     void update_fail3() {
         User testUser = User.builder()
                 .id(1)
+                .email("test_email")
                 .userName("개발의민족2")
                 .password("1234")
                 .build();
 
         when(postRepository.findById(any())).thenReturn(Optional.of(post));
-        when(userRepository.findByUserName(any())).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(testUser));
         try {
             AppException exception = assertThrows(AppException.class, () ->
-                    postService.edit(post.getId(), testUser.getUserName(), new UserPostEditRequest("testTitle", "testBody")));
+                    postService.edit(post.getId(), testUser.getEmail(), new UserPostEditRequest("testTitle", "testBody")));
             assertEquals(ErrorCode.INVALID_PERMISSION, exception.getErrorCode());
         }catch (AssertionFailedError ex) {
         }
@@ -151,23 +153,23 @@ class PostServiceTest {
     @DisplayName("포스트 삭제 실패 : 유저가 존재하지 않음")
     void delete_fail() {
         when(postRepository.findById(testPostId)).thenReturn(Optional.of(new Post()));
-        when(userRepository.findByUserName(user.getUserName())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
 
         AppException appException = assertThrows(AppException.class, () -> {
-            postService.delete(testPostId, user.getUserName());
+            postService.delete(testPostId, user.getEmail());
         });
 
-        assertEquals(ErrorCode.USERNAME_NOT_FOUND, appException.getErrorCode());
+        assertEquals(ErrorCode.EMAIL_NOT_FOUND, appException.getErrorCode());
     }
 
     @Test
     @DisplayName("포스트 삭제 실패 : 포스트가 존재하지 않음")
     void delete_fail2() {
-        when(userRepository.findByUserName(user.getUserName())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(user.getUserName())).thenReturn(Optional.of(user));
         when(postRepository.findById(testPostId)).thenReturn(Optional.empty());
 
         AppException appException = assertThrows(AppException.class, () -> {
-            postService.delete(testPostId, user.getUserName());
+            postService.delete(testPostId, user.getEmail());
         });
 
         assertEquals(ErrorCode.POST_NOT_FOUND, appException.getErrorCode());

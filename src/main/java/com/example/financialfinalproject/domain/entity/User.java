@@ -34,8 +34,7 @@ public class User extends BaseEntity {
 
     private String email;
 
-    private String nickname;
-
+    @Column(columnDefinition = "longtext")
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
@@ -66,13 +65,17 @@ public class User extends BaseEntity {
         return user;
     }
 
+    public void updateUser(String userName,String imageUrl) {
+        this.userName = userName;
+        this.imageUrl = imageUrl;
+    }
+
     @Builder
-    public User(Integer id, String userName, String password, String email, String nickname, String imageUrl, UserRole userRole, SocialType socialType, String socialId, List<Post> posts) {
+    public User(Integer id, String userName, String password, String email, String imageUrl, UserRole userRole, SocialType socialType, String socialId, List<Post> posts) {
         this.id = id;
         this.userName = userName;
         this.password = password;
         this.email = email;
-        this.nickname = nickname;
         this.imageUrl = imageUrl;
         this.userRole = userRole;
         this.socialType = socialType;

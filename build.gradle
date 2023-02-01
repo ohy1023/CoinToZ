@@ -47,16 +47,72 @@ dependencies {
     //FeignClient(Upbit API 사용)
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
 
-    //Upbit JWT
+    //Upbit JWT implementation '
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.16.0'
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+
     //email 인증 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.0'
 
+    // Upbit json
+    dependencies {
+        implementation 'com.google.code.gson:gson:2.8.6'
+    }
+
 }
+
+
+// React 빌드 스크립트
+def frontendDir = "$projectDir/src/main/frontend"
+
+sourceSets {
+    main {
+        resources { srcDirs = ["$projectDir/src/main/resources"]
+        }
+    }
+}
+
+processResources { dependsOn "copyReactBuildFiles" }
+
+task installReact(type: Exec) {
+    workingDir "$frontendDir"
+    inputs.dir "$frontendDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine "npm.cmd", "audit", "fix"
+        commandLine 'npm.cmd', 'install' }
+    else {
+        commandLine "npm", "audit", "fix" 
+        commandLine 'npm', 'install'
+    }
+}
+
+task buildReact(type: Exec) {
+    dependsOn "installReact"
+    workingDir "$frontendDir"
+    inputs.dir "$frontendDir"
+    group = BasePlugin.BUILD_GROUP
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine "npm.cmd", "run-script", "build"
+    } else {
+        commandLine "npm", "run-script", "build"
+    }
+}
+
+task copyReactBuildFiles(type: Copy) {
+    dependsOn "buildReact"
+    from "$frontendDir/build"
+    into "$projectDir/src/main/resources/static"
+}
+
+// 프로젝트가 만들어지고 배포되는 시점(bootJar) 실행되는 시점에만 React 빌드 파일이 포함
+tasks.bootJar {
+    dependsOn "copyReactBuildFiles"
+}
+
 
 tasks.named('test') {
     useJUnitPlatform()

@@ -1,8 +1,10 @@
 package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.dto.CommentDto;
+import com.example.financialfinalproject.domain.dto.ReplyCommentDto;
 import com.example.financialfinalproject.domain.request.CommentCreateRequest;
 import com.example.financialfinalproject.domain.request.CommentUpdateRequest;
+import com.example.financialfinalproject.domain.request.ReplyCommentCreateRequest;
 import com.example.financialfinalproject.domain.response.CommentResponse;
 import com.example.financialfinalproject.domain.response.CommentUpdateResponse;
 import com.example.financialfinalproject.domain.response.Response;
@@ -28,6 +30,12 @@ public class CommentRestController {
     public ResponseEntity<Response<CommentDto>> createComment(@PathVariable Long postId, @RequestBody CommentCreateRequest commentCreateRequest, Authentication authentication) {
         CommentDto commentDto = commentService.createComment(postId, authentication.getName(), commentCreateRequest);
         return ResponseEntity.ok().body(Response.success(commentDto));
+    }
+
+    @PostMapping("/{postId}/comments/{commentId}") // 대댓글 작성
+    public ResponseEntity<Response<ReplyCommentDto>> createReplyComment(@PathVariable Long postId, @PathVariable(name = "commentId") Integer parentId, @RequestBody ReplyCommentCreateRequest commentCreateRequest, Authentication authentication) {
+        ReplyCommentDto replyCommentDto = commentService.createReplyComment(postId, authentication.getName(), commentCreateRequest,parentId);
+        return ResponseEntity.ok().body(Response.success(replyCommentDto));
     }
 
     @GetMapping("{postId}/comments") // 댓글 목록 조회
