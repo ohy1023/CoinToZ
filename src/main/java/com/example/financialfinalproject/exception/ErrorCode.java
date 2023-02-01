@@ -10,6 +10,7 @@ public enum ErrorCode {
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "UserName이 중복됩니다."),
 
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "Email이 중복됩니다."),
+
     USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 UserName이 없습니다."),
 
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 Email이 없습니다."),
@@ -25,6 +26,10 @@ public enum ErrorCode {
     DISLIKE_NOT_FOUND(HttpStatus.NOT_FOUND,"싫어요를 취소할려면 싫어요를 눌러주세요"),
     DUPLICATED_LIKE_COUNT(HttpStatus.CONFLICT, "이미 좋아요를 눌렀습니다."),
     DUPLICATED_DISLIKE_COUNT(HttpStatus.CONFLICT, "이미 싫어요를 눌렀습니다."),
+
+    // 매매일지
+    COIN_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 코인이 없습니다."),
+    DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 일지가 없습니다.");
     ;
 
     private HttpStatus status;

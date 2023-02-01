@@ -10,6 +10,7 @@ COPY . /build
 
 RUN gradle build -x test --parallel
 
+
 # APP
 FROM openjdk:11.0-slim
 WORKDIR /app

@@ -187,8 +187,7 @@ const Joinform = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 size="large"
-              >
-                회원가입
+              >회원가입
               </Button>
             </FormControl>
             <FormHelperTexts>{registerError}</FormHelperTexts>
