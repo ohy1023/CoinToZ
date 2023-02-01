@@ -15,7 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -29,6 +28,8 @@ public class UpbitService {
 
     private final UpbitFeignClient upbitFeignClient;
     private final UpbitJwtService upbitJwtService;
+
+    private final TradingDiaryService tradingDiaryService;
 
 
     // QUOTATION API
@@ -97,8 +98,31 @@ public class UpbitService {
 
         OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
 
+        tradingDiaryService.write(orderResponse);
+
         return orderResponse;
     }
+
+    // 주문리스트
+    public List<OrderResponse> getOrderList(String accessKey, String secretKey, String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getOrderListToken(accessKey,secretKey,state);
+        List<OrderResponse> orderResponses = upbitFeignClient.getOrderList(upbitToken.getUpbitToken(),state);
+
+
+        OrderResponse orderResponse1 = orderResponses.get(0);
+
+        orderResponse1.setSide("ask");
+        orderResponse1.setMarket("KRW-GRS");
+        orderResponse1.setPrice(4300);
+
+        tradingDiaryService.write(orderResponse1);
+
+//        OrderResponse orderResponse = orderResponses.get(0);
+//        tradingDiaryService.write(orderResponse);
+
+        return orderResponses;
+    }
+
 
     // 주문취소
     public OrderResponse getOrderDelete(String accessKey, String secretKey, String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -107,12 +131,7 @@ public class UpbitService {
 
         return orderResponse;
     }
-    // 출금 리스트 조회
-    public List<WithDraw> getWithdraws(String accessKey, String secretKey, String currency, String state, List<String> uuids, List<String> txids, Integer limit, Integer page, String orderBy) {
-        UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
-        List<WithDraw> withDraws = upbitFeignClient.getWithdraws(upbitToken.getUpbitToken(), currency, state, uuids, txids, limit, page, orderBy);
-        return withDraws;
-    }
+
 
     // 코인 출금하기
     public CoinWithDrawResponse askWithdrawCoin(String accessKey, String secretKey, CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -129,6 +148,7 @@ public class UpbitService {
         return coinWithDrawResponse;
     }
 
+    // 원화 출금
     public KrwWithDrawResponse askWithdrawKrw(String accessKey, String secretKey, KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UpbitToken upbitToken = upbitJwtService.getWithDrawKrwToken(accessKey,secretKey,krwWithDrawRequest);
 
@@ -139,14 +159,13 @@ public class UpbitService {
         KrwWithDrawResponse krwWithDrawResponse = upbitFeignClient.askWithdrawKrw(upbitToken.getUpbitToken(),params);
         return krwWithDrawResponse;
     }
-    // 주문리스트
-    public List<OrderResponse> getOrderList(String accessKey, String secretKey, String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        UpbitToken upbitToken = upbitJwtService.getOrderListToken(accessKey,secretKey,state);
-        List<OrderResponse> orderResponses = upbitFeignClient.getOrderList(upbitToken.getUpbitToken(),state);
 
-        return orderResponses;
+    // 출금 리스트 조회
+    public List<WithDraw> getWithdraws(String accessKey, String secretKey, String currency, String state, List<String> uuids, List<String> txids, Integer limit, Integer page, String orderBy) {
+        UpbitToken upbitToken = upbitJwtService.getToken(accessKey,secretKey);
+        List<WithDraw> withDraws = upbitFeignClient.getWithdraws(upbitToken.getUpbitToken(), currency, state, uuids, txids, limit, page, orderBy);
+        return withDraws;
     }
-
 
     // 입금
     public DepositResponse getDeposit(String accessKey, String secretKey, String amount, String tow_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {

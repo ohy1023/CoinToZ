@@ -1,12 +1,12 @@
 package com.example.financialfinalproject.domain.upbit.exchange;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Setter
 public class OrderResponse {
     private String uuid; // 주문 ID
     private String market; // 마켓 ID(KRW-BTC)

@@ -46,7 +46,7 @@ dependencies {
     //FeignClient(Upbit API 사용)
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.5'
 
-    //Upbit JWT
+    //Upbit JWT implementation '
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.16.0'
 
     // Redis
