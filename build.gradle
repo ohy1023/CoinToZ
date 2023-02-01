@@ -2,7 +2,10 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.1.0'
+    id "com.github.node-gradle.node" version "3.2.1"
 }
+apply plugin: 'com.github.node-gradle.node'
+
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -64,6 +67,23 @@ dependencies {
 
 }
 
+node {
+    // 2
+    version = '12.22.12'
+    npmVersion = '6.14.16'
+
+    // 3
+    download = true
+
+    // 4
+    nodeProjectDir = file("$projectDir/src/main/frontend")
+}
+
+// 5
+task buildAdmin(type: NpmTask) {
+    args = ['run', 'build']
+}
+processResources.dependsOn 'buildAdmin'
 
 // React 빌드 스크립트
 def frontendDir = "$projectDir/src/main/frontend"
