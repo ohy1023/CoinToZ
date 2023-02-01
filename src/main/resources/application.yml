@@ -23,7 +23,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${SPRING_DATASOURCE_URL}
     username: root
-    password: 1q2w3e4r
+    password: 12345678
   security:
     oauth2:
       client:
@@ -58,6 +58,21 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+  mail:
+    host: smtp.naver.com # smtp 서버 주소
+    port: 465 # 메일 인증서버 포트
+    username: tkdgh980527@naver.com # 네이버 아이디
+    password: staTic123@ # 네이버 비밀번호
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
+
+
+
+
 
 logging:
   level:
