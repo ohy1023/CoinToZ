@@ -2,8 +2,10 @@ package com.example.financialfinalproject.service;
 
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
+import com.example.financialfinalproject.domain.request.UserPutRequest;
 import com.example.financialfinalproject.domain.response.UserGetResponse;
 import com.example.financialfinalproject.domain.response.UserJoinResponse;
+import com.example.financialfinalproject.domain.response.UserPutResponse;
 import com.example.financialfinalproject.domain.response.UserRoleResponse;
 import com.example.financialfinalproject.exception.AppException;
 import com.example.financialfinalproject.global.jwt.service.JwtService;
@@ -93,6 +95,38 @@ public class UserService {
                 .createAt(date)
                 .build();
 
+    }
+
+    @Transactional
+    public boolean validate(String email,String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        if (isWrongPassword(password, user))
+            throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
+
+        return true;
+    }
+
+    @Transactional
+    public UserPutResponse modify(UserPutRequest request, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        user.updateUser(request.getUserName(),request.getImageUrl());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+        String date = user.getRegisteredAt().format(formatter);
+        return UserPutResponse.builder()
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .imageUrl(user.getImageUrl())
+                .createAt(date)
+                .build();
     }
 
     private boolean isWrongPassword(String password, User user) {

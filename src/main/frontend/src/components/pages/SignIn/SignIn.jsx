@@ -19,26 +19,28 @@ import { setCookie } from "../util/cookie";
 import { useSetRecoilState } from 'recoil';
 import { userState } from '../util/GlobalState';
 import queryString from 'query-string';
+import Api from "../util/customApi";
 
 const theme = createTheme();
 
 
-export default function SignIn({location}) {   
+export default function SignIn({ location }) {
   const setUser = useSetRecoilState(userState);
   const navigate = useNavigate();
   const { search } = useLocation();
 
   useEffect(() => {
-    
-    const handleQuery= () => {
+
+    const handleQuery = () => {
       const query = queryString.parse(search);
-      const {accessToken,refreshToken,email} = query;
-    
+      const { accessToken, refreshToken, email } = query;
+
       if (accessToken) {
-        setCookie("access",accessToken);
-        setCookie("refresh",refreshToken);
+        setCookie("access", accessToken);
+        setCookie("refresh", refreshToken);
         localStorage.setItem("email", email);
         setUser(localStorage.getItem("email"));
+        getInfo();
         alert("로그인이 완료되었습니다.");
       }
     }
@@ -47,8 +49,21 @@ export default function SignIn({location}) {
       handleQuery();
       navigate('/');
     }
-  },[]);
-  
+  }, []);
+
+  const getInfo = async () => {
+    await Api.get("/api/v1/users/info")
+    .then(function (response) {
+      localStorage.setItem("userName",response.data.result.userName);
+      localStorage.setItem("imageUrl",response.data.result.imageUrl);
+      localStorage.setItem("createAt",response.data.result.createAt);
+    })
+    .catch(function (err) {
+      console.log(err);
+      alert("유저 정보 조회 실패");
+    })
+  };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,14 +74,14 @@ export default function SignIn({location}) {
     };
 
     onhandlePost(joinData)
-    
+
   };
 
   const onhandlePost = async (data) => {
     const { email, password } = data;
     const postData = { email, password };
 
-    
+
 
     // post
     await axios
@@ -76,6 +91,7 @@ export default function SignIn({location}) {
         setCookie("refresh", response.headers.get("Authorization-refresh"));
         localStorage.setItem("email", email);
         setUser(localStorage.getItem("email"));
+        getInfo();
         alert("로그인이 완료되었습니다.")
         navigate('/');
       })
@@ -86,7 +102,7 @@ export default function SignIn({location}) {
   };
 
   return (
-    
+
     <ThemeProvider theme={theme} >
       <Container component="main" maxWidth="xs" >
         <CssBaseline />
@@ -106,18 +122,18 @@ export default function SignIn({location}) {
           </Typography>
           <br></br>
           <Grid>
-              <p className="lead fw-normal mb-0 me-3">Sign in with
-                <Link href="http://localhost:8080/oauth2/authorization/naver">
-                  <img style={{display: 'inline-block', width : "60px", height: "30px", marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} alt="naver" src={NaverBut} />
-                </Link>
-                <Link href="http://localhost:8080/oauth2/authorization/kakao">
-                  <img style={{display: 'inline-block', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}}alt="kakao" src={KakaoBut} />
-                </Link>
-                <Link href="http://localhost:8080/oauth2/authorization/google">
-                  <img style={{display: 'inline-block',height:'30px', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px'}} alt="google" src={GoogleBut} />
-                </Link>
-                </p>
-            </Grid>
+            <p className="lead fw-normal mb-0 me-3">Sign in with
+              <Link href="http://localhost:8080/oauth2/authorization/naver">
+                <img style={{ display: 'inline-block', width: "60px", height: "30px", marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px' }} alt="naver" src={NaverBut} />
+              </Link>
+              <Link href="http://localhost:8080/oauth2/authorization/kakao">
+                <img style={{ display: 'inline-block', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px' }} alt="kakao" src={KakaoBut} />
+              </Link>
+              <Link href="http://localhost:8080/oauth2/authorization/google">
+                <img style={{ display: 'inline-block', height: '30px', marginLeft: '5px', marginRight: '5px', verticalAlign: '-1px' }} alt="google" src={GoogleBut} />
+              </Link>
+            </p>
+          </Grid>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -162,7 +178,7 @@ export default function SignIn({location}) {
           </Box>
         </Box>
       </Container>
-      
+
     </ThemeProvider>
   );
 
