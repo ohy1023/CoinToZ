@@ -5,18 +5,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
+@RequestMapping("/email")
+@RequiredArgsConstructor
+@Slf4j
 public class EmailRestController {
-
     private final EmailService emailService;
 
-    @PostMapping("login/mailConfirm")
+    // 로그인 시 인증 이메일 보내기
     @ResponseBody
-    public String mailConfirm(@RequestParam String email) throws Exception {
-        String code = emailService.sendSimpleMessage(email);
-        log.info("인증코드 : " + code);
-        return code;
+    @GetMapping("/send")
+    public String sendAuthEmail(@RequestParam String email) throws Exception {
+        return emailService.sendLoginAuthMessage(email);
+    }
+
+    // 이메일 인증 번호 확인하기
+    @ResponseBody
+    @GetMapping("/auth")
+    public Boolean checkAuthEmail(@RequestParam String code) {
+        System.out.println(code);
+        if (emailService.getData(code) == null) return false;
+        else return true;
     }
 }

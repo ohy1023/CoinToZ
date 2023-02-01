@@ -1,98 +1,112 @@
 package com.example.financialfinalproject.service;
 
-import com.example.financialfinalproject.global.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
+import java.time.Duration;
+import java.util.Random;
+import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
-import java.util.Random;
 
-@PropertySource("classpath:application.yml")
-@Slf4j
-@RequiredArgsConstructor
+
 @Service
-@Component
+@RequiredArgsConstructor
+@Slf4j
 public class EmailService {
-    private final JavaMailSender javaMailSender;
-    //인증번호 생성
-    private final String ePw = createKey();
 
-    @Value("${spring.mail.username}")
-    private String id;
+    private final JavaMailSender mailSender;
+    public static final String ePw = createKey();
+    private final StringRedisTemplate redisTemplate;
 
-    // 메일 양식 작성
-    public MimeMessage createMessage(String to)throws MessagingException, UnsupportedEncodingException {
-        log.info("보내는 대상 : "+ to);
-        log.info("인증 번호 : " + ePw);
-        MimeMessage message = javaMailSender.createMimeMessage();
+    private MimeMessage createMessage(String to) throws Exception {
+        MimeMessage message = mailSender.createMimeMessage();
 
-        message.addRecipients(MimeMessage.RecipientType.TO, to); // to 보내는 대상
-        message.setSubject("회원가입 인증 코드입니다."); //메일 제목
+        message.addRecipients(Message.RecipientType.TO, to);
+        message.setSubject("회원 가입 인증 이메일 입니다.");
 
-        // 메일 내용 메일의 subtype을 html로 지정하여 html문법 사용 가능
-        String msg="";
-        msg += "<h1 style=\"font-size: 30px; padding-right: 30px; padding-left: 30px;\">이메일 주소 확인</h1>";
-        msg += "<p style=\"font-size: 17px; padding-right: 30px; padding-left: 30px;\">아래 확인 코드를 회원가입 화면에서 입력해주세요.</p>";
-        msg += "<div style=\"padding-right: 30px; padding-left: 30px; margin: 32px 0 40px;\"><table style=\"border-collapse: collapse; border: 0; background-color: #F4F4F4; height: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px;\"><tbody><tr><td style=\"text-align: center; vertical-align: middle; font-size: 30px;\">";
-        msg += ePw;
-        msg += "</td></tr></tbody></table></div>";
-
-        message.setText(msg, "utf-8", "html"); //내용, charset타입, subtype
-        message.setFrom(new InternetAddress(id,"prac_Admin")); //보내는 사람의 메일 주소, 보내는 사람 이름
+        String msgg="";
+        msgg+= "<div style='margin:100px;'>";
+        msgg += "<h1> 안녕하세요</h1>";
+        msgg += "<h1> 커뮤니티 기반 매매일지 사이트 Justock 입니다.</h1>";
+        msgg += "<br>";
+        msgg+= "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
+        msgg+= "<br>";
+        msgg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
+        msgg+= "<h3 style='color:blue;'>회원가입 인증 코드 입니다.</h3>";
+        msgg+= "<div style='font-size:130%'>";
+        msgg+= "CODE : <strong>";
+        msgg+= ePw+"</strong><div><br/> ";
+        msgg+= "</div>";
+        message.setText(msgg, "utf-8", "html");//내용
+        message.setFrom(new InternetAddress("tkdgh980527@naver.com","Justock"));//보내는 사람
 
         return message;
     }
 
-    // 인증코드 만들기
     public static String createKey() {
         StringBuffer key = new StringBuffer();
         Random rnd = new Random();
 
-        for (int i = 0; i < 6; i++) { // 인증코드 6자리
-            key.append((rnd.nextInt(10)));
+        for (int i = 0; i < 8; i++) { // 인증코드 8자리
+            int index = rnd.nextInt(3); // 0~2 까지 랜덤
+
+            switch (index) {
+                case 0:
+                    key.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    //  a~z  (ex. 1+97=98 => (char)98 = 'b')
+                    break;
+                case 1:
+                    key.append((char) ((int) (rnd.nextInt(26)) + 65));
+                    //  A~Z
+                    break;
+                case 2:
+                    key.append((rnd.nextInt(10)));
+                    // 0~9
+                    break;
+            }
         }
         return key.toString();
     }
 
-    /*
-        메일 발송
-        sendSimpleMessage의 매개변수로 들어온 to는 인증번호를 받을 메일주소
-        MimeMessage 객체 안에 내가 전송할 메일의 내용을 담아준다.
-        bean으로 등록해둔 javaMailSender 객체를 사용하여 이메일 send
-     */
-
-    public String sendSimpleMessage(String to) throws Exception {
+    // 회원가입 인증 메시지 발송
+    public String sendLoginAuthMessage(String to) throws Exception {
+        log.info("email : {} ", to);
         MimeMessage message = createMessage(to);
-        try {
-            //RedisUtil.setDataExpire(ePw, to, 60 * 3L); // 유효시간 3분
-            javaMailSender.send(message); // 메일 발송
-        } catch (MailException es) {
+        try{
+            mailSender.send(message);
+        }catch(MailException es){
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
-
-        return ePw; // 메일로 보냈던 인증 코드를 서버로 리턴
-
+        setDataExpire(ePw, to, 60*5L);
+        return "인증 메일이 발송되었습니다.";
     }
 
-    public String verifyEmail(String key) throws ChangeSetPersister.NotFoundException {
-        String memberEmail = RedisUtil.getData(key);
-        if (memberEmail == null) {
-            throw new ChangeSetPersister.NotFoundException();
-        }
-        RedisUtil.deleteData(key);
-        return ePw;
+    // redis
+    // 인증번호 확인 하기
+    public String getData(String key){
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        return valueOperations.get(key);
     }
 
+    public void setData(String key, String value) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, value);
+    }
+
+    public void setDataExpire(String key, String value, long duration) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        Duration expireDuration = Duration.ofSeconds(duration);
+        valueOperations.set(key, value, expireDuration);
+    }
+
+    public void deleteData(String key) {
+        redisTemplate.delete(key);
+    }
 }
