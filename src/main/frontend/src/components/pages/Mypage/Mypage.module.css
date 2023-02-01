@@ -452,3 +452,20 @@ ul {
   margin: 0;
   padding: 0;
 }
+
+.uploaderWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.uploaderWrapper .imgWrapper {
+  margin: 50px 0 20px 0;
+}
+.uploaderWrapper .imgWrapper img {
+  width: 50px;
+  height: 50px;
+}
+.uploaderWrapper .uploadButton button {
+  margin: 0 5px;
+}

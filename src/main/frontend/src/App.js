@@ -7,6 +7,9 @@ import Test from './components/pages/util/Test';
 import CustomNav from './components/pages/util/CustomNav';
 import {RecoilRoot} from 'recoil';
 import Mypage from './components/pages/Mypage/Mypage';
+import PasswordValidation from './components/pages/Validation/PasswordValidation';
+import UserModifyForm from './components/UserInfoModify/UserModifyForm';
+import PasswordModiftForm from './components/UserInfoModify/PasswordModifyForm';
 
 
 function App() {
@@ -21,6 +24,9 @@ function App() {
                     <Route path='/login/:accessToken?/:refreshToken?/:email?' element={<SignIn/>}/>
                     <Route path='/test' element={<Test/>}/>
                     <Route path='/mypage' element={<Mypage/>}/>
+                    <Route path='/mypage/password/validation' element={<PasswordValidation/>}/>
+                    <Route path='/mypage/info/modify' element={<UserModifyForm/>}/>
+                    <Route path='/mypage/password/modify' element={<PasswordModiftForm/>} />
                 </Routes>
             </RecoilRoot>
         </>
