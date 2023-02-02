@@ -65,13 +65,17 @@ public class User extends BaseEntity {
         return user;
     }
 
-    public void updateUser(String userName,String imageUrl) {
+    public void updateUser(String userName, String imageUrl) {
         this.userName = userName;
         this.imageUrl = imageUrl;
     }
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void updateUserName(String userName) {
+        this.userName = userName;
     }
 
     @Builder

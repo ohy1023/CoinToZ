@@ -3,6 +3,11 @@ server:
     encoding:
       force-response: true
 spring:
+  # multipartFile 용량 늘려주는 설정
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   jpa:
     hibernate:
       ddl-auto: update
@@ -71,7 +76,17 @@ spring:
       mail.smtp.ssl.trust: smtp.naver.com
 
 
-
+cloud:
+  aws:
+    credentials:
+      access-key: AKIAYDB3KFOQJJKUVJEE
+      secret-key: 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
+    s3: #버킷이름
+      bucket: ohy1023
+    region: #S3 지역
+      static: ap-northeast-2
+    stack:
+      auto: false
 
 
 logging:
