@@ -3,6 +3,7 @@ package com.example.financialfinalproject.service;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
 import com.example.financialfinalproject.domain.request.UserPutRequest;
+import com.example.financialfinalproject.domain.request.UserUpdatePasswordRequest;
 import com.example.financialfinalproject.domain.response.UserGetResponse;
 import com.example.financialfinalproject.domain.response.UserJoinResponse;
 import com.example.financialfinalproject.domain.response.UserPutResponse;
@@ -98,7 +99,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean validate(String email,String password) {
+    public boolean validate(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
@@ -117,7 +118,7 @@ public class UserService {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                 });
 
-        user.updateUser(request.getUserName(),request.getImageUrl());
+        user.updateUser(request.getUserName(), request.getImageUrl());
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
         String date = user.getRegisteredAt().format(formatter);
@@ -127,6 +128,25 @@ public class UserService {
                 .imageUrl(user.getImageUrl())
                 .createAt(date)
                 .build();
+    }
+
+    @Transactional
+    public Integer modifyPassword(String email, UserUpdatePasswordRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        if (isWrongPassword(request.getPassword(), user))
+            throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
+
+        if (!request.getNewPassword().equals(request.getReNewPassword())) {
+            throw new AppException(MISMATCH_PASSWORD, MISMATCH_PASSWORD.getMessage());
+        }
+
+        user.updatePassword(encoder.encode(request.getNewPassword()));
+
+        return user.getId();
     }
 
     private boolean isWrongPassword(String password, User user) {

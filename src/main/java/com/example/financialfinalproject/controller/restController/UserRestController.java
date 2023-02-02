@@ -1,10 +1,7 @@
 package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.dto.UserDto;
-import com.example.financialfinalproject.domain.request.UserJoinRequest;
-import com.example.financialfinalproject.domain.request.UserLoginRequest;
-import com.example.financialfinalproject.domain.request.UserPasswordRequest;
-import com.example.financialfinalproject.domain.request.UserPutRequest;
+import com.example.financialfinalproject.domain.request.*;
 import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -44,13 +41,22 @@ public class UserRestController {
     }
 
     @ApiOperation(value = "비밀번호 일치 여부 검증")
-    @PostMapping("/password/validation")
+    @PostMapping("/password")
     public ResponseEntity<Response<Boolean>> validatePassword(@RequestBody UserPasswordRequest request, Authentication authentication) {
         String email = authentication.getName();
         log.info("userEmail:{}", email);
         String password = request.getPassword();
         boolean validation = userService.validate(email, password);
         return ResponseEntity.ok().body(Response.success(validation));
+    }
+
+    @ApiOperation(value = "비밀번호 변경")
+    @PutMapping("/password")
+    public ResponseEntity<Response<String>> updatePassword(@RequestBody UserUpdatePasswordRequest request, Authentication authentication) {
+        String email = authentication.getName();
+        log.info("userEmail:{}", email);
+        Integer userId = userService.modifyPassword(email, request);
+        return ResponseEntity.ok().body(Response.success(" 비밀번호가 변경되었습니다.\n 다시 로그인해 주세요."));
     }
 
     @ApiOperation(value = "유저 정보 수정")
