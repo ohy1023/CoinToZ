@@ -70,6 +70,10 @@ public class User extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
     @Builder
     public User(Integer id, String userName, String password, String email, String imageUrl, UserRole userRole, SocialType socialType, String socialId, List<Post> posts) {
         this.id = id;

@@ -12,7 +12,6 @@ const PasswordValidation = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(data);
     const joinData = {
       password: data.get('password')
     };
@@ -26,7 +25,7 @@ const PasswordValidation = () => {
 
     // post
     await Api
-      .post('/api/v1/users/password/validation', postData)
+      .post('/api/v1/users/password', postData)
       .then(function (response) {
         alert("비밀번호 일치.")
         navigate('/mypage/info/modify');
