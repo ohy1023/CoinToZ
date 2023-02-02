@@ -79,10 +79,10 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: AKIAYDB3KFOQJJKUVJEE
-      secret-key: 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
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
     s3: #버킷이름
-      bucket: ohy1023
+      bucket: ${S3_NAME}
     region: #S3 지역
       static: ap-northeast-2
     stack:
