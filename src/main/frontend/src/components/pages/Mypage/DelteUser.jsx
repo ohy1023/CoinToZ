@@ -49,7 +49,7 @@ function DeleteUser(props) {
         <Button onClick={()=>{
           deleteUser()
           props.onHide()
-          }}>삭제</Button>
+          }}>탈퇴</Button>
         <Button onClick={props.onHide}>취소</Button>
       </Modal.Footer>
     </Modal>
