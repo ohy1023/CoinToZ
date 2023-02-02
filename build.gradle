@@ -4,12 +4,45 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id "com.github.node-gradle.node" version "3.2.1"
 }
-apply plugin: 'com.github.node-gradle.node'
-
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+node {
+    // 2
+    version = '12.22.12'
+    npmVersion = '6.14.16'
+
+    // 3
+    download = true
+
+    /**
+     * download가 true일 경우에만 사용
+     * Node.js 배포를 가져오기 위한 기본 URL
+     */
+    distBaseUrl = "https://nodejs.org/dist"
+
+    /**
+     * npmInstall 작업에 의해 실행되는 npm 명령
+     * 기본적으로 설치되지만 ci로 변경할 수 있음
+     */
+    npmInstallCommand = "install"
+
+    /**
+     * download가 true일 경우에만 사용
+     * Node.js가 압축 해제된 디렉토리
+     */
+    workDir = file("${project.projectDir}/.gradle/nodejs")
+
+    /**
+     * npm이 설치된 디렉토리 (특정 버전이 정의된 경우)
+     */
+    npmWorkDir = file("${project.projectDir}/.gradle/npm")
+
+    // 4
+    nodeProjectDir = file("${project.projectDir}/src/main/frontend")
+}
 
 configurations {
     compileOnly {
@@ -19,6 +52,11 @@ configurations {
 
 repositories {
     mavenCentral()
+    /**
+     * react-project를 build하기 위한 설정
+     * - node gradle 추가
+     */
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -67,20 +105,22 @@ dependencies {
 
 }
 
-node {
-    // 2
-    version = '12.22.12'
-    npmVersion = '6.14.16'
+/**
+ * react-project를 build하기 위한 설정
+ * - node gradle 추가
+ */
+apply plugin: 'com.github.node-gradle.node'
 
-    // 3
-    download = true
-
-    // 4
-    nodeProjectDir = file("$projectDir/src/main/frontend")
+/**
+ * vue-project를 build하기 위한 설정
+ * - vue-project의 기존 빌드 결과물을 제거하기 위한 task
+ */
+task deleteVueBuildFiles(type: Delete) {
+    delete "src/main/resources/static/static", "src/main/resources/static/index.html", "${project.projectDir}/src/main/frontend/node_modules"
 }
 
 // 5
-task buildAdmin(type: NpmTask) {
+task buildAdmin(type: NpmTask, dependsOn: ['deleteVueBuildFiles', 'npmInstall']) {
     args = ['run', 'build']
 }
 processResources.dependsOn 'buildAdmin'
@@ -105,7 +145,7 @@ task installReact(type: Exec) {
         commandLine "npm.cmd", "audit", "fix"
         commandLine 'npm.cmd', 'install' }
     else {
-        commandLine "npm", "audit", "fix" 
+        commandLine "npm", "audit", "fix"
         commandLine 'npm', 'install'
     }
 }
@@ -132,7 +172,6 @@ task copyReactBuildFiles(type: Copy) {
 tasks.bootJar {
     dependsOn "copyReactBuildFiles"
 }
-
 
 tasks.named('test') {
     useJUnitPlatform()
