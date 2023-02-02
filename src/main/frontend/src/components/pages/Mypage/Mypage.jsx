@@ -1,4 +1,6 @@
 import styles from "./Mypage.module.css";
+import { useState } from "react";
+import DeleteUser from "./DelteUser";
 
 const Mypage = () => {
 
@@ -6,6 +8,12 @@ const Mypage = () => {
   const userName = localStorage.getItem('userName');
   const createAt = localStorage.getItem('createAt');
   const imageUrl = localStorage.getItem('imageUrl'); 
+
+  const [deletemodalShow, setDeleteModalShow] = useState(false);
+
+  function deleteHandler() {
+    setDeleteModalShow(true)
+  }
 
   return (
     <div className={styles.Layout}>
@@ -26,11 +34,11 @@ const Mypage = () => {
                 <li className={styles.Active}>
                   <a href="/mypage">회원정보 보기</a>
                 </li><li>
-                  <a href="/index.php?act=dispMemberOwnDocument&amp;mid=index">작성 글 보기</a>
+                  <a href="/mypage/myboard">작성 글 보기</a>
                 </li><li>
-                  <a href="/index.php?act=dispMemberOwnComment&amp;mid=index">좋아요 누른 글 보기</a>
+                  <a href="/mypage/myboard">좋아요 누른 글 보기</a>
                 </li><li>
-                  <a href="/index.php?act=dispMemberOwnComment&amp;mid=index">작성 댓글 보기</a>
+                  <a href="/mypage/myboard">작성 댓글 보기</a>
                 </li></ul>
             </div></div><div className={styles.MemberContent}>
               <div className={styles.MemberCard}>
@@ -68,7 +76,11 @@ const Mypage = () => {
 
                     <div className={styles.TwFlex1}></div>
 
-                    <a href="/index.php?mid=index&amp;act=dispMemberLeave" className={[styles.Link, styles.TwTextDanger].join(" ")}>탈퇴</a>
+                    <a href="#/" onClick={deleteHandler} className={[styles.Link, styles.TwTextDanger].join(" ")}>탈퇴</a>
+                    <DeleteUser
+                      show={deletemodalShow}
+                      onHide={() => setDeleteModalShow(false)}
+                    />
                   </div>    </div>
               </div>
             </div>

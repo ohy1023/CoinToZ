@@ -58,19 +58,6 @@ public class UserService {
         return UserJoinResponse.toResponse(savedUser);
     }
 
-//    @Transactional
-//    public String login(String email, String password) {
-//
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
-//
-//        if (isWrongPassword(password, user))
-//            throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
-//
-//
-//        return jwtService.createAccessToken(user.getEmail());
-//    }
-
     @Transactional
     public UserRoleResponse changeRole(Integer userId, String email) {
         User admin = userRepository.findByEmail(email)
@@ -121,6 +108,18 @@ public class UserService {
             throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
 
         return true;
+    }
+
+    @Transactional
+    public Integer delete(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        userRepository.deleteById(user.getId());
+
+        return user.getId();
     }
 
     @Transactional

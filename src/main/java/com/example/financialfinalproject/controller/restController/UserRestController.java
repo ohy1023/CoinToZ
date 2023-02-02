@@ -73,6 +73,15 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(response));
     }
 
+    @ApiOperation(value = "회원 탈퇴")
+    @DeleteMapping
+    public ResponseEntity<Response<String>> deleteUser(Authentication authentication) {
+        String email = authentication.getName();
+        log.info("userEmail:{}", email);
+        Integer userId = userService.delete(email);
+        return ResponseEntity.ok().body(Response.success("회원이 탈퇴되었습니다."));
+    }
+
     @ApiOperation(value = "역할 변경")
     @PostMapping("/{userId}/role")
     public ResponseEntity<Response<UserRoleResponse>> changeRole(@PathVariable Integer userId, Authentication authentication) {
