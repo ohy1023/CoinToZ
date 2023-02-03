@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -60,12 +63,23 @@ public class UserRestController {
     }
 
     @ApiOperation(value = "유저 정보 수정")
-    @PutMapping
-    public ResponseEntity<Response<UserPutResponse>> modifyUser(@RequestBody UserPutRequest request, Authentication authentication) {
+    @PostMapping("/modify")
+    public ResponseEntity<Response<UserPutResponse>> modifyUser(MultipartFile image ,String userName, Authentication authentication) throws IOException {
+        String email = authentication.getName();
+        log.info("image:{}",image);
+        log.info("userName:{}",userName);
+        log.info("userEmail:{}", email);
+        UserPutResponse response = userService.modify(image,userName,email);
+        return ResponseEntity.ok().body(Response.success(response));
+    }
+
+    @ApiOperation(value = "회원 탈퇴")
+    @DeleteMapping
+    public ResponseEntity<Response<String>> deleteUser(Authentication authentication) {
         String email = authentication.getName();
         log.info("userEmail:{}", email);
-        UserPutResponse response = userService.modify(request,email);
-        return ResponseEntity.ok().body(Response.success(response));
+        Integer userId = userService.delete(email);
+        return ResponseEntity.ok().body(Response.success("회원이 탈퇴되었습니다."));
     }
 
     @ApiOperation(value = "역할 변경")

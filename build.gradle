@@ -97,6 +97,9 @@ dependencies {
     //email 인증 의존성 추가
     implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.0'
 
+    // AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     // Upbit json
     implementation 'com.google.code.gson:gson:2.8.6'
 
