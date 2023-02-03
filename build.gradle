@@ -2,47 +2,11 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.1.0'
-    id "com.github.node-gradle.node" version "3.2.1"
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
-
-node {
-    // 2
-    version = '12.22.12'
-    npmVersion = '6.14.16'
-
-    // 3
-    download = true
-
-    /**
-     * download가 true일 경우에만 사용
-     * Node.js 배포를 가져오기 위한 기본 URL
-     */
-    distBaseUrl = "https://nodejs.org/dist"
-
-    /**
-     * npmInstall 작업에 의해 실행되는 npm 명령
-     * 기본적으로 설치되지만 ci로 변경할 수 있음
-     */
-    npmInstallCommand = "install"
-
-    /**
-     * download가 true일 경우에만 사용
-     * Node.js가 압축 해제된 디렉토리
-     */
-    workDir = file("${project.buildDir}/nodejs")
-
-    /**
-     * npm이 설치된 디렉토리 (특정 버전이 정의된 경우)
-     */
-    npmWorkDir = file("${project.buildDir}/npm")
-
-    // 4
-    nodeProjectDir = file("${project.projectDir}/src/main/frontend")
-}
 
 configurations {
     compileOnly {
@@ -52,11 +16,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    /**
-     * react-project를 build하기 위한 설정
-     * - node gradle 추가
-     */
-    gradlePluginPortal()
 }
 
 dependencies {
@@ -103,84 +62,6 @@ dependencies {
     // Upbit json
     implementation 'com.google.code.gson:gson:2.8.6'
 
-}
-
-/**
- * react-project를 build하기 위한 설정
- * - node gradle 추가
- */
-apply plugin: 'com.github.node-gradle.node'
-
-/**
- * react-project를 build하기 위한 설정
- * - react-project의 기존 빌드 결과물을 제거하기 위한 task
- */
-task deleteBuildFiles(type: Delete) {
-    delete "src/main/resources/static/static", "src/main/resources/static/index.html", "${project.projectDir}/src/main/frontend/node_modules"
-}
-
-task appNpmInstall(type: NpmTask, dependsOn: ['deleteBuildFiles']) {
-    workingDir = file("${project.projectDir}/src/main/frontend")
-    args = ["install"]
-}
-
-task appNpmBuild(type: NpmTask, dependsOn : ['appNpmInstall']) {
-    workingDir = file("${project.projectDir}/src/main/frontend")
-    args = ['run', 'build']
-}
-
-//task buildAdmin(type: NpmTask, dependsOn: ['deleteBuildFiles', 'npmInstall']) {
-//    args = ['run', 'build']
-//}
-
-
-// React 빌드 스크립트
-def frontendDir = "$projectDir/src/main/frontend"
-
-sourceSets {
-    main {
-        resources { srcDirs = ["$projectDir/src/main/resources"]
-        }
-    }
-}
-
-//task installReact(type: Exec) { // npm install 하기
-//    workingDir "$frontendDir"
-//    inputs.dir "$frontendDir"
-//    group = BasePlugin.BUILD_GROUP
-//    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-//        commandLine "npm.cmd", "audit", "fix"
-//        commandLine 'npm.cmd', 'install' }
-//    else {
-//        commandLine "npm", "audit", "fix"
-//        commandLine 'npm', 'install'
-//    }
-//}
-//
-//task buildReact(type: Exec) { // react 빌드하기
-//    dependsOn "installReact"
-//    workingDir "$frontendDir"
-//    inputs.dir "$frontendDir"
-//    group = BasePlugin.BUILD_GROUP
-//    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-//        commandLine "npm.cmd", "run-script", "build"
-//    } else {
-//        commandLine "npm", "run-script", "build"
-//    }
-//}
-
-task copyReactBuildFiles(type: Copy) { // react 빌드 파일을 spring 에 복사하기
-    dependsOn "appNpmBuild"
-    from "$frontendDir/build"
-    into "$projectDir/src/main/resources/static/."
-}
-
-processResources { dependsOn "deleteBuildFiles" }
-processResources { dependsOn "copyReactBuildFiles" }
-
-// 프로젝트가 만들어지고 배포되는 시점(bootJar) 실행되는 시점에만 React 빌드 파일이 포함
-tasks.bootJar {
-    dependsOn "copyReactBuildFiles"
 }
 
 tasks.named('test') {
