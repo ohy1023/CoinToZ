@@ -18,7 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://ec2-43-201-23-107.ap-northeast-2.compute.amazonaws.com")
                 .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("Authorization","Authorization-refresh","email") // 어떤 헤더들을 허용할 것인지
                 .allowCredentials(false)
