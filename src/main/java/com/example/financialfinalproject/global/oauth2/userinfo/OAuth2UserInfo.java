@@ -15,4 +15,6 @@ public abstract class OAuth2UserInfo {
     public abstract String getNickname();
 
     public abstract String getImageUrl();
+
+    public abstract String getEmail(); // 네이버 검수 요청 기준
 }
