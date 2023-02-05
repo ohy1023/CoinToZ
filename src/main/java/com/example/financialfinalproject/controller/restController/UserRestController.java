@@ -64,12 +64,12 @@ public class UserRestController {
 
     @ApiOperation(value = "유저 정보 수정")
     @PostMapping("/modify")
-    public ResponseEntity<Response<UserPutResponse>> modifyUser(MultipartFile image ,String userName, Authentication authentication) throws IOException {
+    public ResponseEntity<Response<UserPutResponse>> modifyUser(MultipartFile image ,String userName, int removeClick, Authentication authentication) throws IOException {
         String email = authentication.getName();
         log.info("image:{}",image);
         log.info("userName:{}",userName);
         log.info("userEmail:{}", email);
-        UserPutResponse response = userService.modify(image,userName,email);
+        UserPutResponse response = userService.modify(image,userName,email,removeClick);
         return ResponseEntity.ok().body(Response.success(response));
     }
 

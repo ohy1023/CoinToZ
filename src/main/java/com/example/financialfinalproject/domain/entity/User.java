@@ -53,6 +53,7 @@ public class User extends BaseEntity {
     @PrePersist
     public void prePersist() {
         this.userRole = this.userRole == null ? USER : this.userRole;
+        this.imageUrl = this.imageUrl == null ? "https://ohy1023.s3.ap-northeast-2.amazonaws.com/basic.png" : this.imageUrl;
     }
 
     public User promoteRole(User user) {

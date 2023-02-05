@@ -123,14 +123,18 @@ public class UserService {
     }
 
     @Transactional
-    public UserPutResponse modify(MultipartFile multipartFile,String userName, String email) throws IOException{
+    public UserPutResponse modify(MultipartFile multipartFile,String userName, String email,int removeClick) throws IOException{
         if (multipartFile == null) {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> {
                         throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                     });
 
-            user.updateUserName(userName);
+            if (removeClick == 1) {
+                user.updateUser(userName,"https://ohy1023.s3.ap-northeast-2.amazonaws.com/basic.png");
+            } else {
+                user.updateUserName(userName);
+            }
 
             DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
             String date = user.getRegisteredAt().format(formatter);
