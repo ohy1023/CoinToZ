@@ -1,12 +1,16 @@
 package com.example.financialfinalproject.controller.restController;
 
+import com.example.financialfinalproject.exception.AppException;
+import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/email")
+@RequestMapping("api/v1/emails")
 @RequiredArgsConstructor
 @Slf4j
 public class EmailRestController {
@@ -22,9 +26,10 @@ public class EmailRestController {
     // 이메일 인증 번호 확인하기
     @ResponseBody
     @GetMapping("/auth")
-    public Boolean checkAuthEmail(@RequestParam String code) {
+    public ResponseEntity checkAuthEmail(@RequestParam String code) {
         System.out.println(code);
-        if (emailService.getData(code) == null) return false;
-        else return true;
+            if (emailService.getData(code) == null) {
+                return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            } else return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
