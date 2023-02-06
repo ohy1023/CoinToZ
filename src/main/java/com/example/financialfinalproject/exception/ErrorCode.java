@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorCode {
+public enum ErrorCode{
     DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "UserName이 중복됩니다."),
 
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "Email이 중복됩니다."),
@@ -31,7 +31,8 @@ public enum ErrorCode {
 
     // 매매일지
     COIN_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 코인이 없습니다."),
-    DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 일지가 없습니다.");;
+    DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 일지가 없습니다."),
+    INVALID_AUTH(HttpStatus.UNAUTHORIZED, "인증번호가 잘못되었습니다.");
 
     private HttpStatus status;
     private String message;
