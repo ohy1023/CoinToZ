@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -18,6 +19,12 @@ import java.util.Optional;
 public class TradingDiaryService {
 
     private final TradingDiaryRepository tradingDiaryRepository;
+
+
+    public List<TradingDiary> listOf() {
+        List<TradingDiary> all = tradingDiaryRepository.findAll();
+        return all;
+    }
 
     public void write(OrderResponse orderResponse) {
 
