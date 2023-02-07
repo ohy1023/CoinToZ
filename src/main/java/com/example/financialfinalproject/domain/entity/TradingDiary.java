@@ -2,10 +2,7 @@ package com.example.financialfinalproject.domain.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -23,11 +20,14 @@ public class TradingDiary {
     private String ask_created_at; // 매도 주문시간
     private Integer bid_price; // 매수가격
     private Integer ask_price; // 매도가격
-    private String volume; // 수량
+    private Double volume; // 수량
     private Integer arbitrage; // 차익
     private Double revenue; // 수익률 (수수료반영)
     private String comment; // 메모
 
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 
