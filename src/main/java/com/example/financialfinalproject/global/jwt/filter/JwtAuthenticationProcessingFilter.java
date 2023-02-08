@@ -42,7 +42,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-bundle.js",
             "/swagger-resources/configuration/ui", "/swagger-ui/favicon-32x32.png",
             "/swagger-resources/configuration/security", "/swagger-resources",
-            "/v3/api-docs", "api/v1/users/login", "/"
+            "/v3/api-docs", "api/v1/users/login", "/", "api/v1/users/join"
     };
 
     private final JwtService jwtService;
@@ -149,6 +149,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
      */
     public void saveAuthentication(User myUser) {
+        log.info("savedUserName:{}",myUser.getUserName());
         String password = myUser.getPassword();
         log.info("password:{}", password);
         if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
