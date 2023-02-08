@@ -1,7 +1,5 @@
 package com.example.financialfinalproject.controller.restController;
 
-import com.example.financialfinalproject.exception.AppException;
-import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +25,9 @@ public class EmailRestController {
     @ResponseBody
     @GetMapping("/auth")
     public ResponseEntity checkAuthEmail(@RequestParam String code) {
-        System.out.println(code);
-            if (emailService.getData(code) == null) {
-                return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-            } else return new ResponseEntity<>(true, HttpStatus.OK);
+        log.info("emailCode:{}", code);
+        if (emailService.getData(code) == null) {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        } else return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }

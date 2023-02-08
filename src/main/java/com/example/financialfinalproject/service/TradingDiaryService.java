@@ -10,17 +10,22 @@ import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.repository.TradingDiaryRepository;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.financialfinalproject.exception.ErrorCode.DUPLICATED_EMAIL;
 import static com.example.financialfinalproject.exception.ErrorCode.EMAIL_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class TradingDiaryService {
 
     private final TradingDiaryRepository tradingDiaryRepository;
@@ -38,7 +43,7 @@ public class TradingDiaryService {
                 .orElseThrow(() -> {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                 });
-        List<TradingDiary> diaryListOfUser = tradingDiaryRepository.findAllByUser(user);
+        List<TradingDiary> diaryListOfUser = tradingDiaryRepository.findAllByUserOrderByDate(user);
         return diaryListOfUser;
     }
 
@@ -47,13 +52,13 @@ public class TradingDiaryService {
                 .orElseThrow(() -> {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                 });
-
-        double bitCoinCnt = tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(BitCoin, user);
-        double ethereumCnt = tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(Ethereum, user);
-        double rippleCnt = tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(Ripple, user);
-        double ADACnt = tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(ADA, user);
-        double dogeCoinCnt = tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(DogeCoin, user);
-        double etcCnt = tradingDiaryRepository.findSumVolumeByUser(user) - (bitCoinCnt + ethereumCnt + rippleCnt + ADACnt + dogeCoinCnt);
+        double sumAllCnt = (tradingDiaryRepository.findSumVolumeByUser(user)) == null ? 0 : tradingDiaryRepository.findSumVolumeByUser(user);
+        double bitCoinCnt = (tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(BitCoin, user)) == null ? 0 : tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(BitCoin, user);
+        double ethereumCnt = (tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(Ethereum, user)) == null ? 0 : tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(Ethereum, user);
+        double rippleCnt = (tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(Ripple, user)) == null ? 0 : tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(Ripple, user);
+        double ADACnt = (tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(ADA, user)) == null ? 0 : tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(ADA, user);
+        double dogeCoinCnt = (tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(DogeCoin, user)) == null ? 0 : tradingDiaryRepository.findSumVolumeByMarketContainingAndUser(DogeCoin, user);
+        double etcCnt = (sumAllCnt - (bitCoinCnt + ethereumCnt + rippleCnt + ADACnt + dogeCoinCnt));
 
         return MyCoinCntResponse.builder()
                 .bitCoin(bitCoinCnt)
@@ -64,6 +69,17 @@ public class TradingDiaryService {
                 .etc(etcCnt)
                 .build();
 
+    }
+
+    public List<TradingDiary> findListByCond(String email, String startDate, String endDate) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+        log.info("{}", LocalDateTime.parse(startDate));
+        log.info("{}", LocalDateTime.parse(endDate));
+
+        return tradingDiaryRepository.searchDateRange(user, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate));
     }
 
     public void write(OrderResponse orderResponse) {
@@ -77,10 +93,10 @@ public class TradingDiaryService {
         if (orderResponse.getSide().equals("bid")) {
 
             TradingDiary tradingDiary = TradingDiary.builder()
-                    .bid_created_at(orderResponse.getCreated_at()) // 매수 주문시간
+                    .bid_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
                     .market(orderResponse.getMarket())
                     .bid_price(orderResponse.getPrice() + fee) // 매수가격(수수료 포함)
-                    .volume(Double.parseDouble(orderResponse.getExecuted_volume())) // 수량
+                    .volume(orderResponse.getVolume()) // 수량
                     .build();
 
             tradingDiaryRepository.save(tradingDiary);
@@ -90,7 +106,7 @@ public class TradingDiaryService {
         else if (orderResponse.getSide().equals("ask")) {
 
             TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
-            tradingDiarys.setAsk_created_at(orderResponse.getCreated_at()); // 매도시간
+            tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at())); // 매도시간
             tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
 
 
@@ -118,12 +134,6 @@ public class TradingDiaryService {
         return TradingDiaryDto.builder()
                 .message("메모가 작성되었습니다.")
                 .build();
-    }
-
-
-    public Page<TradingDiary> list(PageRequest pageRequest) {
-        Page<TradingDiary> tradingDiaryList = tradingDiaryRepository.findAll(pageRequest);
-        return tradingDiaryList;
     }
 
 

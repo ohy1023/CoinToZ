@@ -9,16 +9,14 @@ import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
 import com.example.financialfinalproject.domain.request.UserPutRequest;
 import com.example.financialfinalproject.domain.request.UserUpdatePasswordRequest;
-import com.example.financialfinalproject.domain.response.UserGetResponse;
-import com.example.financialfinalproject.domain.response.UserJoinResponse;
-import com.example.financialfinalproject.domain.response.UserPutResponse;
-import com.example.financialfinalproject.domain.response.UserRoleResponse;
+import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.exception.AppException;
 import com.example.financialfinalproject.global.jwt.service.JwtService;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +26,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.financialfinalproject.domain.enums.UserRole.ADMIN;
 import static com.example.financialfinalproject.domain.enums.UserRole.USER;
@@ -126,7 +124,43 @@ public class UserService {
     }
 
     @Transactional
-    public UserPutResponse modify(MultipartFile multipartFile,String userName, String email,int removeClick) throws IOException{
+    public String getTempPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        String tempKey = "CoinOne" + UUID.randomUUID();
+
+        String tempPassword = encoder.encode(tempKey);
+
+        user.updatePassword(tempPassword);
+
+        return tempKey;
+    }
+
+
+    @Transactional
+    public Integer modifyPassword(String email, UserUpdatePasswordRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        if (isWrongPassword(request.getPassword(), user))
+            throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
+
+        if (!request.getNewPassword().equals(request.getReNewPassword())) {
+            throw new AppException(MISMATCH_PASSWORD, MISMATCH_PASSWORD.getMessage());
+        }
+
+        user.updatePassword(encoder.encode(request.getNewPassword()));
+
+        return user.getId();
+    }
+
+    @Transactional
+    public UserPutResponse modify(MultipartFile multipartFile, String userName, String email, int removeClick) throws IOException {
         if (multipartFile == null) {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> {
@@ -134,7 +168,7 @@ public class UserService {
                     });
 
             if (removeClick == 1) {
-                user.updateUser(userName,"https://ohy1023.s3.ap-northeast-2.amazonaws.com/basic.png");
+                user.updateUser(userName, "https://ohy1023.s3.ap-northeast-2.amazonaws.com/basic.png");
             } else {
                 user.updateUserName(userName);
             }
@@ -149,7 +183,7 @@ public class UserService {
                     .build();
         } else {
             String fileName = multipartFile.getOriginalFilename();
-            log.info("fileName:{}",fileName);
+            log.info("fileName:{}", fileName);
             //파일 형식 구하기
             String ext = fileName.split("\\.")[1];
             String contentType = "";
@@ -186,7 +220,7 @@ public class UserService {
                         throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                     });
 
-            user.updateUser(userName,imageUrl);
+            user.updateUser(userName, imageUrl);
 
             DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
             String date = user.getRegisteredAt().format(formatter);
@@ -197,28 +231,6 @@ public class UserService {
                     .createAt(date)
                     .build();
         }
-
-
-
-    }
-
-    @Transactional
-    public Integer modifyPassword(String email, UserUpdatePasswordRequest request) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
-                });
-
-        if (isWrongPassword(request.getPassword(), user))
-            throw new AppException(INVALID_PASSWORD, INVALID_PASSWORD.getMessage());
-
-        if (!request.getNewPassword().equals(request.getReNewPassword())) {
-            throw new AppException(MISMATCH_PASSWORD, MISMATCH_PASSWORD.getMessage());
-        }
-
-        user.updatePassword(encoder.encode(request.getNewPassword()));
-
-        return user.getId();
     }
 
     private boolean isWrongPassword(String password, User user) {
