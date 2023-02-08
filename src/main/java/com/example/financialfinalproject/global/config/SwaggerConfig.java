@@ -1,8 +1,9 @@
-package com.example.financialfinalproject.config;
+package com.example.financialfinalproject.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -32,6 +33,11 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public InternalResourceViewResolver defaultViewResolver() {
+        return new InternalResourceViewResolver();
+    }
+
     public ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Z세대들을 위한 커뮤니티 기반 가상화폐 매매 및 매매일지 서비스")
@@ -58,4 +64,6 @@ public class SwaggerConfig {
     private ApiKey apiKey() {
         return new ApiKey("Authorization", "Authorization", "header");
     }
+
+
 }

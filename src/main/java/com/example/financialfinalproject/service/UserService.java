@@ -4,6 +4,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import com.example.financialfinalproject.domain.dto.UpbitTokenDto;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
 import com.example.financialfinalproject.domain.request.UserPutRequest;
@@ -54,6 +55,7 @@ public class UserService {
                     throw new AppException(DUPLICATED_EMAIL, DUPLICATED_EMAIL.getMessage());
                 }));
         User savedUser = userRepository.save(userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword())));
+
         return UserJoinResponse.toResponse(savedUser);
     }
 
@@ -233,6 +235,19 @@ public class UserService {
 
     private boolean isWrongPassword(String password, User user) {
         return !encoder.matches(password, user.getPassword());
+    }
+
+
+    public void save(UpbitTokenDto upbitTokenDto, String email){ // 업비트 accesskey, secretkey 저장
+    User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+    user.setAccessKey(upbitTokenDto.getAccessKey());
+    user.setSecretKey(upbitTokenDto.getSecretKey());
+
+    userRepository.save(user);
     }
 
 }
