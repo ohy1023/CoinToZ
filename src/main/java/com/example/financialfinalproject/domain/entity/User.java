@@ -2,10 +2,7 @@ package com.example.financialfinalproject.domain.entity;
 
 import com.example.financialfinalproject.domain.enums.SocialType;
 import com.example.financialfinalproject.domain.enums.UserRole;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -18,6 +15,7 @@ import static com.example.financialfinalproject.domain.enums.UserRole.*;
 
 
 @Entity
+@Setter
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "deleted_at IS NULL")
@@ -33,6 +31,10 @@ public class User extends BaseEntity {
     private String password;
 
     private String email;
+
+    private String accessKey;
+
+    private String secretKey;
 
     @Column(columnDefinition = "longtext")
     private String imageUrl;

@@ -25,8 +25,12 @@ public class UserRestController {
     @PostMapping("/join")
     public ResponseEntity<Response<UserJoinResponse>> joinUser(@RequestBody UserJoinRequest userJoinRequest) {
         UserJoinResponse userJoinResponse = userService.join(userJoinRequest);
+
         return ResponseEntity.ok().body(Response.success(userJoinResponse));
     }
+
+
+
 
     @ApiOperation(value = "로그인", notes = "jwt 반환")
     @PostMapping("/login")

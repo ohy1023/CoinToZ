@@ -1,5 +1,6 @@
 package com.example.financialfinalproject.controller.restController;
 
+import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
@@ -10,16 +11,20 @@ import com.example.financialfinalproject.domain.upbit.quotation.OrderBook;
 import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
 import com.example.financialfinalproject.domain.upbit.quotation.Trade;
 import com.example.financialfinalproject.global.jwt.service.UpbitJwtService;
+import com.example.financialfinalproject.repository.UserRepository;
 import com.example.financialfinalproject.service.UpbitService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +33,7 @@ public class UpbitRestController {
 
     private final UpbitService upbitService;
     private final UpbitJwtService upbitJwtService;
+    private final UserRepository userRepository;
 
     // QUOTATION API
 
@@ -94,63 +100,117 @@ public class UpbitRestController {
 
     @GetMapping("/acount") //전체 계좌조회
     @ApiOperation(value = "전체계좌조회", notes = "전체계좌조회")
-    public List<Acount> getAcount(@RequestParam String accessKey, @RequestParam String secretKey){
+    public List<Acount> getAcount(@ApiIgnore Authentication authentication){
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         List<Acount> acounts = upbitService.getAcount(accessKey,secretKey);
         return acounts;
     }
 
     @PostMapping("/order") // 주문하기
     @ApiOperation(value = "주문하기", notes = "주문하기")
-    public OrderResponse getOrder(@RequestParam String accessKey, @RequestParam String secretKey, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public OrderResponse getOrder(@ApiIgnore Authentication authentication, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest);
         return response;
     }
 
     @DeleteMapping // 주문취소
     @ApiOperation(value = "주문취소", notes = "주문취소")
-    public OrderResponse getOrderDelete(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public OrderResponse getOrderDelete(@ApiIgnore Authentication authentication, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         OrderResponse orderResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid);
         return orderResponse;
     }
 
     @GetMapping("/orders") // 주문리스트
     @ApiOperation(value = "주문리스트", notes = "주문리스트")
-    public List<OrderResponse> getOrderList(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public List<OrderResponse> getOrderList(@ApiIgnore Authentication authentication, @RequestParam String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey,secretKey, state);
         return orderResponses;
     }
 
     @PostMapping("/deposit") // 입금하기
     @ApiOperation(value = "입금하기", notes = "입금하기")
-    public DepositResponse getDeposit(@RequestParam String accessKey, @RequestParam String secretKey, @RequestParam String amount, @RequestParam String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public DepositResponse getDeposit(@ApiIgnore Authentication authentication, @RequestParam String amount, @RequestParam String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         DepositResponse depositResponse = upbitService.getDeposit(accessKey,secretKey,amount,two_factor_type);
         return depositResponse;
     }
 
     @GetMapping("/deposits") // 입금리스트
     @ApiOperation(value = "입금리스트", notes = "입금리스트")
-    public List<DepositResponse> getDepositList(@RequestParam String accessKey, @RequestParam  String secretKey){
+    public List<DepositResponse> getDepositList(@ApiIgnore Authentication authentication){
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         List<DepositResponse> depositResponses = upbitService.getDepositList(accessKey,secretKey);
         return depositResponses;
     }
 
 
     @PostMapping("/withdraws/krw") // 원화 출금하기
-    public KrwWithDrawResponse askWithdrawKrw(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public KrwWithDrawResponse askWithdrawKrw(@ApiIgnore Authentication authentication, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         KrwWithDrawResponse response = upbitService.askWithdrawKrw(accessKey, secretKey, krwWithDrawRequest);
         return response;
 
     }
 
     @PostMapping("/withdraws/coin") // 코인 출금하기
-    public CoinWithDrawResponse askWithdrawCoin(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public CoinWithDrawResponse askWithdrawCoin(@ApiIgnore Authentication authentication, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
         return response;
     }
 
 
     @GetMapping("/withdraws") // 출금 리스트 조회
-    public List<WithDraw> getWithdraws(@RequestParam("accessKey") String accessKey, @RequestParam("secretKey") String secretKey, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
+    public List<WithDraw> getWithdraws(@ApiIgnore Authentication authentication, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
+
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
         List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
         return withDraws;
     }
