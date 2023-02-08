@@ -1,8 +1,8 @@
 package com.example.financialfinalproject.controller.restController;
 
-import com.example.financialfinalproject.domain.dto.UserDto;
 import com.example.financialfinalproject.domain.request.*;
 import com.example.financialfinalproject.domain.response.*;
+import com.example.financialfinalproject.service.EmailService;
 import com.example.financialfinalproject.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,8 @@ import java.io.IOException;
 @RequestMapping("api/v1/users")
 public class UserRestController {
     private final UserService userService;
+
+    private final EmailService emailService;
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/join")
@@ -62,14 +64,28 @@ public class UserRestController {
         return ResponseEntity.ok().body(Response.success(" 비밀번호가 변경되었습니다.\n 다시 로그인해 주세요."));
     }
 
+    @ApiOperation(value = "이메일 인증 성공하면 임시 비밀번호 발급")
+    @GetMapping("/temp/password")
+    public ResponseEntity<Response<String>> getTempPassword(@RequestBody TempPasswordRequest request) {
+        String code = request.getCode();
+        String email = request.getEmail();
+        if (emailService.getData(code) == null) {
+            return ResponseEntity.ok().body(Response.error("오류","오류"));
+        } else {
+            String tempPassword = userService.getTempPassword(email);
+            return ResponseEntity.ok().body(Response.success(tempPassword));
+        }
+    }
+
     @ApiOperation(value = "유저 정보 수정")
     @PostMapping("/modify")
-    public ResponseEntity<Response<UserPutResponse>> modifyUser(MultipartFile image ,String userName, int removeClick, Authentication authentication) throws IOException {
+    public ResponseEntity<Response<UserPutResponse>> modifyUser(MultipartFile image, String userName, int removeClick, Authentication authentication) throws IOException {
+
         String email = authentication.getName();
-        log.info("image:{}",image);
-        log.info("userName:{}",userName);
+        log.info("image:{}", image);
+        log.info("userName:{}", userName);
         log.info("userEmail:{}", email);
-        UserPutResponse response = userService.modify(image,userName,email,removeClick);
+        UserPutResponse response = userService.modify(image, userName, email, removeClick);
         return ResponseEntity.ok().body(Response.success(response));
     }
 

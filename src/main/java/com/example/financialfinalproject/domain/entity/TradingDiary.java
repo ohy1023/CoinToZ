@@ -3,6 +3,7 @@ package com.example.financialfinalproject.domain.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -15,9 +16,9 @@ public class TradingDiary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String bid_created_at; // 매수 주문시간
+    private LocalDateTime bid_created_at; // 매수 주문시간
     private String market; // 코인
-    private String ask_created_at; // 매도 주문시간
+    private LocalDateTime ask_created_at; // 매도 주문시간
     private Integer bid_price; // 매수가격
     private Integer ask_price; // 매도가격
     private Double volume; // 수량
