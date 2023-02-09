@@ -125,6 +125,7 @@ public class UpbitJwtService {
         HashMap<String, String> params = new HashMap<>();
         params.put("uuid", uuid);
 
+
         ArrayList<String> queryElements = new ArrayList<>();
         for (Map.Entry<String, String> entity : params.entrySet()) {
             queryElements.add(entity.getKey() + "=" + entity.getValue());
@@ -157,7 +158,7 @@ public class UpbitJwtService {
     }
 
 
-// 입금리스트
+// 주문리스트
     public UpbitToken getOrderListToken(String accessKey, String secretKey, String state) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
         //주문값 형태 변경

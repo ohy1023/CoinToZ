@@ -56,7 +56,7 @@ public interface UpbitFeignClient {
     OrderResponse getOrder(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> params);
 
     @DeleteMapping("/order") // 주문취소
-    OrderResponse getOrderDelete(@RequestHeader("Authorization") String token, @RequestParam("uuid") String uuid);
+    OrderDeleteResponse getOrderDelete(@RequestHeader("Authorization") String token, @RequestParam("uuid") String uuid);
 
     @GetMapping("/orders") // 주문리스트
     List<OrderResponse> getOrderList(@RequestHeader("Authorization") String token, @RequestParam("state") String state);

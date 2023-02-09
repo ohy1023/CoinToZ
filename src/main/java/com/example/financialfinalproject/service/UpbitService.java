@@ -1,5 +1,6 @@
 package com.example.financialfinalproject.service;
 
+import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
@@ -86,7 +87,7 @@ public class UpbitService {
     }
 
     // 주문
-    public OrderResponse getOrder(String accessKey, String secretKey, OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public OrderResponse getOrder(String accessKey, String secretKey, OrderRequest orderRequest, User user) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
         UpbitToken upbitToken = upbitJwtService.getOrderToken(accessKey,secretKey,orderRequest);
 
         HashMap<String, String> params = new HashMap<>();
@@ -98,36 +99,25 @@ public class UpbitService {
 
         OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
 
-        tradingDiaryService.write(orderResponse);
+        tradingDiaryService.write(orderResponse,user);
 
         return orderResponse;
     }
 
     // 주문리스트
-    public List<OrderResponse> getOrderList(String accessKey, String secretKey, String state) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public List<OrderResponse> getOrderList(String accessKey, String secretKey, String state, User user) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UpbitToken upbitToken = upbitJwtService.getOrderListToken(accessKey,secretKey,state);
         List<OrderResponse> orderResponses = upbitFeignClient.getOrderList(upbitToken.getUpbitToken(),state);
-
-
-        OrderResponse orderResponse1 = orderResponses.get(0);
-
-        orderResponse1.setSide("ask");
-        orderResponse1.setMarket("KRW-GRS");
-        orderResponse1.setPrice(4300);
-
-        tradingDiaryService.write(orderResponse1);
-
-//        OrderResponse orderResponse = orderResponses.get(0);
-//        tradingDiaryService.write(orderResponse);
-
+        //tradingDiaryService.write(orderResponses.get(0),user);
         return orderResponses;
     }
 
 
     // 주문취소
-    public OrderResponse getOrderDelete(String accessKey, String secretKey, String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public OrderDeleteResponse getOrderDelete(String accessKey, String secretKey, String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UpbitToken upbitToken = upbitJwtService.getOrderDeleteToken(accessKey,secretKey,uuid);
-        OrderResponse orderResponse = upbitFeignClient.getOrderDelete(upbitToken.getUpbitToken(),uuid);
+        OrderDeleteResponse orderResponse = upbitFeignClient.getOrderDelete(upbitToken.getUpbitToken(),uuid);
+        tradingDiaryService.orderDelete(orderResponse);
 
         return orderResponse;
     }

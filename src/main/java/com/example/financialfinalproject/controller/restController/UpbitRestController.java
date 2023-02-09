@@ -32,6 +32,7 @@ import java.util.Optional;
 public class UpbitRestController {
 
     private final UpbitService upbitService;
+
     private final UpbitJwtService upbitJwtService;
     private final UserRepository userRepository;
 
@@ -120,21 +121,21 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest);
+        OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest,user.get());
         return response;
     }
 
     @DeleteMapping // 주문취소
     @ApiOperation(value = "주문취소", notes = "주문취소")
-    public OrderResponse getOrderDelete(@ApiIgnore Authentication authentication, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public OrderDeleteResponse getOrderDelete(@ApiIgnore Authentication authentication, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
         String email = authentication.getName();
         Optional<User> user = userRepository.findByEmail(email);
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        OrderResponse orderResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid);
-        return orderResponse;
+        OrderDeleteResponse orderDeleteResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid);
+        return orderDeleteResponse;
     }
 
     @GetMapping("/orders") // 주문리스트
@@ -146,7 +147,10 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey,secretKey, state);
+        List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey,secretKey, state, user.get());
+
+
+
         return orderResponses;
     }
 
@@ -177,7 +181,8 @@ public class UpbitRestController {
     }
 
 
-    @PostMapping("/withdraws/krw") // 원화 출금하기
+    @PostMapping("/withdraws/krw")
+    @ApiOperation(value = "출금하기", notes = "출금하기")
     public KrwWithDrawResponse askWithdrawKrw(@ApiIgnore Authentication authentication, @RequestBody KrwWithDrawRequest krwWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
 
         String email = authentication.getName();
@@ -190,7 +195,8 @@ public class UpbitRestController {
 
     }
 
-    @PostMapping("/withdraws/coin") // 코인 출금하기
+    @PostMapping("/withdraws/coin")
+    @ApiOperation(value = "코인출금", notes = "코인출금")
     public CoinWithDrawResponse askWithdrawCoin(@ApiIgnore Authentication authentication, @RequestBody CoinWithDrawRequest coinWithDrawRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
 
         String email = authentication.getName();
@@ -203,7 +209,8 @@ public class UpbitRestController {
     }
 
 
-    @GetMapping("/withdraws") // 출금 리스트 조회
+    @GetMapping("/withdraws")
+    @ApiOperation(value = "출금리스트", notes = "출금리스트")
     public List<WithDraw> getWithdraws(@ApiIgnore Authentication authentication, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
 
         String email = authentication.getName();

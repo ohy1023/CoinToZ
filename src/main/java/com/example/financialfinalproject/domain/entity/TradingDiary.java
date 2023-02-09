@@ -16,6 +16,8 @@ public class TradingDiary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String bidUuid; // 매수 주문 고유 ID
+    private String askUuid; // 매도 주문 고유 ID
     private LocalDateTime bid_created_at; // 매수 주문시간
     private String market; // 코인
     private LocalDateTime ask_created_at; // 매도 주문시간
@@ -29,7 +31,5 @@ public class TradingDiary {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-
 
 }
