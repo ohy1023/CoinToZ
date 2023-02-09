@@ -32,8 +32,6 @@ public class UserRestController {
     }
 
 
-
-
     @ApiOperation(value = "로그인", notes = "jwt 반환")
     @PostMapping("/login")
     public String login(@RequestBody UserLoginRequest userLoginRequest) {
@@ -70,11 +68,9 @@ public class UserRestController {
 
     @ApiOperation(value = "이메일 인증 성공하면 임시 비밀번호 발급")
     @GetMapping("/temp/password")
-    public ResponseEntity<Response<String>> getTempPassword(@RequestBody TempPasswordRequest request) {
-        String code = request.getCode();
-        String email = request.getEmail();
-        if (emailService.getData(code) == null) {
-            return ResponseEntity.ok().body(Response.error("오류","오류"));
+    public ResponseEntity<Response<String>> getTempPassword(@RequestParam String code, @RequestParam String email) {
+        if (emailService.getData(code) != null) {
+            return ResponseEntity.ok().body(Response.error("오류", "오류"));
         } else {
             String tempPassword = userService.getTempPassword(email);
             return ResponseEntity.ok().body(Response.success(tempPassword));
