@@ -56,7 +56,7 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
     public Double findAvgRevenue(User user, LocalDateTime startDate, LocalDateTime endDate) {
         return query.select(tradingDiary.revenue.avg())
                 .from(tradingDiary)
-                .where(eqUser(user), betweenDate(startDate,endDate))
+                .where(eqUser(user), betweenAskDate(startDate,endDate))
                 .fetchOne();
     }
 
@@ -66,6 +66,14 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
             return null;
         }
         return tradingDiary.bid_created_at.between(start, end);
+    }
+
+    private BooleanExpression betweenAskDate(LocalDateTime start, LocalDateTime end) {
+
+        if (start == null || end == null) {
+            return null;
+        }
+        return tradingDiary.ask_created_at.between(start, end);
     }
 
     private BooleanExpression eqUser(User user) {
