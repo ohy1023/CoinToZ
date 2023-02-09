@@ -1,6 +1,7 @@
 package com.example.financialfinalproject.service;
 
 import com.example.financialfinalproject.domain.dto.TradingDiaryDto;
+import com.example.financialfinalproject.domain.dto.TradingDiaryListDto;
 import com.example.financialfinalproject.domain.entity.TradingDiary;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.response.MyCoinCntResponse;
@@ -11,16 +12,13 @@ import com.example.financialfinalproject.repository.TradingDiaryRepository;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static com.example.financialfinalproject.exception.ErrorCode.DUPLICATED_EMAIL;
 import static com.example.financialfinalproject.exception.ErrorCode.EMAIL_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -38,13 +36,14 @@ public class TradingDiaryService {
     private String DogeCoin = "KRW-DOGE";
 
 
-    public List<TradingDiary> listOf(String email) {
+    public List<TradingDiaryListDto> listOf(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                 });
-        List<TradingDiary> diaryListOfUser = tradingDiaryRepository.findAllByUserOrderByDate(user);
-        return diaryListOfUser;
+        return tradingDiaryRepository.findAllByUserOrderByDate(user)
+                .stream().map(TradingDiaryListDto::toDto).collect(Collectors.toList());
+
     }
 
     public MyCoinCntResponse getCoins(String email) {
@@ -71,7 +70,7 @@ public class TradingDiaryService {
 
     }
 
-    public List<TradingDiary> findListByCond(String email, String startDate, String endDate) {
+    public List<TradingDiaryListDto> findListByCond(String email, String startDate, String endDate) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
@@ -79,7 +78,23 @@ public class TradingDiaryService {
         log.info("{}", LocalDateTime.parse(startDate));
         log.info("{}", LocalDateTime.parse(endDate));
 
-        return tradingDiaryRepository.searchDateRange(user, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate));
+        return tradingDiaryRepository.searchDateRange(user, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate))
+                .stream().map(TradingDiaryListDto::toDto).collect(Collectors.toList());
+
+    }
+
+    public Double avgRevenueByTime(String email, int startTime, int endTime) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+                });
+
+        LocalDateTime today = LocalDateTime.now();
+
+        LocalDateTime start = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), startTime, 0);
+        LocalDateTime end = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), endTime, 0);
+
+        return (tradingDiaryRepository.findAvgRevenue(user, start, end)) == null ? 0 : (tradingDiaryRepository.findAvgRevenue(user, start, end));
     }
 
     public void write(OrderResponse orderResponse) {
@@ -106,7 +121,7 @@ public class TradingDiaryService {
         else if (orderResponse.getSide().equals("ask")) {
 
             TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
-            tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at())); // 매도시간
+            tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])); // 매도시간
             tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
 
 

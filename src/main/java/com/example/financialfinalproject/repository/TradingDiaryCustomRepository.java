@@ -1,6 +1,7 @@
 package com.example.financialfinalproject.repository;
 
 
+import com.example.financialfinalproject.domain.dto.TradingDiaryListDto;
 import com.example.financialfinalproject.domain.entity.TradingDiary;
 import com.example.financialfinalproject.domain.entity.User;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,6 @@ public interface TradingDiaryCustomRepository {
     Double findSumVolumeByMarketContainingAndUser(String market, User user);
 
     List<TradingDiary> findAllByUserOrderByDate(User user);
+
+    Double findAvgRevenue(User user,LocalDateTime startDate, LocalDateTime endDate);
 }

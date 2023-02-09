@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import static com.example.financialfinalproject.domain.entity.QTradingDiary.*;
 
 
@@ -49,6 +50,14 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
                 .where(eqUser(user))
                 .orderBy(tradingDiary.bid_created_at.desc())
                 .fetch();
+    }
+
+    @Override
+    public Double findAvgRevenue(User user, LocalDateTime startDate, LocalDateTime endDate) {
+        return query.select(tradingDiary.revenue.avg())
+                .from(tradingDiary)
+                .where(eqUser(user), betweenDate(startDate,endDate))
+                .fetchOne();
     }
 
     private BooleanExpression betweenDate(LocalDateTime start, LocalDateTime end) {
