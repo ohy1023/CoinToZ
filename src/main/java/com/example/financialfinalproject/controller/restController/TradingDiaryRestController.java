@@ -1,7 +1,7 @@
 package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.dto.TradingDiaryDto;
-import com.example.financialfinalproject.domain.entity.TradingDiary;
+import com.example.financialfinalproject.domain.dto.TradingDiaryListDto;
 import com.example.financialfinalproject.domain.request.DiaryPutRequest;
 import com.example.financialfinalproject.domain.response.MyCoinCntResponse;
 import com.example.financialfinalproject.domain.response.Response;
@@ -9,8 +9,6 @@ import com.example.financialfinalproject.service.TradingDiaryService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +33,9 @@ public class TradingDiaryRestController {
 
     @ApiOperation(value = "매매일지 리스트")
     @GetMapping("/list")
-    public List<TradingDiary> list2(Authentication authentication) {
+    public List<TradingDiaryListDto> list(Authentication authentication) {
         String email = authentication.getName();
-        List<TradingDiary> tradingDiaryList = tradingDiaryService.listOf(email);
+        List<TradingDiaryListDto> tradingDiaryList = tradingDiaryService.listOf(email);
         return tradingDiaryList;
     }
 
@@ -50,14 +48,23 @@ public class TradingDiaryRestController {
     }
 
     @ApiOperation(value = "날짜 조건 조회")
-    @GetMapping("search")
-    public ResponseEntity<Response<List<TradingDiary>>> findByCond(@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, Authentication authentication) {
+    @GetMapping("/search")
+    public ResponseEntity<Response<List<TradingDiaryListDto>>> findByCond(@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, Authentication authentication) {
         log.info("startDate : {}", startDate);
         log.info("endDate : {}", endDate);
         String email = authentication.getName();
-        List<TradingDiary> listByCond = tradingDiaryService.findListByCond(email, startDate, endDate);
+        List<TradingDiaryListDto> listByCond = tradingDiaryService.findListByCond(email, startDate, endDate);
         log.info("search cnt : {}", listByCond.size());
         return ResponseEntity.ok().body(Response.success(listByCond));
+    }
+
+    @ApiOperation(value = "시간 별 수익률 조회")
+    @GetMapping("/revenue")
+    public ResponseEntity<Response<Double>> find(@RequestParam(required = false) int startTime, @RequestParam(required = false) int endTime, Authentication authentication) {
+        String email = authentication.getName();
+        Double avg = tradingDiaryService.avgRevenueByTime(email, startTime, endTime);
+        log.info("평균 수익률 : {}", avg);
+        return ResponseEntity.ok().body(Response.success(avg));
     }
 
 
