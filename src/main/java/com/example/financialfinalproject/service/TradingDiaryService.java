@@ -101,43 +101,82 @@ public class TradingDiaryService {
 
     public void write(OrderResponse orderResponse, User user) {
 
-        userRepository.findById(user.getId()).orElseThrow(()-> new AppException(USERNAME_NOT_FOUND, "해당 user 를 찾을 수 없습니다."));
+        userRepository.findById(user.getId()).orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "해당 user 를 찾을 수 없습니다."));
 
         // 수수료 반올림
         int fee = (int) Math.round(orderResponse.getPaid_fee());
 
 
-        // 매수
-        if (orderResponse.getSide().equals("bid")) {
+        // 지정가 기준
+        if(orderResponse.getOrd_type().equals("limit")) {
 
-            TradingDiary tradingDiary = TradingDiary.builder()
-                    .bid_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
-                    .market(orderResponse.getMarket())
-                    .bid_price(orderResponse.getPrice() + fee) // 매수가격(수수료 포함)
-                    .volume(Double.valueOf(orderResponse.getExecuted_volume())) // 수량
-                    .bidUuid(orderResponse.getUuid())
-                    .user(user)
-                    .build();
+            // 매수 - 지정한 수량, 가격으로 매수
+            if (orderResponse.getSide().equals("bid")) {
 
-            tradingDiaryRepository.save(tradingDiary);
+                TradingDiary tradingDiary = TradingDiary.builder()
+                        .bid_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .market(orderResponse.getMarket())
+                        .bid_price(orderResponse.getPrice() + fee) // 매수가격(수수료 포함)
+                        .volume(Double.valueOf(orderResponse.getVolume())) // 내가 지정한 코인수량
+                        .bidUuid(orderResponse.getUuid())
+                        .user(user)
+                        .build();
+
+                tradingDiaryRepository.save(tradingDiary);
+            }
+
+            // 매도 - 지정한 수량, 가격으로 매도
+            else if (orderResponse.getSide().equals("ask")) {
+
+                TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
+                tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])); // 매도시간
+                tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
+                tradingDiarys.setAskUuid(orderResponse.getUuid());
+
+                tradingDiarys.setArbitrage(tradingDiarys.getAsk_price() - tradingDiarys.getBid_price()); // 차익 (매수가격 - 매도가격)
+
+                double revenue = ((double) tradingDiarys.getBid_price() / (double) tradingDiarys.getArbitrage()); // 수익률 계산
+                tradingDiarys.setRevenue(Math.round(revenue * 100) / 100.0); // 수익률 (소숫점 2자리 까지 표현)
+
+                tradingDiaryRepository.save(tradingDiarys);
+            }
+
         }
 
-        // 매도
-        else if (orderResponse.getSide().equals("ask")) {
 
-            TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
-            tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])); // 매도시간
-            tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
-            tradingDiarys.setAskUuid(orderResponse.getUuid());
-            tradingDiarys.setVolume(Double.valueOf(orderResponse.getExecuted_volume()));
+           // 매수 - 시장가 기준 (금액 만큼 팔았을 경우)
+            if (orderResponse.getSide().equals("bid")) {
 
-            tradingDiarys.setArbitrage(tradingDiarys.getAsk_price() - tradingDiarys.getBid_price()); // 차익 (매수가격 - 매도가격)
+                TradingDiary tradingDiary = TradingDiary.builder()
+                        .bid_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .market(orderResponse.getMarket())
+                        .bid_price(orderResponse.getPrice() + fee) // 매수가격(수수료 포함)
+                        .volume(Double.valueOf(orderResponse.getExecuted_volume())) // 거래 된 수량 ( 금액에 맞춰서 구매 된 코인 수량)
+                        .bidUuid(orderResponse.getUuid())
+                        .user(user)
+                        .build();
 
-            double revenue = ((double) tradingDiarys.getBid_price() / (double) tradingDiarys.getArbitrage()); // 수익률 계산
-            tradingDiarys.setRevenue(Math.round(revenue * 100) / 100.0); // 수익률 (소숫점 2자리 까지 표현)
+                tradingDiaryRepository.save(tradingDiary);
+            }
 
-            tradingDiaryRepository.save(tradingDiarys);
-        }
+            // 매도 - 가진 수량을 다 팔았을 경우 (시장가 기준)
+            else if (orderResponse.getSide().equals("ask")) {
+
+                TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
+                tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])); // 매도시간
+                tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
+                tradingDiarys.setAskUuid(orderResponse.getUuid());
+
+                tradingDiarys.setArbitrage(tradingDiarys.getAsk_price() - tradingDiarys.getBid_price()); // 차익 (매수가격 - 매도가격)
+
+                double revenue = ((double) tradingDiarys.getBid_price() / (double) tradingDiarys.getArbitrage()); // 수익률 계산
+                tradingDiarys.setRevenue(Math.round(revenue * 100) / 100.0); // 수익률 (소숫점 2자리 까지 표현)
+
+                tradingDiaryRepository.save(tradingDiarys);
+            }
+
+
+
     }
 
     public TradingDiaryDto edit(Long id, String comment) {
