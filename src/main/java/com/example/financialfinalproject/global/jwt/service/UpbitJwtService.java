@@ -43,9 +43,10 @@ public class UpbitJwtService {
         HashMap<String, String> params = new HashMap<>();
         params.put("market", orderRequest.getMarket());
         params.put("side", orderRequest.getSide());
-        params.put("volume", String.valueOf(orderRequest.getVolume()));
-        params.put("price", String.valueOf(orderRequest.getPrice()));
+        params.put("volume", orderRequest.getVolume());
+        params.put("price", orderRequest.getPrice());
         params.put("ord_type", orderRequest.getOrd_type());
+
 
         ArrayList<String> queryElements = new ArrayList<>();
         for (Map.Entry<String, String> entity : params.entrySet()) {
