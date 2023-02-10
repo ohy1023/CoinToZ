@@ -26,9 +26,10 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Slf4j
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/upbit")
 public class UpbitRestController {
 
     private final UpbitService upbitService;

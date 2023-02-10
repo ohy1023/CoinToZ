@@ -1,5 +1,6 @@
 package com.example.financialfinalproject.controller.restController;
 
+import com.example.financialfinalproject.domain.dto.UpbitTokenDto;
 import com.example.financialfinalproject.domain.request.*;
 import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.service.EmailService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
 
@@ -39,7 +41,7 @@ public class UserRestController {
     }
 
     @ApiOperation(value = "유저 정보 조회")
-    @GetMapping("/info")
+    @GetMapping
     public ResponseEntity<Response<UserGetResponse>> getUserInfo(Authentication authentication) {
         String email = authentication.getName();
         log.info("userEmail:{}", email);
@@ -67,7 +69,7 @@ public class UserRestController {
     }
 
     @ApiOperation(value = "이메일 인증 성공하면 임시 비밀번호 발급")
-    @GetMapping("/temp/password")
+    @GetMapping("/password")
     public ResponseEntity<Response<String>> getTempPassword(@RequestParam String code, @RequestParam String email) {
         if (emailService.getData(code) == null) {
             return ResponseEntity.ok().body(Response.error("오류", "오류"));
@@ -78,7 +80,7 @@ public class UserRestController {
     }
 
     @ApiOperation(value = "유저 정보 수정")
-    @PostMapping("/modify")
+    @PostMapping
     public ResponseEntity<Response<UserPutResponse>> modifyUser(MultipartFile image, String userName, int removeClick, Authentication authentication) throws IOException {
 
         String email = authentication.getName();
@@ -96,6 +98,13 @@ public class UserRestController {
         log.info("userEmail:{}", email);
         Integer userId = userService.delete(email);
         return ResponseEntity.ok().body(Response.success("회원이 탈퇴되었습니다."));
+    }
+
+    @PostMapping("/UpbitToken")
+    @ApiOperation(value = "업비트 API key 저장", notes = "업비트 API key 저장")
+    public void save(@RequestBody UpbitTokenDto upbitTokenDto, @ApiIgnore Authentication authentication){
+        String email =  authentication.getName(); // email 추출
+        userService.save(upbitTokenDto,email);
     }
 
     @ApiOperation(value = "역할 변경")

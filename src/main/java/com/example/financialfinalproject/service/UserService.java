@@ -232,12 +232,7 @@ public class UserService {
                     .build();
         }
     }
-
-    private boolean isWrongPassword(String password, User user) {
-        return !encoder.matches(password, user.getPassword());
-    }
-
-
+    @Transactional
     public void save(UpbitTokenDto upbitTokenDto, String email){ // 업비트 accesskey, secretkey 저장
     User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
@@ -248,6 +243,10 @@ public class UserService {
     user.setSecretKey(upbitTokenDto.getSecretKey());
 
     userRepository.save(user);
+    }
+
+    private boolean isWrongPassword(String password, User user) {
+        return !encoder.matches(password, user.getPassword());
     }
 
 }
