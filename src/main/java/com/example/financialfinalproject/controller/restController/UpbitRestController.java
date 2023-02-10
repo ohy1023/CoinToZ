@@ -126,6 +126,19 @@ public class UpbitRestController {
         return response;
     }
 
+    @GetMapping("/orderOne") // 개별주문조회
+    @ApiOperation(value = "개별주문조회", notes = "개별주문조회")
+    public OrderOneResponse getOrderOne(@ApiIgnore Authentication authentication, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String email = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        String accessKey = user.get().getAccessKey();
+        String secretKey = user.get().getSecretKey();
+
+        OrderOneResponse orderOneResponse = upbitService.getOrderOne(accessKey,secretKey,uuid);
+        return orderOneResponse;
+    }
+
+
     @DeleteMapping // 주문취소
     @ApiOperation(value = "주문취소", notes = "주문취소")
     public OrderDeleteResponse getOrderDelete(@ApiIgnore Authentication authentication, @RequestParam String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {

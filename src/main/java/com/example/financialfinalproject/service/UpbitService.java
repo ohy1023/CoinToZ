@@ -98,14 +98,24 @@ public class UpbitService {
         params.put("ord_type", orderRequest.getOrd_type());
 
 
-        OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
+        OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params); // uuid 추출
+        UpbitToken orderOneToken = upbitJwtService.getOrderDeleteToken(accessKey,secretKey,orderResponse.getUuid());
 
-        OrderResponse orderList = getOrderList(accessKey,secretKey,"cancel",user).get(0);
-        OrderResponse orderListAsk = getOrderList(accessKey,secretKey,"done",user).get(0);
-        tradingDiaryService.write(orderResponse,user,orderList,orderListAsk);
+        OrderOneResponse orderOneResponse = upbitFeignClient.getOrderOne(orderOneToken.getUpbitToken(),orderResponse.getUuid());
+        tradingDiaryService.write(orderOneResponse, user);
 
         return orderResponse;
     }
+
+    //개별주문조회
+    public OrderOneResponse getOrderOne(String accessKey, String secretKey,String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getOrderDeleteToken(accessKey,secretKey,uuid); // 삭제랑 개별조회랑 토큰이 같아서 같이 사용
+        OrderOneResponse orderOneResponse = upbitFeignClient.getOrderOne(upbitToken.getUpbitToken(),uuid);
+        return orderOneResponse;
+    }
+
+
+
 
     // 주문리스트
     public List<OrderResponse> getOrderList(String accessKey, String secretKey, String state, User user) throws UnsupportedEncodingException, NoSuchAlgorithmException {

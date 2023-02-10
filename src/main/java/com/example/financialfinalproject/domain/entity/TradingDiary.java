@@ -21,7 +21,7 @@ public class TradingDiary {
     private String side;
     private LocalDateTime created_at; //주문시간
     private String market; // 코인
-    private Integer price; // 매수가격
+    private Double price; // 매수가격
     private Double volume; // 수량
     private String comment; // 메모
 
