@@ -100,7 +100,9 @@ public class UpbitService {
 
         OrderResponse orderResponse = upbitFeignClient.getOrder(upbitToken.getUpbitToken(),params);
 
-        tradingDiaryService.write(orderResponse,user);
+        OrderResponse orderList = getOrderList(accessKey,secretKey,"cancel",user).get(0);
+        OrderResponse orderListAsk = getOrderList(accessKey,secretKey,"done",user).get(0);
+        tradingDiaryService.write(orderResponse,user,orderList,orderListAsk);
 
         return orderResponse;
     }
@@ -115,10 +117,10 @@ public class UpbitService {
 
 
     // 주문취소
-    public OrderDeleteResponse getOrderDelete(String accessKey, String secretKey, String uuid) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public OrderDeleteResponse getOrderDelete(String accessKey, String secretKey, String uuid, String email) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UpbitToken upbitToken = upbitJwtService.getOrderDeleteToken(accessKey,secretKey,uuid);
         OrderDeleteResponse orderResponse = upbitFeignClient.getOrderDelete(upbitToken.getUpbitToken(),uuid);
-        tradingDiaryService.orderDelete(orderResponse);
+        tradingDiaryService.orderDelete(email,orderResponse);
 
         return orderResponse;
     }

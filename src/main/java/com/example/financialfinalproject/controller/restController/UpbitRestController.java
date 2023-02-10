@@ -134,7 +134,7 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        OrderDeleteResponse orderDeleteResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid);
+        OrderDeleteResponse orderDeleteResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid, email);
         return orderDeleteResponse;
     }
 

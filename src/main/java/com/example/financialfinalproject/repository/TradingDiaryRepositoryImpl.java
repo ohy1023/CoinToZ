@@ -24,7 +24,7 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
         return query.select(tradingDiary)
                 .from(tradingDiary)
                 .where(eqUser(user), betweenDate(startDate, endDate))
-                .orderBy(tradingDiary.bid_created_at.desc())
+                .orderBy(tradingDiary.created_at.desc())
                 .fetch();
     }
 
@@ -48,16 +48,8 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
     public List<TradingDiary> findAllByUserOrderByDate(User user) {
         return query.selectFrom(tradingDiary)
                 .where(eqUser(user))
-                .orderBy(tradingDiary.bid_created_at.desc())
+                .orderBy(tradingDiary.created_at.desc())
                 .fetch();
-    }
-
-    @Override
-    public Double findAvgRevenue(User user, LocalDateTime startDate, LocalDateTime endDate) {
-        return query.select(tradingDiary.revenue.avg())
-                .from(tradingDiary)
-                .where(eqUser(user), betweenDate(startDate,endDate))
-                .fetchOne();
     }
 
     private BooleanExpression betweenDate(LocalDateTime start, LocalDateTime end) {
@@ -65,7 +57,7 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
         if (start == null || end == null) {
             return null;
         }
-        return tradingDiary.bid_created_at.between(start, end);
+        return tradingDiary.created_at.between(start, end);
     }
 
     private BooleanExpression eqUser(User user) {

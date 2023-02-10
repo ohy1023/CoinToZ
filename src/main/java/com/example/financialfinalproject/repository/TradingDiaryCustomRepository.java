@@ -21,5 +21,5 @@ public interface TradingDiaryCustomRepository {
 
     List<TradingDiary> findAllByUserOrderByDate(User user);
 
-    Double findAvgRevenue(User user,LocalDateTime startDate, LocalDateTime endDate);
+
 }

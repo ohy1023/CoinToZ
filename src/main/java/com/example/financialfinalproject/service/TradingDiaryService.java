@@ -1,5 +1,6 @@
 package com.example.financialfinalproject.service;
 
+import com.example.financialfinalproject.controller.restController.UpbitRestController;
 import com.example.financialfinalproject.domain.dto.TradingDiaryDto;
 import com.example.financialfinalproject.domain.dto.TradingDiaryListDto;
 import com.example.financialfinalproject.domain.entity.TradingDiary;
@@ -20,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.financialfinalproject.exception.ErrorCode.EMAIL_NOT_FOUND;
-import static com.example.financialfinalproject.exception.ErrorCode.USERNAME_NOT_FOUND;
+import static com.example.financialfinalproject.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -31,6 +31,7 @@ public class TradingDiaryService {
     private final TradingDiaryRepository tradingDiaryRepository;
     private final UserRepository userRepository;
 
+
     private String BitCoin = "KRW-BTC";
     private String Ethereum = "KRW-ETH";
     private String Ripple = "KRW-XRP";
@@ -38,15 +39,15 @@ public class TradingDiaryService {
     private String DogeCoin = "KRW-DOGE";
 
 
-    public List<TradingDiaryListDto> listOf(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
-                });
-        return tradingDiaryRepository.findAllByUserOrderByDate(user)
-                .stream().map(TradingDiaryListDto::toDto).collect(Collectors.toList());
-
-    }
+//    public List<TradingDiaryListDto> listOf(String email) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> {
+//                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+//                });
+//        return tradingDiaryRepository.findAllByUserOrderByDate(user)
+//                .stream().map(TradingDiaryListDto::toDto).collect(Collectors.toList());
+//
+//    }
 
     public MyCoinCntResponse getCoins(String email) {
         User user = userRepository.findByEmail(email)
@@ -72,39 +73,37 @@ public class TradingDiaryService {
 
     }
 
-    public List<TradingDiaryListDto> findListByCond(String email, String startDate, String endDate) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
-                });
-        log.info("{}", LocalDateTime.parse(startDate));
-        log.info("{}", LocalDateTime.parse(endDate));
+//    public List<TradingDiaryListDto> findListByCond(String email, String startDate, String endDate) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> {
+//                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+//                });
+//        log.info("{}", LocalDateTime.parse(startDate));
+//        log.info("{}", LocalDateTime.parse(endDate));
+//
+//        return tradingDiaryRepository.searchDateRange(user, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate))
+//                .stream().map(TradingDiaryListDto::toDto).collect(Collectors.toList());
+//
+//    }
 
-        return tradingDiaryRepository.searchDateRange(user, LocalDateTime.parse(startDate), LocalDateTime.parse(endDate))
-                .stream().map(TradingDiaryListDto::toDto).collect(Collectors.toList());
+//    public Double avgRevenueByTime(String email, int startTime, int endTime) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> {
+//                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
+//                });
+//
+//        LocalDateTime today = LocalDateTime.now();
+//
+//        LocalDateTime start = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), startTime, 0,0);
+//        LocalDateTime end = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), endTime, 59, 59);
+//
+//        return (tradingDiaryRepository.findAvgRevenue(user, start, end)) == null ? 0 : (tradingDiaryRepository.findAvgRevenue(user, start, end));
+//    }
 
-    }
+    public void write(OrderResponse orderResponse, User user, OrderResponse response, OrderResponse ask) {
 
-    public Double avgRevenueByTime(String email, int startTime, int endTime) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
-                });
-
-        LocalDateTime today = LocalDateTime.now();
-
-        LocalDateTime start = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), startTime, 0,0);
-        LocalDateTime end = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), endTime, 59, 59);
-
-        return (tradingDiaryRepository.findAvgRevenue(user, start, end)) == null ? 0 : (tradingDiaryRepository.findAvgRevenue(user, start, end));
-    }
-
-    public void write(OrderResponse orderResponse, User user) {
 
         userRepository.findById(user.getId()).orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "해당 user 를 찾을 수 없습니다."));
-
-        // 수수료 반올림
-        int fee = (int) Math.round(orderResponse.getPaid_fee());
 
 
         // 지정가 기준
@@ -114,11 +113,13 @@ public class TradingDiaryService {
             if (orderResponse.getSide().equals("bid")) {
 
                 TradingDiary tradingDiary = TradingDiary.builder()
-                        .bid_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .ord_type(orderResponse.getOrd_type())
+                        .side(orderResponse.getSide())
+                        .created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
                         .market(orderResponse.getMarket())
-                        .bid_price(orderResponse.getPrice() + fee) // 매수가격(수수료 포함)
+                        .price(orderResponse.getPrice()) // 매수가격(수수료 포함)
                         .volume(Double.valueOf(orderResponse.getVolume())) // 내가 지정한 코인수량
-                        .bidUuid(orderResponse.getUuid())
+                        .uuid(orderResponse.getUuid())
                         .user(user)
                         .build();
 
@@ -128,17 +129,18 @@ public class TradingDiaryService {
             // 매도 - 지정한 수량, 가격으로 매도
             else if (orderResponse.getSide().equals("ask")) {
 
-                TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
-                tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])); // 매도시간
-                tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
-                tradingDiarys.setAskUuid(orderResponse.getUuid());
+                TradingDiary tradingDiary = TradingDiary.builder()
+                        .ord_type(orderResponse.getOrd_type())
+                        .side(orderResponse.getSide())
+                        .created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .market(orderResponse.getMarket())
+                        .price(orderResponse.getPrice()) // 매수가격(수수료 포함)
+                        .volume(Double.valueOf(orderResponse.getVolume())) // 내가 지정한 코인수량
+                        .uuid(orderResponse.getUuid())
+                        .user(user)
+                        .build();
 
-                tradingDiarys.setArbitrage(tradingDiarys.getAsk_price() - tradingDiarys.getBid_price()); // 차익 (매수가격 - 매도가격)
-
-                double revenue = ((double) tradingDiarys.getBid_price() / (double) tradingDiarys.getArbitrage()); // 수익률 계산
-                tradingDiarys.setRevenue(Math.round(revenue * 100) / 100.0); // 수익률 (소숫점 2자리 까지 표현)
-
-                tradingDiaryRepository.save(tradingDiarys);
+                tradingDiaryRepository.save(tradingDiary);
             }
 
         }
@@ -148,11 +150,13 @@ public class TradingDiaryService {
             if (orderResponse.getSide().equals("bid")) {
 
                 TradingDiary tradingDiary = TradingDiary.builder()
-                        .bid_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .ord_type(orderResponse.getOrd_type())
+                        .side(orderResponse.getSide())
+                        .created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
                         .market(orderResponse.getMarket())
-                        .bid_price(orderResponse.getPrice() + fee) // 매수가격(수수료 포함)
-                        .volume(Double.valueOf(orderResponse.getExecuted_volume())) // 거래 된 수량 ( 금액에 맞춰서 구매 된 코인 수량)
-                        .bidUuid(orderResponse.getUuid())
+                        .price(orderResponse.getPrice()) // 매수가격
+                        .volume(Double.valueOf(response.getExecuted_volume())) // 거래 된 수량 ( 금액에 맞춰서 구매 된 코인 수량)
+                        .uuid(orderResponse.getUuid())
                         .user(user)
                         .build();
 
@@ -162,34 +166,35 @@ public class TradingDiaryService {
             // 매도 - 가진 수량을 다 팔았을 경우 (시장가 기준)
             else if (orderResponse.getSide().equals("ask")) {
 
-                TradingDiary tradingDiarys = tradingDiaryRepository.findByMarket(orderResponse.getMarket());
-                tradingDiarys.setAsk_created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])); // 매도시간
-                tradingDiarys.setAsk_price(orderResponse.getPrice() + fee); // 매도가격(수수료 포함)
-                tradingDiarys.setAskUuid(orderResponse.getUuid());
+                TradingDiary tradingDiary = TradingDiary.builder()
+                        .ord_type(orderResponse.getOrd_type())
+                        .side(orderResponse.getSide())
+                        .created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .market(orderResponse.getMarket())
+                        .price(Integer.valueOf(orderResponse.getPrice())) // 매도가격
+                        .volume(Double.valueOf(orderResponse.getVolume()))
+                        .uuid(orderResponse.getUuid())// 거래 된 수량 ( 금액에 맞춰서 구매 된 코인 수량
+                        .user(user)
+                        .build();
 
-                tradingDiarys.setArbitrage(tradingDiarys.getAsk_price() - tradingDiarys.getBid_price()); // 차익 (매수가격 - 매도가격)
-
-                double revenue = ((double) tradingDiarys.getBid_price() / (double) tradingDiarys.getArbitrage()); // 수익률 계산
-                tradingDiarys.setRevenue(Math.round(revenue * 100) / 100.0); // 수익률 (소숫점 2자리 까지 표현)
-
-                tradingDiaryRepository.save(tradingDiarys);
+                tradingDiaryRepository.save(tradingDiary);
             }
 
 
 
     }
 
-    public TradingDiaryDto edit(Long id, String comment) {
+    public TradingDiaryDto edit(Long id, String comment, String email) {
 
-        Optional<TradingDiary> tradingDiary = tradingDiaryRepository.findById(id);
-        tradingDiary.orElseThrow(() -> new AppException(ErrorCode.DIARY_NOT_FOUND, "해당 일지가 없습니다."));
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new AppException(EMAIL_NOT_FOUND,"해당 user의 일지가 없습니다."));
 
-        TradingDiary tradingDiaryEdit = tradingDiary.get();
 
-        tradingDiaryEdit.setComment(comment);
+        TradingDiary tradingDiary = tradingDiaryRepository.findByUserIdAndId(user.getId(),id)
+                .orElseThrow(()-> new AppException(DIARY_NOT_FOUND,"해당 일지가 없습니다."));
 
-        tradingDiaryRepository.save(tradingDiaryEdit);
+        tradingDiary.setComment(comment);
 
+        tradingDiaryRepository.save(tradingDiary);
 
         return TradingDiaryDto.builder()
                 .message("메모가 작성되었습니다.")
@@ -197,9 +202,11 @@ public class TradingDiaryService {
     }
 
 
-    public TradingDiaryDto delete(Long id) {
+    public TradingDiaryDto delete(String email, Long id) {
 
-        Optional<TradingDiary> tradingDiary = tradingDiaryRepository.findById(id);
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new AppException(EMAIL_NOT_FOUND,"해당 user의 일지가 없습니다."));
+
+        Optional<TradingDiary> tradingDiary = tradingDiaryRepository.findByUserIdAndId(user.getId(),id);
         tradingDiary.orElseThrow(() -> new AppException(ErrorCode.DIARY_NOT_FOUND, "해당 일지가 없습니다."));
 
         tradingDiaryRepository.deleteById(id);
@@ -210,17 +217,12 @@ public class TradingDiaryService {
     }
 
     //주문취소
-    public TradingDiaryDto orderDelete(OrderDeleteResponse orderDeleteResponse){
+    public TradingDiaryDto orderDelete(String email, OrderDeleteResponse orderDeleteResponse){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new AppException(EMAIL_NOT_FOUND,"해당 user의 일지가 없습니다."));
 
-        if (orderDeleteResponse.getSide().equals("bid")) {
-            tradingDiaryRepository.deleteByBidUuid(orderDeleteResponse.getUuid());
-        }
+        tradingDiaryRepository.deleteByUuidAndUserId(orderDeleteResponse.getUuid(),user.getId());
 
-       else if (orderDeleteResponse.getSide().equals("ask")) {
-            tradingDiaryRepository.deleteByAskUuid(orderDeleteResponse.getUuid());
-        }
-
-    return  TradingDiaryDto.builder()
+        return  TradingDiaryDto.builder()
             .message("주문이 취소되어 일지가 삭제되었습니다.")
             .build();
     }

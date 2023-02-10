@@ -17,5 +17,7 @@ public class OrderResponse {
     private String created_at; // 주문생성시간
     private Double paid_fee; // 수수료
     private String executed_volume;// 체결된 양
+    private String locked; // 거래비용
+
 
 }

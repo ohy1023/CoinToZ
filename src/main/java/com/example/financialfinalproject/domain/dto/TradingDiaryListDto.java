@@ -37,20 +37,20 @@ public class TradingDiaryListDto {
         this.comment = comment;
     }
 
-    public static TradingDiaryListDto toDto(TradingDiary tradingDiary) {
-        String bidCreateAt = tradingDiary.getBid_created_at().format(DateTimeFormatter.ofPattern("MM월 dd일 HH:mm"));
-
-        return TradingDiaryListDto.builder()
-                .id(tradingDiary.getId())
-                .arbitrage(tradingDiary.getArbitrage())
-                .bid_created_at(bidCreateAt)
-                .ask_price(tradingDiary.getAsk_price())
-                .bid_price(tradingDiary.getBid_price())
-                .market(tradingDiary.getMarket())
-                .comment(tradingDiary.getComment())
-                .volume(tradingDiary.getVolume())
-                .revenue(tradingDiary.getRevenue())
-                .build();
-    }
+//    public static TradingDiaryListDto toDto(TradingDiary tradingDiary) {
+//        String bidCreateAt = tradingDiary.getBid_created_at().format(DateTimeFormatter.ofPattern("MM월 dd일 HH:mm"));
+//
+//        return TradingDiaryListDto.builder()
+//                .id(tradingDiary.getId())
+//                .arbitrage(tradingDiary.getArbitrage())
+//                .bid_created_at(bidCreateAt)
+//                .ask_price(tradingDiary.getAsk_price())
+//                .bid_price(tradingDiary.getBid_price())
+//                .market(tradingDiary.getMarket())
+//                .comment(tradingDiary.getComment())
+//                .volume(tradingDiary.getVolume())
+//                .revenue(tradingDiary.getRevenue())
+//                .build();
+//    }
 
 }
