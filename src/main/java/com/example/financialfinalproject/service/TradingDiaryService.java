@@ -16,6 +16,7 @@ import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -50,6 +51,7 @@ public class TradingDiaryService {
 //
 //    }
 
+    @Transactional
     public MyCoinCntResponse getCoins(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
@@ -101,6 +103,7 @@ public class TradingDiaryService {
 //        return (tradingDiaryRepository.findAvgRevenue(user, start, end)) == null ? 0 : (tradingDiaryRepository.findAvgRevenue(user, start, end));
 //    }
 
+    @Transactional
     public void write(OrderOneResponse orderOneResponse, User user, OrderResponse orderResponse) {
 
 
@@ -151,7 +154,7 @@ public class TradingDiaryService {
 
            // 매수 - 시장가 기준 (금액 만큼 팔았을 경우)
             if (orderOneResponse.getSide().equals("bid")) {
-
+                log.info("test:{}",orderOneResponse.getExecuted_volume());
                 TradingDiary tradingDiary = TradingDiary.builder()
                         .ord_type(orderOneResponse.getOrd_type())
                         .side(orderOneResponse.getSide())
@@ -169,7 +172,7 @@ public class TradingDiaryService {
             // 매도 - 가진 수량을 다 팔았을 경우 (시장가 기준)
 
             if (orderOneResponse.getSide().equals("ask")) {
-
+                    log.info("test2:{}",orderOneResponse.getTrades().get(0));
                     TradingDiary tradingDiary = TradingDiary.builder()
                             .ord_type(orderOneResponse.getOrd_type())
                             .side(orderOneResponse.getSide())
@@ -189,6 +192,7 @@ public class TradingDiaryService {
 
 
 
+    @Transactional
     public TradingDiaryDto edit(Long id, String comment, String email) {
 
         User user = userRepository.findByEmail(email).orElseThrow(()-> new AppException(EMAIL_NOT_FOUND,"해당 user의 일지가 없습니다."));
@@ -207,6 +211,7 @@ public class TradingDiaryService {
     }
 
 
+    @Transactional
     public TradingDiaryDto delete(String email, Long id) {
 
         User user = userRepository.findByEmail(email).orElseThrow(()-> new AppException(EMAIL_NOT_FOUND,"해당 user의 일지가 없습니다."));
@@ -222,6 +227,7 @@ public class TradingDiaryService {
     }
 
     //주문취소
+    @Transactional
     public TradingDiaryDto orderDelete(String email, OrderDeleteResponse orderDeleteResponse){
         User user = userRepository.findByEmail(email).orElseThrow(()-> new AppException(EMAIL_NOT_FOUND,"해당 user의 일지가 없습니다."));
 

@@ -22,6 +22,8 @@ public class OrderOneResponse {
     private List<trades> trades;
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class trades { // 호가 정보
         private String uuid; // 주문 ID
         private String market; // 마켓 ID(KRW-BTC)

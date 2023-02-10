@@ -115,7 +115,7 @@ public class UpbitRestController {
 
     @PostMapping("/order") // 주문하기
     @ApiOperation(value = "주문하기", notes = "주문하기")
-    public OrderResponse getOrder(@ApiIgnore Authentication authentication, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException {
+    public OrderResponse getOrder(@ApiIgnore Authentication authentication, @RequestBody OrderRequest orderRequest) throws UnsupportedEncodingException, NoSuchAlgorithmException, JsonProcessingException, InterruptedException {
 
         String email = authentication.getName();
         Optional<User> user = userRepository.findByEmail(email);
