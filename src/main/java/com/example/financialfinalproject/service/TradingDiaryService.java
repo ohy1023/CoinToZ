@@ -101,26 +101,26 @@ public class TradingDiaryService {
 //        return (tradingDiaryRepository.findAvgRevenue(user, start, end)) == null ? 0 : (tradingDiaryRepository.findAvgRevenue(user, start, end));
 //    }
 
-    public void write(OrderOneResponse orderOneResponse, User user) {
+    public void write(OrderOneResponse orderOneResponse, User user, OrderResponse orderResponse) {
 
 
         userRepository.findById(user.getId()).orElseThrow(() -> new AppException(USERNAME_NOT_FOUND, "해당 user 를 찾을 수 없습니다."));
 
 
         // 지정가 기준
-        if(orderOneResponse.getOrd_type().equals("limit")) {
+        if(orderResponse.getOrd_type().equals("limit")) {
 
             // 매수 - 지정한 수량, 가격으로 매수
-            if (orderOneResponse.getSide().equals("bid")) {
+            if (orderResponse.getSide().equals("bid")) {
 
                 TradingDiary tradingDiary = TradingDiary.builder()
-                        .ord_type(orderOneResponse.getOrd_type())
-                        .side(orderOneResponse.getSide())
+                        .ord_type(orderResponse.getOrd_type())
+                        .side(orderResponse.getSide())
                         .created_at(LocalDateTime.parse(orderOneResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
-                        .market(orderOneResponse.getMarket())
-                        .price(Double.valueOf(orderOneResponse.getPrice())) // 매수가격(수수료 포함)
-                        .volume(Double.valueOf(orderOneResponse.getVolume())) // 내가 지정한 코인수량
-                        .uuid(orderOneResponse.getUuid())
+                        .market(orderResponse.getMarket())
+                        .price(Double.valueOf(orderResponse.getPrice())) // 매수가격(수수료 포함)
+                        .volume(Double.valueOf(orderResponse.getVolume())) // 내가 지정한 코인수량
+                        .uuid(orderResponse.getUuid())
                         .user(user)
                         .build();
 
@@ -128,16 +128,16 @@ public class TradingDiaryService {
             }
 
             // 매도 - 지정한 수량, 가격으로 매도
-            else if (orderOneResponse.getSide().equals("ask")) {
+            else if (orderResponse.getSide().equals("ask")) {
 
                 TradingDiary tradingDiary = TradingDiary.builder()
-                        .ord_type(orderOneResponse.getOrd_type())
-                        .side(orderOneResponse.getSide())
-                        .created_at(LocalDateTime.parse(orderOneResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
-                        .market(orderOneResponse.getMarket())
-                        .price(Double.valueOf(orderOneResponse.getPrice())) // 매수가격(수수료 포함)
-                        .volume(Double.valueOf(orderOneResponse.getVolume())) // 내가 지정한 코인수량
-                        .uuid(orderOneResponse.getUuid())
+                        .ord_type(orderResponse.getOrd_type())
+                        .side(orderResponse.getSide())
+                        .created_at(LocalDateTime.parse(orderResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                        .market(orderResponse.getMarket())
+                        .price(Double.valueOf(orderResponse.getPrice())) // 매수가격(수수료 포함)
+                        .volume(Double.valueOf(orderResponse.getVolume())) // 내가 지정한 코인수량
+                        .uuid(orderResponse.getUuid())
                         .user(user)
                         .build();
 
@@ -145,6 +145,8 @@ public class TradingDiaryService {
             }
 
         }
+
+        if(orderResponse.getOrd_type().equals("market") || orderResponse.getOrd_type().equals("price")) {
 
 
            // 매수 - 시장가 기준 (금액 만큼 팔았을 경우)
@@ -165,25 +167,27 @@ public class TradingDiaryService {
             }
 
             // 매도 - 가진 수량을 다 팔았을 경우 (시장가 기준)
-            else if (orderOneResponse.getSide().equals("ask")) {
 
-                TradingDiary tradingDiary = TradingDiary.builder()
-                        .ord_type(orderOneResponse.getOrd_type())
-                        .side(orderOneResponse.getSide())
-                        .created_at(LocalDateTime.parse(orderOneResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
-                        .market(orderOneResponse.getMarket())
-                        .price(orderOneResponse.getTrades().get(0).getFunds()) // 매도가격
-                        .volume(orderOneResponse.getVolume())
-                        .uuid(orderOneResponse.getUuid())// 거래 된 수량 ( 금액에 맞춰서 구매 된 코인 수량
-                        .user(user)
-                        .build();
+            if (orderOneResponse.getSide().equals("ask")) {
 
-                tradingDiaryRepository.save(tradingDiary);
+                    TradingDiary tradingDiary = TradingDiary.builder()
+                            .ord_type(orderOneResponse.getOrd_type())
+                            .side(orderOneResponse.getSide())
+                            .created_at(LocalDateTime.parse(orderOneResponse.getCreated_at().split("\\+")[0])) // 매수 주문시간
+                            .market(orderOneResponse.getMarket())
+                            .price(orderOneResponse.getTrades().get(0).getFunds()) // 매도가격
+                            .volume(orderOneResponse.getVolume())
+                            .uuid(orderOneResponse.getUuid())// 거래 된 수량 ( 금액에 맞춰서 구매 된 코인 수량
+                            .user(user)
+                            .build();
+
+                    tradingDiaryRepository.save(tradingDiary);
+                }
             }
 
-
-
     }
+
+
 
     public TradingDiaryDto edit(Long id, String comment, String email) {
 

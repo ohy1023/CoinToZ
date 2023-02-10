@@ -102,7 +102,7 @@ public class UpbitService {
         UpbitToken orderOneToken = upbitJwtService.getOrderDeleteToken(accessKey,secretKey,orderResponse.getUuid());
 
         OrderOneResponse orderOneResponse = upbitFeignClient.getOrderOne(orderOneToken.getUpbitToken(),orderResponse.getUuid());
-        tradingDiaryService.write(orderOneResponse, user);
+        tradingDiaryService.write(orderOneResponse, user, orderResponse);
 
         return orderResponse;
     }
