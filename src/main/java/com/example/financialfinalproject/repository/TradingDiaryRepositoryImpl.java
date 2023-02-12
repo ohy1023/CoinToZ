@@ -29,22 +29,6 @@ public class TradingDiaryRepositoryImpl implements TradingDiaryCustomRepository 
     }
 
     @Override
-    public Double findSumVolumeByUser(User user) {
-        return query.select(tradingDiary.volume.sum())
-                .from(tradingDiary)
-                .where(eqUser(user))
-                .fetchOne();
-    }
-
-    @Override
-    public Double findSumVolumeByMarketContainingAndUser(String market, User user) {
-        return query.select(tradingDiary.volume.sum())
-                .from(tradingDiary)
-                .where(eqMarket(market), eqUser(user))
-                .fetchOne();
-    }
-
-    @Override
     public List<TradingDiary> findAllByUserOrderByDate(User user) {
         return query.selectFrom(tradingDiary)
                 .where(eqUser(user))

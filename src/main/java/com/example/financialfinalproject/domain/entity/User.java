@@ -36,6 +36,8 @@ public class User extends BaseEntity {
 
     private String secretKey;
 
+    private Double rateOfReturn;
+
     @Column(columnDefinition = "longtext")
     private String imageUrl;
 
@@ -82,11 +84,14 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(Integer id, String userName, String password, String email, String imageUrl, UserRole userRole, SocialType socialType, String socialId, List<Post> posts) {
+    public User(Integer id, String userName, String password, String email, String accessKey, String secretKey, Double rateOfReturn, String imageUrl, UserRole userRole, SocialType socialType, String socialId, List<Post> posts) {
         this.id = id;
         this.userName = userName;
         this.password = password;
         this.email = email;
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.rateOfReturn = rateOfReturn;
         this.imageUrl = imageUrl;
         this.userRole = userRole;
         this.socialType = socialType;
