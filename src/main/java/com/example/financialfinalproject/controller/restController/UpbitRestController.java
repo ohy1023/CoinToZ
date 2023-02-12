@@ -1,6 +1,7 @@
 package com.example.financialfinalproject.controller.restController;
 
 import com.example.financialfinalproject.domain.entity.User;
+import com.example.financialfinalproject.domain.response.Response;
 import com.example.financialfinalproject.domain.upbit.candle.CandleDayDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMinuteDto;
 import com.example.financialfinalproject.domain.upbit.candle.CandleMonthDto;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -235,6 +237,15 @@ public class UpbitRestController {
         List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
         return withDraws;
     }
+
+    @ApiOperation(value = "수익률 조회")
+    @GetMapping("/revenue")
+    public ResponseEntity<Response<Double>> find(Authentication authentication){
+        String email = authentication.getName();
+        Double avg = upbitService.avgRevenueCalculation(email);
+        return ResponseEntity.ok().body(Response.success(avg));
+    }
+
 
 
 }

@@ -15,10 +15,6 @@ public interface TradingDiaryCustomRepository {
 
     List<TradingDiary> searchDateRange(User user, LocalDateTime startDate, LocalDateTime endDate);
 
-    Double findSumVolumeByUser(User user);
-
-    Double findSumVolumeByMarketContainingAndUser(String market, User user);
-
     List<TradingDiary> findAllByUserOrderByDate(User user);
 
 

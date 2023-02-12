@@ -15,42 +15,42 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class TradingDiaryListDto {
     private Long id;
-    private String bid_created_at; // 매수 주문시간
+    private String ord_type; // 주문방식
+    private String side; // 매수 매도
+    private String created_at; //주문시간
     private String market; // 코인
-    private Integer bid_price; // 매수가격
-    private Integer ask_price; // 매도가격
+    private Double price; // 매수가격
     private Double volume; // 수량
-    private Integer arbitrage; // 차익
-    private Double revenue; // 수익률 (수수료반영)
     private String comment; // 메모
 
     @Builder
-    public TradingDiaryListDto(Long id, String bid_created_at, String market, Integer bid_price, Integer ask_price, Double volume, Integer arbitrage, Double revenue, String comment) {
+    public TradingDiaryListDto(Long id, String ord_type, String side, String created_at, String market, Double price, Double volume, String comment) {
         this.id = id;
-        this.bid_created_at = bid_created_at;
+        this.ord_type = ord_type;
+        this.side = side;
+        this.created_at = created_at;
         this.market = market;
-        this.bid_price = bid_price;
-        this.ask_price = ask_price;
+        this.price = price;
         this.volume = volume;
-        this.arbitrage = arbitrage;
-        this.revenue = revenue;
         this.comment = comment;
     }
 
-//    public static TradingDiaryListDto toDto(TradingDiary tradingDiary) {
-//        String bidCreateAt = tradingDiary.getBid_created_at().format(DateTimeFormatter.ofPattern("MM월 dd일 HH:mm"));
-//
-//        return TradingDiaryListDto.builder()
-//                .id(tradingDiary.getId())
-//                .arbitrage(tradingDiary.getArbitrage())
-//                .bid_created_at(bidCreateAt)
-//                .ask_price(tradingDiary.getAsk_price())
-//                .bid_price(tradingDiary.getBid_price())
-//                .market(tradingDiary.getMarket())
-//                .comment(tradingDiary.getComment())
-//                .volume(tradingDiary.getVolume())
-//                .revenue(tradingDiary.getRevenue())
-//                .build();
-//    }
+    public static TradingDiaryListDto toDto(TradingDiary tradingDiary) {
+        String createAt = tradingDiary.getCreated_at().format(DateTimeFormatter.ofPattern("MM월 dd일 HH:mm"));
+        String orderType = tradingDiary.getOrd_type().equals("limit") ? "지정가" : "시장가";
+        String sideType = tradingDiary.getSide().equals("bid") ? "매수" : "매도";
+
+        return TradingDiaryListDto.builder()
+                .id(tradingDiary.getId())
+                .ord_type(orderType)
+                .side(sideType)
+                .volume(tradingDiary.getVolume())
+                .market(tradingDiary.getMarket())
+                .comment(tradingDiary.getComment())
+                .price(tradingDiary.getPrice())
+                .created_at(createAt)
+                .build();
+    }
+
 
 }
