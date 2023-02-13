@@ -89,11 +89,14 @@ public class UserService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
         String date = user.getRegisteredAt().format(formatter);
+        boolean needKey = (user.getAccessKey() == null || user.getAccessKey().isEmpty()) || (user.getSecretKey() == null || user.getSecretKey().isEmpty());
+        log.info("boolean:{}", needKey);
         return UserGetResponse.builder()
                 .userName(user.getUserName())
                 .email(user.getEmail())
                 .imageUrl(user.getImageUrl())
                 .createAt(date)
+                .needUpbitKey(needKey)
                 .build();
 
     }
@@ -232,17 +235,18 @@ public class UserService {
                     .build();
         }
     }
+
     @Transactional
-    public void save(UpbitTokenDto upbitTokenDto, String email){ // 업비트 accesskey, secretkey 저장
-    User user = userRepository.findByEmail(email)
+    public void save(UpbitTokenDto upbitTokenDto, String email) { // 업비트 accesskey, secretkey 저장
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     throw new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage());
                 });
 
-    user.setAccessKey(upbitTokenDto.getAccessKey());
-    user.setSecretKey(upbitTokenDto.getSecretKey());
+        user.setAccessKey(upbitTokenDto.getAccessKey());
+        user.setSecretKey(upbitTokenDto.getSecretKey());
 
-    userRepository.save(user);
+        userRepository.save(user);
     }
 
     private boolean isWrongPassword(String password, User user) {

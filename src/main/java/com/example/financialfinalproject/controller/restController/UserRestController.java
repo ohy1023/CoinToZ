@@ -102,9 +102,10 @@ public class UserRestController {
 
     @PostMapping("/UpbitToken")
     @ApiOperation(value = "업비트 API key 저장", notes = "업비트 API key 저장")
-    public void save(@RequestBody UpbitTokenDto upbitTokenDto, @ApiIgnore Authentication authentication){
+    public ResponseEntity<Response<String>> save(@RequestBody UpbitTokenDto upbitTokenDto, @ApiIgnore Authentication authentication){
         String email =  authentication.getName(); // email 추출
         userService.save(upbitTokenDto,email);
+        return ResponseEntity.ok().body(Response.success("등록 성공!"));
     }
 
     @ApiOperation(value = "역할 변경")
