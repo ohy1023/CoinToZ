@@ -2,12 +2,14 @@ package com.example.financialfinalproject.service;
 
 import com.example.financialfinalproject.domain.dto.PostDetailDto;
 import com.example.financialfinalproject.domain.dto.PostDto;
+import com.example.financialfinalproject.domain.entity.Like;
 import com.example.financialfinalproject.domain.entity.Post;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserPostEditRequest;
 import com.example.financialfinalproject.domain.request.UserPostRequest;
 import com.example.financialfinalproject.domain.response.UserPostDetailResponse;
 import com.example.financialfinalproject.exception.AppException;
+import com.example.financialfinalproject.repository.LikeRepository;
 import com.example.financialfinalproject.repository.PostRepository;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ import static com.example.financialfinalproject.exception.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private final LikeRepository likeRepository;
 
     private final PostRepository postRepository;
 
@@ -94,6 +97,28 @@ public class PostService {
     public List<UserPostDetailResponse> list(Pageable pageable) {
 
         Page<Post> list = postRepository.findAll(pageable);
+
+        List<UserPostDetailResponse> responseList = list.stream()
+                .map(lists -> UserPostDetailResponse.builder()
+                        .id(lists.getId())
+                        .title(lists.getTitle())
+                        .body(lists.getBody())
+                        .userName(lists.getUser().getUserName())
+                        .createdAt(lists.getRegisteredAt())
+                        .lastModifiedAt(lists.getUpdatedAt())
+                        .build())
+                .collect(Collectors.toList());
+
+        return responseList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserPostDetailResponse> getMyPosts(Pageable pageable, String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
+
+        Page<Post> list = postRepository.findAllByUser(pageable, user);
 
         List<UserPostDetailResponse> responseList = list.stream()
                 .map(lists -> UserPostDetailResponse.builder()
