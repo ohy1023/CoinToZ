@@ -43,7 +43,7 @@ public class UpbitRestController {
 
     @GetMapping("/getMarket")
     @ApiOperation(value = "마켓 코드 조회", notes = "업비트에서 거래 가능한 마켓 목록")
-    public List<MarketDto> getMarket(@RequestParam(defaultValue = "false") Boolean isDetails){
+    public List<MarketDto> getMarket(@RequestParam(defaultValue = "false") Boolean isDetails) {
         List<MarketDto> markets = upbitService.getMarket(isDetails);
         return markets;
     }
@@ -78,7 +78,7 @@ public class UpbitRestController {
 
     @GetMapping("/ticker") // 현재가 정보
     @ApiOperation(value = "현재가 정보", notes = "현재가 정보")
-    public Ticker getTicker(@RequestParam String coin){
+    public Ticker getTicker(@RequestParam String coin) {
         Ticker tickerList = upbitService.getTicker(coin);
         return tickerList;
 
@@ -86,7 +86,7 @@ public class UpbitRestController {
 
     @GetMapping("/orderbook")
     @ApiOperation(value = "호가 정보", notes = "호가 정보")
-    public OrderBook getOrderBook(@RequestParam String coin){
+    public OrderBook getOrderBook(@RequestParam String coin) {
         OrderBook orderbookUnitsList = upbitService.getOrderBook(coin);
         return orderbookUnitsList;
     }
@@ -94,7 +94,7 @@ public class UpbitRestController {
 
     @GetMapping("/trade")
     @ApiOperation(value = "체결 정보", notes = "체결 정보")
-    public List<Trade> getTrade(@RequestParam String coin, @RequestParam Integer count){
+    public List<Trade> getTrade(@RequestParam String coin, @RequestParam Integer count) {
         List<Trade> tradeResponse = upbitService.getTrade(coin, count);
         return tradeResponse;
     }
@@ -104,14 +104,14 @@ public class UpbitRestController {
 
     @GetMapping("/acount") //전체 계좌조회
     @ApiOperation(value = "전체계좌조회", notes = "전체계좌조회")
-    public List<Acount> getAcount(@ApiIgnore Authentication authentication){
+    public List<Acount> getAcount(@ApiIgnore Authentication authentication) {
 
         String email = authentication.getName();
         Optional<User> user = userRepository.findByEmail(email);
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        List<Acount> acounts = upbitService.getAcount(accessKey,secretKey);
+        List<Acount> acounts = upbitService.getAcount(accessKey, secretKey);
         return acounts;
     }
 
@@ -124,7 +124,7 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        OrderResponse response = upbitService.getOrder(accessKey,secretKey,orderRequest,user.get());
+        OrderResponse response = upbitService.getOrder(accessKey, secretKey, orderRequest, user.get());
         return response;
     }
 
@@ -136,7 +136,7 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        OrderOneResponse orderOneResponse = upbitService.getOrderOne(accessKey,secretKey,uuid);
+        OrderOneResponse orderOneResponse = upbitService.getOrderOne(accessKey, secretKey, uuid);
         return orderOneResponse;
     }
 
@@ -150,7 +150,7 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        OrderDeleteResponse orderDeleteResponse = upbitService.getOrderDelete(accessKey,secretKey,uuid, email);
+        OrderDeleteResponse orderDeleteResponse = upbitService.getOrderDelete(accessKey, secretKey, uuid, email);
         return orderDeleteResponse;
     }
 
@@ -163,36 +163,35 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey,secretKey, state, user.get());
-
+        List<OrderResponse> orderResponses = upbitService.getOrderList(accessKey, secretKey, state, user.get());
 
 
         return orderResponses;
     }
 
-    @PostMapping("/deposit") // 입금하기
+    @PostMapping("/deposit/{amount}/{two_factor_type}") // 입금하기
     @ApiOperation(value = "입금하기", notes = "입금하기")
-    public DepositResponse getDeposit(@ApiIgnore Authentication authentication, @RequestParam String amount, @RequestParam String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-
+    public DepositResponse getDeposit(@ApiIgnore Authentication authentication, @PathVariable String amount, @PathVariable String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         String email = authentication.getName();
+        log.info("email:{}", email);
         Optional<User> user = userRepository.findByEmail(email);
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        DepositResponse depositResponse = upbitService.getDeposit(accessKey,secretKey,amount,two_factor_type);
+        DepositResponse depositResponse = upbitService.getDeposit(accessKey, secretKey, amount, two_factor_type);
         return depositResponse;
     }
 
     @GetMapping("/deposits") // 입금리스트
     @ApiOperation(value = "입금리스트", notes = "입금리스트")
-    public List<DepositResponse> getDepositList(@ApiIgnore Authentication authentication){
+    public List<DepositResponse> getDepositList(@ApiIgnore Authentication authentication) {
 
         String email = authentication.getName();
         Optional<User> user = userRepository.findByEmail(email);
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        List<DepositResponse> depositResponses = upbitService.getDepositList(accessKey,secretKey);
+        List<DepositResponse> depositResponses = upbitService.getDepositList(accessKey, secretKey);
         return depositResponses;
     }
 
@@ -220,32 +219,31 @@ public class UpbitRestController {
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey,secretKey,coinWithDrawRequest);
+        CoinWithDrawResponse response = upbitService.askWithdrawCoin(accessKey, secretKey, coinWithDrawRequest);
         return response;
     }
 
 
     @GetMapping("/withdraws")
     @ApiOperation(value = "출금리스트", notes = "출금리스트")
-    public List<WithDraw> getWithdraws(@ApiIgnore Authentication authentication, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy){
+    public List<WithDraw> getWithdraws(@ApiIgnore Authentication authentication, @RequestParam("currency") String currency, @RequestParam("state") String state, @RequestParam("uuids") List<String> uuids, @RequestParam("txids") List<String> txids, @RequestParam(value = "limit", defaultValue = "100") Integer limit, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "order_by", defaultValue = "desc") String orderBy) {
 
         String email = authentication.getName();
         Optional<User> user = userRepository.findByEmail(email);
         String accessKey = user.get().getAccessKey();
         String secretKey = user.get().getSecretKey();
 
-        List<WithDraw> withDraws = upbitService.getWithdraws(accessKey,secretKey,currency, state, uuids, txids, limit, page, orderBy);
+        List<WithDraw> withDraws = upbitService.getWithdraws(accessKey, secretKey, currency, state, uuids, txids, limit, page, orderBy);
         return withDraws;
     }
 
     @ApiOperation(value = "수익률 조회")
     @GetMapping("/revenue")
-    public ResponseEntity<Response<Double>> find(Authentication authentication){
+    public ResponseEntity<Response<Double>> find(Authentication authentication) {
         String email = authentication.getName();
         Double avg = upbitService.avgRevenueCalculation(email);
         return ResponseEntity.ok().body(Response.success(avg));
     }
-
 
 
 }
