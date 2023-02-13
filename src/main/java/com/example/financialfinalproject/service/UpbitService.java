@@ -196,12 +196,12 @@ public class UpbitService {
 
     // 입금
     @Transactional
-    public DepositResponse getDeposit(String accessKey, String secretKey, String amount, String tow_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        UpbitToken upbitToken = upbitJwtService.getDepositToken(accessKey, secretKey, amount, tow_factor_type);
+    public DepositResponse getDeposit(String accessKey, String secretKey, String amount, String two_factor_type) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        UpbitToken upbitToken = upbitJwtService.getDepositToken(accessKey, secretKey, amount, two_factor_type);
 
         HashMap<String, String> params = new HashMap<>();
         params.put("amount", amount);
-        params.put("tow_factor_type", tow_factor_type);
+        params.put("two_factor_type", two_factor_type);
 
         DepositResponse depositResponse = upbitFeignClient.getDeposit(upbitToken.getUpbitToken(), params);
 

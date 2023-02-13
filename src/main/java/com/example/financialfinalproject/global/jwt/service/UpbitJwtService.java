@@ -239,11 +239,11 @@ public class UpbitJwtService {
 
 
     // 입금
-    public UpbitToken getDepositToken(String accessKey, String secretKey, String amount, String tow_factor_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public UpbitToken getDepositToken(String accessKey, String secretKey, String amount, String two_factor_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
         HashMap<String, String> params = new HashMap<>();
         params.put("amount", amount);
-        params.put("tow_factor_type", tow_factor_type);
+        params.put("two_factor_type", two_factor_type);
 
 
         ArrayList<String> queryElements = new ArrayList<>();
