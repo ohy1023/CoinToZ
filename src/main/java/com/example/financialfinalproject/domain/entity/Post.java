@@ -23,6 +23,10 @@ public class Post extends BaseEntity {
     private String title;
     private String body;
 
+    private Long likeCount;
+
+    private Long disLikeCount;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -17,6 +17,8 @@ public class PostDetailDto {
     private String title;
     private String body;
     private String userName;
+    private Long likeCount;
+    private Long disLikeCount;
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
 

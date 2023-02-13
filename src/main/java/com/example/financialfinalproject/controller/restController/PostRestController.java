@@ -37,6 +37,7 @@ public class PostRestController {
         PostDetailDto postDetailDto = postService.detail(postId);
         return Response.success(new UserPostDetailResponse(postDetailDto.getId(), postDetailDto.getTitle(),
                 postDetailDto.getBody(), postDetailDto.getUserName(),
+                postDetailDto.getLikeCount(),postDetailDto.getDisLikeCount(),
                 postDetailDto.getCreatedAt(), postDetailDto.getLastModifiedAt()));
 
     }

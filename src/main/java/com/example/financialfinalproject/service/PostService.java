@@ -65,6 +65,8 @@ public class PostService {
                 .userName(post.getUser().getUserName())
                 .createdAt(post.getRegisteredAt())
                 .lastModifiedAt(post.getUpdatedAt())
+                .likeCount(post.getLikeCount())
+                .disLikeCount(post.getDisLikeCount())
                 .build();
 
         return postDetailDto;
@@ -106,6 +108,9 @@ public class PostService {
                         .userName(lists.getUser().getUserName())
                         .createdAt(lists.getRegisteredAt())
                         .lastModifiedAt(lists.getUpdatedAt())
+                        .likeCount(lists.getLikeCount())
+                        .disLikeCount(lists.getDisLikeCount())
+
                         .build())
                 .collect(Collectors.toList());
 

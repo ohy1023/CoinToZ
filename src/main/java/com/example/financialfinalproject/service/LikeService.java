@@ -37,15 +37,24 @@ public class LikeService {
                     throw new AppException(DUPLICATED_LIKE_COUNT, DUPLICATED_LIKE_COUNT.getMessage());
                 });
 
-        DisLikeRepository.findByPostAndUser(post, user)
-                .ifPresent((Dislike) -> {
-                    throw new AppException(DUPLICATED_DISLIKE_COUNT, DUPLICATED_DISLIKE_COUNT.getMessage());
-                });
+//        DisLikeRepository.findByPostAndUser(post, user)
+//                .ifPresent((Dislike) -> {
+//                    throw new AppException(DUPLICATED_DISLIKE_COUNT, DUPLICATED_DISLIKE_COUNT.getMessage());
+//                });
 
-        likeRepository.save(Like.builder()
+       Like like =  likeRepository.save(Like.builder()
                 .post(post)
                 .user(user)
                 .build());
+
+       Long likeCount = likeRepository.countByPost(post);
+       Long disCount= DisLikeRepository.countByPost(post);
+
+       post.setLikeCount(likeCount);
+       post.setDisLikeCount(disCount);
+
+       postRepository.save(post);
+
         return true;
     }
 
@@ -78,15 +87,24 @@ public class LikeService {
                     throw new AppException(DUPLICATED_DISLIKE_COUNT, DUPLICATED_DISLIKE_COUNT.getMessage());
                 });
 
-        likeRepository.findByPostAndUser(post, user)
-                .ifPresent((like) -> {
-                    throw new AppException(DUPLICATED_LIKE_COUNT, DUPLICATED_LIKE_COUNT.getMessage());
-                });
+//        likeRepository.findByPostAndUser(post, user)
+//                .ifPresent((like) -> {
+//                    throw new AppException(DUPLICATED_LIKE_COUNT, DUPLICATED_LIKE_COUNT.getMessage());
+//                });
 
         DisLikeRepository.save(DisLike.builder()
                 .post(post)
                 .user(user)
                 .build());
+
+        Long likeCount = likeRepository.countByPost(post);
+        Long disCount= DisLikeRepository.countByPost(post);
+
+        post.setLikeCount(likeCount);
+        post.setDisLikeCount(disCount);
+
+        postRepository.save(post);
+
         return true;
     }
 
