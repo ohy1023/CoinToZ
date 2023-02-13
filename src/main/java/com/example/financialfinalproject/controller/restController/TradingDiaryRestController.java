@@ -51,6 +51,14 @@ public class TradingDiaryRestController {
         return ResponseEntity.ok().body(Response.success(listByCond));
     }
 
+    @ApiOperation(value = "매매일지 메모 삭제")
+    @DeleteMapping("/delete/{id}")
+    public TradingDiaryDto deleteMemo(@ApiIgnore Authentication authentication, @PathVariable Long id) {
+        String email = authentication.getName();
+        TradingDiaryDto tradingDiaryDto = tradingDiaryService.edit(id, "", email);
+        return tradingDiaryDto;
+    }
+
     @ApiOperation(value = "매매일지 삭제")
     @DeleteMapping("/delete")
     public TradingDiaryDto delete(@ApiIgnore Authentication authentication, Long id) {
