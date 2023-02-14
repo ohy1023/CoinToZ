@@ -7,7 +7,7 @@
 
 ## 1. 프로젝트 소개 🗒
 
-![스크린샷 2023-02-13 오후 5.24.43.png](%E1%84%85%E1%85%B5%E1%84%83%E1%85%B3%E1%84%86%E1%85%B5%20578f29462bf24e2e95de674d59e2b04c/%25E1%2584%2589%25E1%2585%25B3%25E1%2584%258F%25E1%2585%25B3%25E1%2584%2585%25E1%2585%25B5%25E1%2586%25AB%25E1%2584%2589%25E1%2585%25A3%25E1%2586%25BA_2023-02-13_%25E1%2584%258B%25E1%2585%25A9%25E1%2584%2592%25E1%2585%25AE_5.24.43.png)
+![image](https://user-images.githubusercontent.com/68420044/218801922-a782127b-37b1-4ec7-a581-99fd61454a0f.png)
 
 ***매매일지를 통해 나만의 투자 경험을 쌓아보세요*** 
 
@@ -62,7 +62,8 @@
 
 ## 5. 아키텍처 📃
 
-![Untitled](%E1%84%85%E1%85%B5%E1%84%83%E1%85%B3%E1%84%86%E1%85%B5%20578f29462bf24e2e95de674d59e2b04c/Untitled.png)
+![image](https://user-images.githubusercontent.com/68420044/218799236-5060477e-bd9b-4caa-8ccf-3ebd80193d03.png)
+
 
 ## 6. API 명세서
 
@@ -71,7 +72,7 @@
 
 ## 7. ERD
 
-![Untitled](%E1%84%85%E1%85%B5%E1%84%83%E1%85%B3%E1%84%86%E1%85%B5%20578f29462bf24e2e95de674d59e2b04c/Untitled%201.png)
+![image](https://user-images.githubusercontent.com/68420044/218799430-27006c22-4ad4-4476-8f3f-929ed20c7697.png)
 
 ## 8. 외부 리소스 정보
 
@@ -83,6 +84,6 @@
 
 [업비트에 Post 요청 보내기](https://www.notion.so/Post-1ebe3141e9664befab8c69de840e33d3)
 
-[**Axios interceptor를 사용한 토큰 관리**](https://www.notion.so/Axios-interceptor-cfce26a076814ce2ab575c383cd9bb20)
+[Axios interceptor를 사용한 토큰 관리](https://www.notion.so/Axios-interceptor-cfce26a076814ce2ab575c383cd9bb20)
 
 [로그인 필수 페이지 접근 제한](https://www.notion.so/2cb687998c304082b18e04b54a367477)
