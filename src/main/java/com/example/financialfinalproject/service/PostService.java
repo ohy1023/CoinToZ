@@ -97,7 +97,7 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<UserPostDetailResponse> list() {
-        List<Post> list = postRepository.findAll();
+        List<Post> list = postRepository.findAllByOrderByRegisteredAtDesc();
 
         List<UserPostDetailResponse> responseList = list.stream()
                 .map(lists -> UserPostDetailResponse.builder()
@@ -122,7 +122,7 @@ public class PostService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
-        List<Post> list = postRepository.findAllByUser(user);
+        List<Post> list = postRepository.findAllByUserOrderByRegisteredAtDesc(user);
 
         List<UserPostDetailResponse> responseList = list.stream()
                 .map(lists -> UserPostDetailResponse.builder()

@@ -13,6 +13,8 @@ public interface PostRepository extends JpaRepository <Post,Long> {
     void deleteById (Long id);
     Page<Post> findByUserId (Long id, Pageable pageable);
 
-    List<Post> findAllByUser(User user);
+    List<Post> findAllByOrderByRegisteredAtDesc();
+
+    List<Post> findAllByUserOrderByRegisteredAtDesc(User user);
 
 }
