@@ -1,5 +1,3 @@
-# 리드미
-
 # CoinToZ 💸
 
 - [CoinToZ 바로가기](http://ec2-43-201-23-107.ap-northeast-2.compute.amazonaws.com/)
@@ -45,19 +43,19 @@
 | 이름 | 역할 | 담당 기능 |
 | --- | --- | --- |
 | 강동연 | Project Manager & Developer | 각종 종목 정보(차트,현재가,기사크롤링,랭킹,종목리스트) 불러오기 및 갱신 스케쥴링 / 모의투자 매매 / 게시글 CRUD / 랭킹 / 깃액션배포 / 구글 로그인 |
-| 오형상 |  Chief Technical Officer & Developer | 각종 종목 정보(재무지표,증시인덱스) 불러오기 / 수익률 갱신 / 댓글, 좋아요, 마이페이지, 계좌 CRUD / SSE 알람연동 / 채팅 / 카카오 로그인 |
-| 김상호 | Plan Maker & Developer | 커뮤니티 CRUD / 좋아요 / 관심종목 / 랭킹보드 / 알람 / 유저정보 수정 / 계좌개설 / 업적 |
-| 강수빈 | Infra & Developer | 레이아웃 / 댓글 CRUD / 실시간 채팅 / 그래프 / 모의투자 / 주식정보 불러오기 / 게시글 페이지 |
-| 손세열 |  Developer | 소셜로그인(카카오, 구글) |
-| 임학준 | Developer |  |
+| 오형상 |  Chief Technical Officer & Developer | JWT를 활용한 인증 / Redis를 활용한 JWT 관리 / OAuth2 적용 / AWS S3적용하여 이미지 저장 / 마이페이지 기능(회원정보, 업비트 키 관리 등) / 수익률 갱신 |
+| 김상호 | Plan Maker & Developer | 좋아요 CRUD / 댓글, 커뮤니티UI / 사용자 접근 제한 기능 / 이메일 인증 |
+| 강수빈 | Infra & Developer | 업비트 API 주문, 입금, 계좌정보 조회 연동 / 매매일지 CRUD / react,springBoot EC2 배포 |
+| 손세열 |  Developer | 메인페이지 UI |
+| 임학준 | Developer |  테스트코드 / 대댓글 / 커뮤니티 UI |
 
-## 4. 백엔드 기술 스택 🛠
+## 4. 백엔드 기술 스택 🛠
 
 - Language: **`java`**
 - Framework:  **`SPRINGBOOT`**
 - Build Tool: **`Gradle`**
 - DB: **`MySQL`**,**`Redis`**
-- Server: **`AWS EC2`**
+- Server: **`AWS EC2 S3`**
 - Other Tools : **`GitLab`, `swagger`, `AWS`, `OAuth`, `notion`**
 
 ## 5. 아키텍처 📃
@@ -65,20 +63,44 @@
 ![image](https://user-images.githubusercontent.com/68420044/218799236-5060477e-bd9b-4caa-8ccf-3ebd80193d03.png)
 
 
-## 6. API 명세서
+## 6. API 명세서 📡
 
 - Swagger: [http://ec2-52-78-23-203.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-52-78-23-203.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html)
 - Notion: [API 명세서 바로가기](https://www.notion.so/API-Docs-7a6e8c5f1ca245459829f1bbff9bb7f2)
 
-## 7. ERD
+## 7. ERD 🗄️
 
 ![image](https://user-images.githubusercontent.com/68420044/218799430-27006c22-4ad4-4476-8f3f-929ed20c7697.png)
 
-## 8. 외부 리소스 정보
+## 8. 외부 리소스 정보 📁
 
 [업비트 개발자 센터](https://docs.upbit.com/reference/%ED%98%B8%EA%B0%80-%EC%A0%95%EB%B3%B4-%EC%A1%B0%ED%9A%8C)
 
-## 9. **Trouble Shooting**
+
+
+## 9. Error Code ⚡
+| 에러 코드 | 설명 | Http Status |
+| --- | --- | --- |
+| INVALID_PASSWORD | 비밀번호가 잘못된 경우 | 401 |
+| INVALID_TOKEN | 해당 토큰이 만료된 경우 | 401 |
+| INVALID_PERMISSION | 사용자가 권한이 없는 경우 | 401 |
+| INVALID_AUTH | 잘못된 인증번호를 입력한 경우 | 401 |
+| USERNAME_NOT_FOUND | 해당 유저가 없을 경우 | 404 |
+| POST_NOT_FOUND | 해당 게시글을 찾을 수 없는 경우 | 404 |
+| COMMENT_NOT_FOUND | 해당 댓글을 찾을 수 없는 경우 | 404 |
+| LIKE_NOT_FOUND | 좋아요를 누른 적이 없는 경우 | 404 |
+| DISLIKE_NOT_FOUND | 싫어요를 누른 적이 없는 경우 | 404 |
+| COIN_NOT_FOUND | 해당 코인을 찾을 수 없는 경우 | 404 |
+| DIARY_NOT_FOUND | 해당 매매일지를 찾을 수 없는 경우 | 404 |
+| MISMATCH_PASSWORD | 비밀번호 불일치한 경우 | 409 |
+| DUPLICATED_EMAIL | 이메일 중복되는 경우 | 409 |
+| DUPLICATED_LIKE_COUNT | 해당 글에 좋아요를 중복으로 누른 경우 | 409 |
+| DUPLICATED_DISLIKE_COUNT | 해당 글에 싫어요를 중복으로 누른 경우 | 409 |
+| DATABASE_ERROR | 데이터베이스에 문제가 있는 경우 | 500 |
+
+
+
+## 10. Trouble Shooting 🚧
 
 [이메일 인증 기능 구현](https://www.notion.so/05c7fd8b78c941739755363c31d9ddb6)
 
