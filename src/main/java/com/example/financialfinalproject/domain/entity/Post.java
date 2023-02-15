@@ -7,6 +7,8 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+import static com.example.financialfinalproject.domain.enums.UserRole.USER;
+
 @Getter
 @Setter
 @Entity
@@ -21,6 +23,7 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(columnDefinition = "LONGTEXT")
     private String body;
 
     private Long likeCount;
@@ -30,6 +33,11 @@ public class Post extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @PrePersist
+    public void prePersist() {
+        this.likeCount = this.likeCount == null ? 0l : this.likeCount;
+    }
 
     public void updatePost(String updatedTitle, String updatedBody) {
         this.title = updatedTitle;
