@@ -69,7 +69,7 @@ public class JwtService {
 
     /**
      * RefreshToken 생성
-     * RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
+     * RefreshToken은 Claim에 email도 넣지 않으므로 setClaim() X
      */
     public String createRefreshToken() {
         return Jwts.builder()
@@ -153,7 +153,7 @@ public class JwtService {
     }
 
     /**
-     * RefreshToken DB 저장(업데이트)
+     * RefreshToken Redis 저장(업데이트)
      */
     @Transactional
     public void updateRefreshToken(String email, String refreshToken) {
@@ -163,6 +163,11 @@ public class JwtService {
 
     }
 
+
+    /**
+     * AccessToken 타당성 검증
+     * 만료되었는지 검증 & Redis를 통해 로그아웃된 토큰인지 검증
+     */
     public boolean isTokenValid(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
@@ -177,6 +182,10 @@ public class JwtService {
         }
     }
 
+    /**
+     * RefreshToken 타당성 검증
+     * 만료되었는지 검증 & Redis에 저장된 토큰과 동일성 검증
+     */
     public boolean isRefreshTokenValid(String token, String email) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
@@ -187,11 +196,19 @@ public class JwtService {
         }
     }
 
+    /**
+     * 만료시간 가져오기
+     */
     public Date getExpiredTime(String token) {
         Claims body = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         return body.getExpiration();
     }
 
+    /**
+     * 로그아웃
+     * AccessToken 남은 만료시간 계산 후 레디스에 블랙리스트 저장
+     * 레디스에 저장된 RefreshToken 삭제
+     */
     @Transactional
     public void logout(HttpServletRequest request) {
         String accessToken = extractAccessToken(request)

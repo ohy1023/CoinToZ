@@ -120,10 +120,5 @@ public class UserRestController {
         return ResponseEntity.ok().body("SUCCESS");
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "SUCCESS";
-    }
-
 
 }

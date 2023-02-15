@@ -45,7 +45,7 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuth
      * StreamUtils를 통해 request에서 messageBody(JSON) 반환
      * 요청 JSON Example
      * {
-     *    "email" : "aaa@bbb.com"
+     *    "email" : "zvyg1023@naver.com"
      *    "password" : "test123"
      * }
      * 꺼낸 messageBody를 objectMapper.readValue()로 Map으로 변환 (Key : JSON의 키 -> email, password)
