@@ -43,20 +43,17 @@ public class PostRestController {
     }
 
     @GetMapping("")
-    public Response<PageImpl<UserPostDetailResponse>> list() {
-        PageRequest pageRequest = PageRequest.of(0, 20, Sort.by("id").descending());
-        List<UserPostDetailResponse> list = postService.list(pageRequest);
-
-        return Response.success(new PageImpl<>(list));
+    public Response<List<UserPostDetailResponse>> list() {
+        List<UserPostDetailResponse> list = postService.list();
+        return Response.success(list);
     }
 
     @ApiOperation(value = "내가 작성한 포스트 목록")
     @GetMapping("/myPost")
-    public Response<PageImpl<UserPostDetailResponse>> getMyPost(Authentication authentication) {
+    public Response<List<UserPostDetailResponse>> getMyPost(Authentication authentication) {
         String email = authentication.getName();
-        PageRequest pageRequest = PageRequest.of(0, 20, Sort.by("id").descending());
-        List<UserPostDetailResponse> list = postService.getMyPosts(pageRequest, email);
-        return Response.success(new PageImpl<>(list));
+        List<UserPostDetailResponse> list = postService.getMyPosts(email);
+        return Response.success(list);
     }
 
 
