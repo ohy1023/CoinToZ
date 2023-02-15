@@ -96,9 +96,8 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserPostDetailResponse> list(Pageable pageable) {
-
-        Page<Post> list = postRepository.findAll(pageable);
+    public List<UserPostDetailResponse> list() {
+        List<Post> list = postRepository.findAll();
 
         List<UserPostDetailResponse> responseList = list.stream()
                 .map(lists -> UserPostDetailResponse.builder()
@@ -118,12 +117,12 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserPostDetailResponse> getMyPosts(Pageable pageable, String email) {
+    public List<UserPostDetailResponse> getMyPosts(String email) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(EMAIL_NOT_FOUND, EMAIL_NOT_FOUND.getMessage()));
 
-        Page<Post> list = postRepository.findAllByUser(pageable, user);
+        List<Post> list = postRepository.findAllByUser(user);
 
         List<UserPostDetailResponse> responseList = list.stream()
                 .map(lists -> UserPostDetailResponse.builder()
