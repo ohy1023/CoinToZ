@@ -29,7 +29,7 @@ import java.util.Arrays;
  * AccessToken 만료 시에만 RefreshToken을 요청 헤더에 AccessToken과 함께 요청
  * 1. RefreshToken이 없고, AccessToken이 유효한 경우 -> 인증 성공 처리, RefreshToken을 재발급하지는 않는다.
  * 2. RefreshToken이 없고, AccessToken이 없거나 유효하지 않은 경우 -> 인증 실패 처리
- * 3. RefreshToken이 있는 경우 -> DB의 RefreshToken과 비교하여 일치하면 AccessToken 재발급, RefreshToken 재발급(RTR 방식)
+ * 3. RefreshToken이 있는 경우 -> Redis의 RefreshToken과 비교하여 일치하면 AccessToken 재발급, RefreshToken 재발급(RTR 방식)
  * 인증 성공 처리는 하지 않고 실패 처리
  */
 @Slf4j
@@ -60,6 +60,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             return; // return으로 이후 현재 필터 진행 막기
         }
 
+
+        // 해당 url 요청시 로그아웃 실행
         if (request.getRequestURI().equals("/api/v1/users/logout")) {
             jwtService.logout(request);
             log.info("로그아웃 성공");
@@ -68,15 +70,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 
         // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
-        // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
+        // RefreshToken까지 보낸 것이므로 리프레시 토큰이 Redis의 리프레시 토큰과 일치하는지 판단 & 만료시간 검증 후,
         // 일치한다면 AccessToken을 재발급해준다.
         if (request.getRequestURI().equals("/api/v1/users/reissuance")) {
             String email = request.getHeader("email");
+
+            // 사용자 요청 헤더에서 RefreshToken 추출
+            // -> RefreshToken이 없거나 유효하지 않다면(Redis에 저장된 RefreshToken과 다르다면) null을 반환
             String refreshToken = jwtService.extractRefreshToken(request)
                     .filter((token) -> jwtService.isRefreshTokenValid(token, email))
                     .orElse(null);
-            // 사용자 요청 헤더에서 RefreshToken 추출
-            // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
 
             checkRefreshTokenAndReIssueAccessToken(request, response, email);
             log.info("재발급 성공");
@@ -90,10 +93,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     /**
-     * [리프레시 토큰으로 유저 정보 찾기 & 액세스 토큰/리프레시 토큰 재발급 메소드]
-     * 파라미터로 들어온 헤더에서 추출한 리프레시 토큰으로 DB에서 유저를 찾고, 해당 유저가 있다면
+     * [액세스 토큰/리프레시 토큰 재발급 메소드]
+     * 파라미터로 들어온 헤더에서 추출한 이메일로 유저를 찾고, 해당 유저가 있다면
      * JwtService.createAccessToken()으로 AccessToken 생성,
-     * reIssueRefreshToken()로 리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
+     * reIssueRefreshToken()로 리프레시 토큰 재발급 & Redis에 리프레시 토큰 업데이트 메소드 호출
      * 그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
      */
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletRequest request, HttpServletResponse response, String email) {
@@ -103,9 +106,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     /**
-     * [리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드]
+     * [리프레시 토큰 재발급 & Redis에 리프레시 토큰 업데이트 메소드]
      * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
-     * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
+     * Redis에 재발급한 리프레시 토큰 업데이트
      */
     private String reIssueRefreshToken(String email) {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
@@ -136,15 +139,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     /**
      * [인증 허가 메소드]
      * 파라미터의 유저 : 우리가 만든 회원 객체 / 빌더의 유저 : UserDetails의 User 객체
-     * <p>
      * new UsernamePasswordAuthenticationToken()로 인증 객체인 Authentication 객체 생성
+     *
      * UsernamePasswordAuthenticationToken의 파라미터
      * 1. 위에서 만든 UserDetailsUser 객체 (유저 정보)
      * 2. credential(보통 비밀번호로, 인증 시에는 보통 null로 제거)
      * 3. Collection < ? extends GrantedAuthority>로,
      * UserDetails의 User 객체 안에 Set<GrantedAuthority> authorities이 있어서 getter로 호출한 후에,
      * new NullAuthoritiesMapper()로 GrantedAuthoritiesMapper 객체를 생성하고 mapAuthorities()에 담기
-     * <p>
+     *
      * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
      * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
      */

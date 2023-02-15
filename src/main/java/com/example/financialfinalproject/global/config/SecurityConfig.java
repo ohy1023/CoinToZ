@@ -57,8 +57,6 @@ public class SecurityConfig {
             "/swagger-resources/**", "/configuration/security", "/webjars/**",
             "/swagger-ui.html", "/swagger/**", "/swagger-ui/**"};
 
-    private final String[] UI = {
-            "/loginForm", "/joinForm", "/css/**", "/img/**", "/static/**", "/resources/**", "/", "/index"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -75,10 +73,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .mvcMatchers("/**").permitAll()
-                .antMatchers("api/v1/users/test").authenticated()
-                .antMatchers(UI).permitAll()
                 .antMatchers(SWAGGER).permitAll()
-                .antMatchers("/api/v1/hello").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/v1/users/join", "/api/v1/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/**").authenticated()

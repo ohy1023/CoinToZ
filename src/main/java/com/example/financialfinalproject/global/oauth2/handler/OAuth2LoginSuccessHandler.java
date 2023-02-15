@@ -48,7 +48,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
 
         String targetUrl = UriComponentsBuilder.fromUriString("http://ec2-43-201-23-107.ap-northeast-2.compute.amazonaws.com:80/login")
-//        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/login")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .queryParam("email",oAuth2User.getEmail())
