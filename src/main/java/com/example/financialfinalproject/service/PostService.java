@@ -45,8 +45,6 @@ public class PostService {
                 .user(user)
                 .title(userPostRequest.getTitle())
                 .body(userPostRequest.getBody())
-                .likeCount(0l)
-                .disLikeCount(0l)
                 .build();
 
         Post saved = postRepository.save(post);
