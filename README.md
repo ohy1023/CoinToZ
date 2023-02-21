@@ -24,6 +24,10 @@
 - 가상화폐 주문과 동시에 거래내역을 통해 수익률이 계산되어 실시간으로 매매일지에 거래기록과 수익률이 저장되며, 또한 일지를 작성하는 습관에 익숙해 질 수 있도록 거래 별 메모 기능을 제공합니다. 또한 투자에 대한 정보를 공유할 수 있도록 커뮤니티 기능을 제공하고 있습니다.
 - 이러한 기능을 통해 투자에 대한 정보를 충분히 숙지하지 않은 상황에서 손실을 가져올 수 있는 무지성 투자를 예방하고 자신의 투자패턴, 습관을 파악할 수 있습니다.
 
+### 시연 영상 ( 이미지 클릭 시 유튜브 이동 )
+
+[![Video Label](http://img.youtube.com/vi/AynJiAHG3Tk/0.jpg)](https://www.youtube.com/watch?v=AynJiAHG3Tk&feature=youtu.be)
+
 ### 주요 기능
 
 - 매매일지 : 수익률 계산, 거래내역 저장, 메모(투자계기) 기록 기능
@@ -33,9 +37,19 @@
 
 ## 2. 프로젝트 사용방법 📈
 
-- 프로젝트를 설치, 사용하기 위해 필요한 전제조건이 있는가
-- 어떻게 설치, 사용, 테스트하는가
-- 설치 가이드 문서는 어디에 있는가
+| 환경변수                       | 값                                                  |
+|----------------------------|----------------------------------------------------|
+| SPRING_DATASOURCE_URL      | jdbc:mysql://[EC2 퍼블릭 IPv4 DNS]:3306/[Schema Name] |
+| SPRING_DATASOUCE_USER      | root                                               |
+| SPRING_DATASOURCE_PASSWORD | password                                           |
+| SPRING_REDIS_HOST          | [EC2 퍼블릭 IPv4 DNS]                                 |
+| S3_NAME                    | [S3 Bucket Name]                                   |
+| S3_ACCESS_KEY              | [IAM AccessKey]                                    |
+| S3_SECRET_KEY              | [IAM SecretKey]                                    |
+| googleKey                  | [googleKey]                                        |
+| naverKey                   | [naverKey]                                         |
+| kakaoApi                   | [kakaoApi]                                         |
+| kakaoKey                   | [kakaoKey]                                         |
 
 ## 3. 제작기간 && 팀원소개 🏃‍🏃‍♀️💨
 
@@ -50,13 +64,13 @@
 | 손세열 | Developer | 메인페이지 UI |
 | 임학준 | Developer | 테스트코드 / 대댓글 / 커뮤니티 UI |
 
-## 4. 백엔드 기술 스택 🛠
+## 4. 기술 스택 🛠
 
 - Language: **`java`**
 - Framework:  **`SPRINGBOOT`**
 - Build Tool: **`Gradle`**
 - DB: **`MySQL`**,**`Redis`**
-- Server: **`AWS EC2 S3`**
+- Server: **`AWS EC2`**,**`AWS S3`**
 - Other Tools : **`GitLab`, `swagger`, `AWS`, `OAuth`, `notion`**
 
 ## 5. 아키텍처 📃
