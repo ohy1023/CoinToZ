@@ -1,0 +1,66 @@
+
+.root {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+    width: 70%;
+}
+
+.details {
+    border-radius: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0px 2px 2px 1px #e2e2e2;
+}
+
+.th {
+    text-align: center;
+    padding-block: 1%;
+    border-radius: 5px;
+    background-color: #dedede;
+    border: 1px solid #cdcdcd;
+    font-weight: bold;
+    align-items: center;
+}
+
+.td {
+    word-break: break-all;
+    padding:10px;
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.topButtonGroup {
+    margin-bottom: 5px;
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+}
+
+.bottomButtonGroup {
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+}
+
+.commentBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.commentInput {
+    flex: 1;
+    height: 100px;
+    margin-right: 10px;
+    padding: 10px;
+}
+
+.commentButton {
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+}

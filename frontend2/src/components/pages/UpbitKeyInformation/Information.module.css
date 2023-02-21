@@ -1,0 +1,107 @@
+.Layout {
+  display: flex;
+  max-width: 1366px;
+  max-width: 1200px;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .Layout {
+    display: block;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.Layout>.Content {
+  display: block;
+  flex: 1;
+  padding: 2rem 0 2rem 0;
+}
+
+@media (max-width: 1050px) {
+  .Layout>.Content {
+    max-width: calc(100% - var(--side-nav-width));
+    padding-right: 3rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .Layout>.Content {
+    padding: 1rem;
+    max-width: 100%;
+  }
+}
+
+
+.Clearfix {
+  zoom: 1;
+}
+
+.Member {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+}
+
+@media (max-width: 768px) {
+  .Member {
+    display: block;
+  }
+}
+
+.MemberCard {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 2px 12px, rgba(0, 0, 0, 0.03) 0 4px 32px;
+}
+
+.MemberCard .MemberCardHeader {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.MemberCard .MemberCardHeader h1 {
+  margin-bottom: 0;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.MemberCard .MemberCardHeaderSpan {
+  color: #9a62e6;
+  font-size: 1rem;
+}
+
+.MemberCard .MemberCardBody {
+  padding: 1rem;
+}
+
+.ttArticleUseless p {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+figure.imageblock, #tt-body-page figure.imageblock {
+  display: table;
+  position: relative;
+}
+
+figure.imageblock.alignCenter {
+  margin: 0 auto 20px;
+  text-align: center;
+}
+
+.MemberContent {
+  flex: 1;
+  padding-left: 1rem;
+  padding-bottom: 28.9rem;
+}

@@ -1,0 +1,12 @@
+.tab {
+    background-color: white;
+}
+.button {
+    color: #000;
+    background-color: #191970;
+}
+.caption {
+    font-size: small;
+    color: darkblue;
+    margin-top: 5px;
+}

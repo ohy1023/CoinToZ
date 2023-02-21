@@ -1,0 +1,87 @@
+
+.mainFont{
+    margin-top: 60px;
+    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.mainFont2{
+    margin-top: 0px;
+    margin-bottom: 40px;
+    font-size: 18px;
+    font-weight: 550;
+    color: #ffffff;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.mainFont3{
+    margin-top: 0px;
+    margin-bottom: 40px;
+    font-size: 26px;
+    font-weight: 700;
+    color:#ffffff;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.buttons {
+    margin: 10%;
+    text-align: center;
+}
+
+.btn-hover {
+    width: 200px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    margin: 20px;
+    height: 55px;
+    text-align:center;
+    border: none;
+    background-size: 300% 100%;
+
+    border-radius: 50px;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-hover:hover {
+    background-position: 100% 0;
+    moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.btn-hover:focus {
+    outline: none;
+}
+
+.btn-hover.color-3 {
+    background-image: linear-gradient(to right, #667eea, #764ba2, #6B8DD6, #8E37D7);
+    box-shadow: 0 4px 15px 0 rgba(116, 79, 168, 0.75);
+}
+
+@font-face {
+    font-family: "Happiness-Sans-Regular";
+    font-weight: 400;
+    src: url("/src/assets/fonts/Happiness-Sans-Regular.woff") format("woff");
+}
+
+#ImageLetter {
+/*여기처럼 font-family에 사용 할 폰트이름을 적어주기만 하면 적용!*/
+    font-family: "Happiness-Sans-Regular";
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+}
