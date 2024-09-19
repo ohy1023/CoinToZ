@@ -11,6 +11,8 @@ public enum ErrorCode{
 
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "Email이 중복됩니다."),
 
+    REGISTRATION_ID_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 registrationId가 존재하지 않습니다."),
+
     USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 UserName이 없습니다."),
 
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 Email이 없습니다."),

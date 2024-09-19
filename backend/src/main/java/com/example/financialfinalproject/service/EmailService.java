@@ -30,24 +30,27 @@ public class EmailService {
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject("CoinToZ 인증 이메일 입니다.");
 
-        String msgg="";
-        msgg+= "<div style='margin:100px;'>";
-        msgg += "<h1> 안녕하세요</h1>";
-        msgg += "<h1> 커뮤니티 기반 가상화폐 매매 및 매매일지 사이트 CoinToZ 입니다.</h1>";
-        msgg += "<br>";
-        msgg+= "<p>아래 코드를 입력창으로 돌아가 입력해주세요<p>";
-        msgg+= "<br>";
-        msgg+= "<div align='center' style='border:1px solid black; font-family:verdana';>";
-        msgg+= "<h3 style='color:blue;'>인증 코드 입니다.</h3>";
-        msgg+= "<div style='font-size:130%'>";
-        msgg+= "CODE : <strong>";
-        msgg+= ePw+"</strong><div><br/> ";
-        msgg+= "</div>";
-        message.setText(msgg, "utf-8", "html");//내용
-        message.setFrom(new InternetAddress("tkdgh980527@naver.com","CoinToZ"));//보내는 사람
+        String msgg = "<div style='margin: 100px auto; padding: 20px; max-width: 600px; font-family: Arial, sans-serif; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);'>"
+                + "<p style='font-size: 16px; color: #555; text-align: center;'>"
+                + "커뮤니티 기반 가상화폐 매매 및 매매일지 사이트 <strong>CoinToZ</strong>입니다.</p>"
+                + "<hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>"
+                + "<p style='font-size: 16px; color: #555; text-align: center;'>아래 코드를 인증창에 입력해 주세요:</p>"  // 가운데 정렬
+                + "<div style='text-align: center; margin: 20px 0;'>"
+                + "<span style='display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; font-size: 24px; font-weight: bold; border-radius: 5px;'>"
+                + ePw + "</span>"
+                + "</div>"
+                + "<p style='font-size: 14px; color: #999; text-align: center;'>"
+                + "이 인증 코드는 5분 동안 유효합니다.</p>"
+                + "<p style='font-size: 12px; color: #aaa; text-align: center;'>"
+                + "감사합니다.<br><strong>CoinToZ</strong> 팀</p>"
+                + "</div>";
+
+        message.setText(msgg, "utf-8", "html");
+        message.setFrom(new InternetAddress("ohy971023@naver.com", "CoinToZ"));
 
         return message;
     }
+
 
     public static String createKey() {
         StringBuffer key = new StringBuffer();

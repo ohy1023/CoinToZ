@@ -2,6 +2,8 @@ package com.example.financialfinalproject.global.oauth2.service;
 
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.enums.SocialType;
+import com.example.financialfinalproject.exception.AppException;
+import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.global.oauth2.CustomOAuth2User;
 import com.example.financialfinalproject.global.oauth2.OAuthAttributes;
 import com.example.financialfinalproject.repository.UserRepository;
@@ -70,14 +72,16 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private SocialType getSocialType(String registrationId) {
-        if(NAVER.equals(registrationId)) {
-            return SocialType.NAVER;
+        switch (registrationId) {
+            case NAVER:
+                return SocialType.NAVER;
+            case KAKAO:
+                return SocialType.KAKAO;
+            default:
+                throw new AppException(ErrorCode.REGISTRATION_ID_NOT_FOUND, "Unknown registrationId: " + registrationId);
         }
-        if(KAKAO.equals(registrationId)) {
-            return SocialType.KAKAO;
-        }
-        return GOOGLE;
     }
+
 
     /**
      * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드

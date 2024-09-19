@@ -128,7 +128,13 @@ export default function SignIn({ location }) {
             로그인
           </Typography>
           <br />
-          <Link href="http://ec2-52-78-23-203.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/kakao">
+          <Link href="http://localhost:8081/oauth2/authorization/kakao">
+            <img style={{}} alt="kakao" src={KakaoBut} />
+          </Link>
+          <Link href="http://localhost:8081/oauth2/authorization/naver">
+            <img style={{}} alt="kakao" src={KakaoBut} />
+          </Link>
+          <Link href="http://localhost:8081/oauth2/authorization/google">
             <img style={{}} alt="kakao" src={KakaoBut} />
           </Link>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
