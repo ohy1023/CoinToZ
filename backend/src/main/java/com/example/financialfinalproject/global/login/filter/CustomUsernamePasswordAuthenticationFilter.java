@@ -21,7 +21,7 @@ import java.util.Map;
  * Username : 회원 아이디 -> email로 설정
  * "/login" 요청 왔을 때 JSON 값을 매핑 처리하는 필터
  */
-public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+public class CustomUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private static final String DEFAULT_LOGIN_REQUEST_URL = "/api/v1/users/login"; // "/login"으로 오는 요청을 처리
     private static final String HTTP_METHOD = "POST"; // 로그인 HTTP 메소드는 POST
@@ -33,7 +33,7 @@ public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuth
 
     private final ObjectMapper objectMapper;
 
-    public CustomJsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
+    public CustomUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER); // 위에서 설정한 "login" + POST로 온 요청을 처리하기 위해 설정
         this.objectMapper = objectMapper;
     }

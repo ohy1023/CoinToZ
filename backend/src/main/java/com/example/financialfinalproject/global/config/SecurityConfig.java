@@ -2,7 +2,7 @@ package com.example.financialfinalproject.global.config;
 
 import com.example.financialfinalproject.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.example.financialfinalproject.global.jwt.service.JwtService;
-import com.example.financialfinalproject.global.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.example.financialfinalproject.global.login.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.example.financialfinalproject.global.login.handler.LoginFailureHandler;
 import com.example.financialfinalproject.global.login.handler.LoginSuccessHandler;
 import com.example.financialfinalproject.global.login.service.LoginService;
@@ -32,7 +32,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 /**
- * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
+ * 인증은 CustomUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
  * JwtAuthenticationProcessingFilter는 AccessToken, RefreshToken 재발급
  */
 @Configuration
@@ -91,9 +91,9 @@ public class SecurityConfig {
 
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
         // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
-        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
+        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomUsernamePasswordAuthenticationFilter
+        http.addFilterAfter(customUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
+        http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -144,19 +144,19 @@ public class SecurityConfig {
     }
 
     /**
-     * CustomJsonUsernamePasswordAuthenticationFilter 빈 등록
+     * CustomUsernamePasswordAuthenticationFilter 빈 등록
      * 커스텀 필터를 사용하기 위해 만든 커스텀 필터를 Bean으로 등록
      * setAuthenticationManager(authenticationManager())로 위에서 등록한 AuthenticationManager(ProviderManager) 설정
      * 로그인 성공 시 호출할 handler, 실패 시 호출할 handler로 위에서 등록한 handler 설정
      */
     @Bean
-    public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
-        CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter
-                = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
-        customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
-        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
-        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
-        return customJsonUsernamePasswordLoginFilter;
+    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter() {
+        CustomUsernamePasswordAuthenticationFilter customUsernamePasswordLoginFilter
+                = new CustomUsernamePasswordAuthenticationFilter(objectMapper);
+        customUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
+        customUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
+        customUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        return customUsernamePasswordLoginFilter;
     }
 
     @Bean
