@@ -2,7 +2,8 @@ package com.example.financialfinalproject.global.oauth2;
 
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.enums.SocialType;
-import com.example.financialfinalproject.global.oauth2.userinfo.GoogleOAuth2UserInfo;
+import com.example.financialfinalproject.exception.AppException;
+import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.example.financialfinalproject.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.example.financialfinalproject.global.oauth2.userinfo.OAuth2UserInfo;
@@ -38,27 +39,21 @@ public class OAuthAttributes {
      */
     public static OAuthAttributes of(SocialType socialType,
                                      String userNameAttributeName, Map<String, Object> attributes) {
-
-        if (socialType == SocialType.NAVER) {
-            return ofNaver(userNameAttributeName, attributes);
+        switch (socialType) {
+            case NAVER:
+                return ofNaver(userNameAttributeName, attributes);
+            case KAKAO:
+                return ofKakao(userNameAttributeName, attributes);
+            default:
+                throw new AppException(ErrorCode.INVALID_SOCIAL_TYPE,ErrorCode.INVALID_SOCIAL_TYPE.getMessage());
         }
-        if (socialType == SocialType.KAKAO) {
-            return ofKakao(userNameAttributeName, attributes);
-        }
-        return ofGoogle(userNameAttributeName, attributes);
     }
+
 
     private static OAuthAttributes ofKakao(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
                 .nameAttributeKey(userNameAttributeName)
                 .oauth2UserInfo(new KakaoOAuth2UserInfo(attributes))
-                .build();
-    }
-
-    public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
-        return OAuthAttributes.builder()
-                .nameAttributeKey(userNameAttributeName)
-                .oauth2UserInfo(new GoogleOAuth2UserInfo(attributes))
                 .build();
     }
 

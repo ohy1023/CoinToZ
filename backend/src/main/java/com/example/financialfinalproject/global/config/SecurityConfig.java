@@ -132,7 +132,7 @@ public class SecurityConfig {
      */
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository, redisTemplate);
+        return new LoginSuccessHandler(jwtService, redisTemplate, objectMapper);
     }
 
     /**
@@ -140,7 +140,7 @@ public class SecurityConfig {
      */
     @Bean
     public LoginFailureHandler loginFailureHandler() {
-        return new LoginFailureHandler();
+        return new LoginFailureHandler(objectMapper);
     }
 
     /**
@@ -161,7 +161,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository,redisTemplate);
-        return jwtAuthenticationFilter;
+        return new JwtAuthenticationProcessingFilter(jwtService, userRepository,redisTemplate);
     }
 }

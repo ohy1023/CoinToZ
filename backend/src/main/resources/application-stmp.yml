@@ -1,0 +1,9 @@
+spring:
+  mail:
+    host: smtp.naver.com # smtp 서버 주소
+    port: 465 # 메일 인증서버 포트
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com

@@ -7,11 +7,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode{
-    DUPLICATED_USER_NAME(HttpStatus.CONFLICT, "UserName이 중복됩니다."),
+    LOGIN_FAILED(HttpStatus.BAD_REQUEST, "로그인 실패 : 이메일이나 비밀번호를 확인해주세요."),
 
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "Email이 중복됩니다."),
 
     REGISTRATION_ID_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 registrationId가 존재하지 않습니다."),
+    INVALID_SOCIAL_TYPE(HttpStatus.BAD_REQUEST, "해당 SOCIALTYPE은 잘못된 요청입니다."),
 
     USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 UserName이 없습니다."),
 

@@ -34,12 +34,6 @@ public class UserRestController {
     }
 
 
-    @ApiOperation(value = "로그인", notes = "jwt 반환")
-    @PostMapping("/login")
-    public String login(@RequestBody UserLoginRequest userLoginRequest) {
-        return "ok";
-    }
-
     @ApiOperation(value = "유저 정보 조회")
     @GetMapping
     public ResponseEntity<Response<UserGetResponse>> getUserInfo(Authentication authentication) {

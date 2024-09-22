@@ -134,9 +134,6 @@ export default function SignIn({ location }) {
           <Link href="http://localhost:8081/oauth2/authorization/naver">
             <img style={{}} alt="kakao" src={KakaoBut} />
           </Link>
-          <Link href="http://localhost:8081/oauth2/authorization/google">
-            <img style={{}} alt="kakao" src={KakaoBut} />
-          </Link>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
