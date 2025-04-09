@@ -40,16 +40,21 @@
 | 환경변수                       | 값                                                  |
 |----------------------------|----------------------------------------------------|
 | SPRING_DATASOURCE_URL      | jdbc:mysql://[EC2 퍼블릭 IPv4 DNS]:3306/[Schema Name] |
-| SPRING_DATASOUCE_USER      | root                                               |
-| SPRING_DATASOURCE_PASSWORD | password                                           |
-| SPRING_REDIS_HOST          | [EC2 퍼블릭 IPv4 DNS]                                 |
+| SPRING_DATASOUCE_USER      | [root]                                             |
+| SPRING_DATASOURCE_PASSWORD | [password]                                         |
+| SPRING_REDIS_HOST          | [EC2 퍼블릭 IPv4 DNS]                               |
+| SPRING_REDIS_HOST          | [port]                                             |
 | S3_NAME                    | [S3 Bucket Name]                                   |
 | S3_ACCESS_KEY              | [IAM AccessKey]                                    |
 | S3_SECRET_KEY              | [IAM SecretKey]                                    |
-| googleKey                  | [googleKey]                                        |
-| naverKey                   | [naverKey]                                         |
-| kakaoApi                   | [kakaoApi]                                         |
-| kakaoKey                   | [kakaoKey]                                         |
+| GOOGLE_CLIENT_ID           | [googleKey]                                        |
+| GOOGLE_CLIENT_SECRET       | [googleSecret]                                         |
+| KAKAO_CLIENT_ID            | [kakaoKey]                                         |
+| KAKAO_CLIENT_SECRET        | [kakaoSecret]                                         |
+| NAVER_CLIENT_ID            | [naverKey]                                        |
+| NAVER_CLIENT_SECRET        | [naverSecret]                                         |
+| MAIL_USERNAME                | [naver id]                                         |
+| MAIL_PASSWORD                   | [naver password]                                         |
 
 ## 3. 제작기간 && 팀원소개 🏃‍🏃‍♀️💨
 
