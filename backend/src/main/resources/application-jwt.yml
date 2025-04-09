@@ -1,9 +1,6 @@
 jwt:
-  secretKey: '124215sdfhab8fr98234c2q4g87243cg'
-
   access:
     expiration: 1800000 # 30분 (1000L(ms -> s) * 60L(s -> m) * 30L)
-    #    expiration: 60000 # 1분
     header: "Authorization"
 
   refresh:
