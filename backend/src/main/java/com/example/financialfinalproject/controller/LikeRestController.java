@@ -1,8 +1,7 @@
-package com.example.financialfinalproject.controller.restController;
+package com.example.financialfinalproject.controller;
 
 import com.example.financialfinalproject.domain.response.Response;
 import com.example.financialfinalproject.service.LikeService;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

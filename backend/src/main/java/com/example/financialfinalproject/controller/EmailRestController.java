@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.controller.restController;
+package com.example.financialfinalproject.controller;
 
 import com.example.financialfinalproject.service.EmailService;
 import lombok.RequiredArgsConstructor;

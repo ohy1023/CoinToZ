@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.controller.restController;
+package com.example.financialfinalproject.controller;
 
 import com.example.financialfinalproject.domain.dto.UpbitTokenDto;
 import com.example.financialfinalproject.domain.request.*;
@@ -96,9 +96,9 @@ public class UserRestController {
 
     @PostMapping("/UpbitToken")
     @ApiOperation(value = "업비트 API key 저장", notes = "업비트 API key 저장")
-    public ResponseEntity<Response<String>> save(@RequestBody UpbitTokenDto upbitTokenDto, @ApiIgnore Authentication authentication){
-        String email =  authentication.getName(); // email 추출
-        userService.save(upbitTokenDto,email);
+    public ResponseEntity<Response<String>> save(@RequestBody UpbitTokenDto upbitTokenDto, @ApiIgnore Authentication authentication) {
+        String email = authentication.getName(); // email 추출
+        userService.save(upbitTokenDto, email);
         return ResponseEntity.ok().body(Response.success("등록 성공!"));
     }
 
@@ -108,11 +108,5 @@ public class UserRestController {
         UserRoleResponse response = userService.changeRole(userId, authentication.getName());
         return ResponseEntity.ok().body(Response.success(response));
     }
-
-    @GetMapping("/reissuance")
-    public ResponseEntity<String> reissue() {
-        return ResponseEntity.ok().body("SUCCESS");
-    }
-
 
 }

@@ -48,7 +48,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.setCharacterEncoding("utf-8");
 
         // 클라이언트에 응답할 데이터(UserLoginResponse 객체 생성)
-        UserLoginResponse userLoginResponse = new UserLoginResponse(email, accessToken, refreshToken);
+        UserLoginResponse userLoginResponse = new UserLoginResponse(email, accessToken);
 
         // 성공 응답을 Response<UserLoginResponse>로 감싸서 처리
         Response<UserLoginResponse> responseBody = Response.success(userLoginResponse);

@@ -1,4 +1,4 @@
-package com.example.financialfinalproject.controller.restController;
+package com.example.financialfinalproject.controller;
 
 import com.example.financialfinalproject.domain.dto.PostDetailDto;
 import com.example.financialfinalproject.domain.dto.PostDto;
@@ -8,10 +8,6 @@ import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.SortDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;

@@ -1,16 +1,12 @@
 package com.example.financialfinalproject.service;
 
-import com.example.financialfinalproject.controller.restController.UpbitRestController;
 import com.example.financialfinalproject.domain.dto.TradingDiaryDto;
 import com.example.financialfinalproject.domain.dto.TradingDiaryListDto;
 import com.example.financialfinalproject.domain.entity.TradingDiary;
 import com.example.financialfinalproject.domain.entity.User;
-import com.example.financialfinalproject.domain.response.MyCoinCntResponse;
-import com.example.financialfinalproject.domain.upbit.exchange.Acount;
 import com.example.financialfinalproject.domain.upbit.exchange.OrderDeleteResponse;
 import com.example.financialfinalproject.domain.upbit.exchange.OrderOneResponse;
 import com.example.financialfinalproject.domain.upbit.exchange.OrderResponse;
-import com.example.financialfinalproject.domain.upbit.quotation.Ticker;
 import com.example.financialfinalproject.exception.AppException;
 import com.example.financialfinalproject.exception.ErrorCode;
 import com.example.financialfinalproject.repository.TradingDiaryRepository;

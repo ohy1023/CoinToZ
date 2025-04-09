@@ -7,25 +7,20 @@ import com.amazonaws.services.s3.model.*;
 import com.example.financialfinalproject.domain.dto.UpbitTokenDto;
 import com.example.financialfinalproject.domain.entity.User;
 import com.example.financialfinalproject.domain.request.UserJoinRequest;
-import com.example.financialfinalproject.domain.request.UserPutRequest;
 import com.example.financialfinalproject.domain.request.UserUpdatePasswordRequest;
 import com.example.financialfinalproject.domain.response.*;
 import com.example.financialfinalproject.exception.AppException;
-import com.example.financialfinalproject.global.jwt.service.JwtService;
 import com.example.financialfinalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.UUID;
 
 import static com.example.financialfinalproject.domain.enums.UserRole.ADMIN;
