@@ -10,29 +10,25 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { userState } from '../../../functions/GlobalState';
 import AccountPopover from './profileSelect';
 import Logo from '../../../assets/appBar/logo.png';
 import { createTheme } from '@mui/material';
 import { ThemeProvider } from '@mui/material';
-
 
 const pages = ['Exchange', 'TradingDiary', 'Community'];
 
 const customTheme = createTheme({
   palette: {
     secondary: {
-      main: "#191970",
-    }
-  }
+      main: '#191970',
+    },
+  },
 });
 
 function ResponsiveAppBar() {
-
   const navigate = useNavigate();
 
-  const user = useRecoilValue(userState);
+  const user = localStorage.getItem('email');
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
@@ -44,10 +40,9 @@ function ResponsiveAppBar() {
     setAnchorElNav(null);
   };
 
-
   return (
     <ThemeProvider theme={customTheme}>
-      <AppBar position="static" color={"secondary"}>
+      <AppBar position="static" color={'secondary'}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <Typography
@@ -64,7 +59,18 @@ function ResponsiveAppBar() {
                 textDecoration: 'none',
               }}
             >
-              <img style={{ display: { xs: 'none', md: 'flex' }, width: 100, height: 90, marginRight: 40, marginTop: -6, marginBottom: -6}} src={Logo} alt="" />
+              <img
+                style={{
+                  display: { xs: 'none', md: 'flex' },
+                  width: 100,
+                  height: 90,
+                  marginRight: 40,
+                  marginTop: -6,
+                  marginBottom: -6,
+                }}
+                src={Logo}
+                alt=""
+              />
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -96,49 +102,63 @@ function ResponsiveAppBar() {
                   display: { xs: 'block', md: 'none' },
                 }}
               >
-                <MenuItem key={pages[0]} onClick={() => {
-                  handleCloseNavMenu()
-                  navigate('/upbitMainPage')
-                }}>
+                <MenuItem
+                  key={pages[0]}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate('/upbitMainPage');
+                  }}
+                >
                   <Typography textAlign="center">{pages[0]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[1]} onClick={() => {
-                  handleCloseNavMenu()
-                  navigate('/diary')
-                }}>
+                <MenuItem
+                  key={pages[1]}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate('/diary');
+                  }}
+                >
                   <Typography textAlign="center">{pages[1]}</Typography>
                 </MenuItem>
-                <MenuItem key={pages[2]} onClick={() => {
-                  handleCloseNavMenu()
-                  navigate('/community')
-                }}>
+                <MenuItem
+                  key={pages[2]}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate('/community');
+                  }}
+                >
                   <Typography textAlign="center">{pages[2]}</Typography>
                 </MenuItem>
-                {user ? (<Box></Box>) : (
+                {user ? (
+                  <Box></Box>
+                ) : (
                   <Box>
-                  <MenuItem key='회원가입' onClick={() => {
-                  handleCloseNavMenu()
-                  navigate('/join')
-                }}>
-                  
-                  <Typography textAlign="center">회원가입</Typography>
-                </MenuItem>
-                <MenuItem key='로그인' onClick={() => {
-                  handleCloseNavMenu()
-                  navigate('/login')
-                }}>
-                  
-                  <Typography textAlign="center">로그인</Typography>
-                </MenuItem>
-                </Box>
+                    <MenuItem
+                      key="회원가입"
+                      onClick={() => {
+                        handleCloseNavMenu();
+                        navigate('/join');
+                      }}
+                    >
+                      <Typography textAlign="center">회원가입</Typography>
+                    </MenuItem>
+                    <MenuItem
+                      key="로그인"
+                      onClick={() => {
+                        handleCloseNavMenu();
+                        navigate('/login');
+                      }}
+                    >
+                      <Typography textAlign="center">로그인</Typography>
+                    </MenuItem>
+                  </Box>
                 )}
-                
               </Menu>
             </Box>
             <Typography
               noWrap
               component="a"
-              href='/'
+              href="/"
               sx={{
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
@@ -150,26 +170,32 @@ function ResponsiveAppBar() {
                 textDecoration: 'none',
               }}
             >
-              <img style={{ width: 70, height: 70}} src={Logo} alt="" />
+              <img style={{ width: 70, height: 70 }} src={Logo} alt="" />
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
               <Button
                 key={pages[0]}
-                onClick={() => { navigate('/upbitMainPage') }}
+                onClick={() => {
+                  navigate('/upbitMainPage');
+                }}
                 sx={{ my: 2, color: 'white', display: 'block', marginRight: 1 }}
               >
                 {pages[0]}
               </Button>
               <Button
                 key={pages[1]}
-                onClick={() => { navigate('/diary') }}
+                onClick={() => {
+                  navigate('/diary');
+                }}
                 sx={{ my: 2, color: 'white', display: 'block', marginRight: 1 }}
               >
                 {pages[1]}
               </Button>
               <Button
                 key={pages[2]}
-                onClick={() => { navigate('/community') }}
+                onClick={() => {
+                  navigate('/community');
+                }}
                 sx={{ my: 2, color: 'white', display: 'block', marginRight: 1 }}
               >
                 {pages[2]}
@@ -183,24 +209,30 @@ function ResponsiveAppBar() {
                 </>
               ) : (
                 <>
-                  <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                  <Box
+                    sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}
+                  >
                     <Button
-                      key='join'
-                      onClick={() => { navigate('/join') }}
+                      key="join"
+                      onClick={() => {
+                        navigate('/join');
+                      }}
                       sx={{ my: 2, color: 'white', display: 'block' }}
                     >
                       join
                     </Button>
                     <Button
-                      key='login'
-                      onClick={() => { navigate('/login') }}
+                      key="login"
+                      onClick={() => {
+                        navigate('/login');
+                      }}
                       sx={{ my: 2, color: 'white', display: 'block' }}
                     >
                       login
                     </Button>
                   </Box>
-                </>)}
-
+                </>
+              )}
             </Box>
           </Toolbar>
         </Container>

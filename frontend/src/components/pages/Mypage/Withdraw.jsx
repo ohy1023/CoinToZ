@@ -1,12 +1,10 @@
-import styles from "./Withdraw.module.css";
-import { Box, TextField, Button, Select, MenuItem } from "@mui/material";
-import Api from "../../../functions/customApi";
-import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-
+import styles from './Withdraw.module.css';
+import { Box, TextField, Button, Select, MenuItem } from '@mui/material';
+import Api from '../../../functions/customApi';
+import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Withdraw = () => {
-
   const userName = localStorage.getItem('userName');
   const imageUrl = localStorage.getItem('imageUrl');
   const [amount, setAmount] = useState('');
@@ -28,67 +26,74 @@ const Withdraw = () => {
   };
 
   const onhandleSubmit = async () => {
-
     const postData = {
       amount: amount,
-      two_factor_type: twoMethod
-    }
+      two_factor_type: twoMethod,
+    };
 
     // post
-    await Api
-      .post(`/api/v1/upbit/withdraws/krw`, postData)
+    await Api.post(`/api/v1/upbit/withdraws/krw`, postData)
       .then(function (response) {
         console.log(response.data);
-        alert("인증 요청을 보냈습니다.");
+        alert('인증 요청을 보냈습니다.');
       })
       .catch(function (err) {
         console.log(err.response);
-        alert("인증 요청 실패!");
+        alert('인증 요청 실패!');
       });
-
   };
 
   function setting(data) {
-    if (data.currency === "KRW") {
+    if (data.currency === 'KRW') {
       setMoney(data.balance);
     }
   }
 
   const getInfo = useCallback(async () => {
-    await Api.get("/api/v1/upbit/acount")
+    await Api.get('/api/v1/upbit/acount')
       .then(function (response) {
         console.log(response.data);
-        (response.data).map(data => setting(data));
+        response.data.map((data) => setting(data));
       })
       .catch(function (err) {
         console.log(err);
-        alert("해당 서비스를 이용할려면 업비트 키를 등록해주세요");
+        alert('해당 서비스를 이용할려면 업비트 키를 등록해주세요');
         navigate('/mypage/upbitKey');
-      })
-  },[navigate]);
+      });
+  }, [navigate]);
 
   useEffect(() => {
     getInfo();
-  }, [count,getInfo]);
-
+  }, [count, getInfo]);
 
   return (
     <div className={styles.Layout}>
-      <main className={[styles.Content, styles.Clearfix].join(" ")}>
+      <main className={[styles.Content, styles.Clearfix].join(' ')}>
         <div className={styles.Clearfix}>
           <section className={styles.Member}>
             <div className={styles.MemberSide}>
-              <div className={[styles.MemberCard, styles.Clearfix].join(" ")}>
+              <div className={[styles.MemberCard, styles.Clearfix].join(' ')}>
                 <div className={styles.MemberCardBody}>
-                  <div className={[styles.Avatar, styles.TwMb2].join(" ")}>
-                    {imageUrl === 'null' ? <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="profile_image" /> : <img src={imageUrl} alt="profile_image" />}
+                  <div className={[styles.Avatar, styles.TwMb2].join(' ')}>
+                    {imageUrl === 'null' ? (
+                      <img
+                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                        alt="profile_image"
+                      />
+                    ) : (
+                      <img src={imageUrl} alt="profile_image" />
+                    )}
                   </div>
                   <div>
-                    <div className={[styles.TwFontBold, styles.TwMb1].join(" ")}>{userName}</div>
+                    <div
+                      className={[styles.TwFontBold, styles.TwMb1].join(' ')}
+                    >
+                      {userName}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className={[styles.MemberCard, styles.MemberMenu].join(" ")}>
+              <div className={[styles.MemberCard, styles.MemberMenu].join(' ')}>
                 <ul>
                   <li>
                     <a href="/mypage">회원정보 보기</a>
@@ -115,19 +120,35 @@ const Withdraw = () => {
               <div className={styles.MemberCard}>
                 <div className={styles.MemberCardHeader}>
                   <Box>
-                    <h1 style={{ display: 'inline', marginRight: '740px' }}>원화 출금</h1>
-                    <Button onClick={handleChangeCount} type="button">새로고침</Button>
+                    <h1 style={{ display: 'inline', marginRight: '740px' }}>
+                      원화 출금
+                    </h1>
+                    <Button onClick={handleChangeCount} type="button">
+                      새로고침
+                    </Button>
                   </Box>
                 </div>
                 <div className={styles.MemberCardBody}>
                   <h6>👀 주의사항</h6>
                   <ul>
-                    <li style={{ marginLeft: '5px' }}>✔ 업비트에서 계좌인증 후 사용가능합니다.</li>
-                    <li style={{ marginLeft: '5px' }}>✔ 최소 5000원 부터 출금 가능합니다.</li>
-                    <li style={{ marginLeft: '5px' }}>✔ 2차 인증 성공 후 출금 진행됩니다.</li>
-                    <li style={{ marginLeft: '5px' }}>✔ 해당 서비스 이용 시 수수료(1000 KRW)가 발생합니다.</li>
-                    <li style={{ marginLeft: '5px' }}>✔ 출금까지 약 1분 소요됩니다.</li>
-                    <li style={{ marginLeft: '5px' }}>✔ 출금 가능 금액 (수수료 적용) : {money -1000} KRW </li>
+                    <li style={{ marginLeft: '5px' }}>
+                      ✔ 업비트에서 계좌인증 후 사용가능합니다.
+                    </li>
+                    <li style={{ marginLeft: '5px' }}>
+                      ✔ 최소 5000원 부터 출금 가능합니다.
+                    </li>
+                    <li style={{ marginLeft: '5px' }}>
+                      ✔ 2차 인증 성공 후 출금 진행됩니다.
+                    </li>
+                    <li style={{ marginLeft: '5px' }}>
+                      ✔ 해당 서비스 이용 시 수수료(1000 KRW)가 발생합니다.
+                    </li>
+                    <li style={{ marginLeft: '5px' }}>
+                      ✔ 출금까지 약 1분 소요됩니다.
+                    </li>
+                    <li style={{ marginLeft: '5px' }}>
+                      ✔ 출금 가능 금액 (수수료 적용) : {money - 1000} KRW{' '}
+                    </li>
                   </ul>
                   <Box noValidate sx={{ mt: 1 }}>
                     <TextField
@@ -149,9 +170,11 @@ const Withdraw = () => {
                       label="wfajlkwe"
                       onChange={handleChangeMethod}
                     >
-                      <MenuItem disabled value='2차 인증 방식'>2차 인증 방식</MenuItem>
-                      <MenuItem value='kakao_pay'>Kakao-Pay</MenuItem>
-                      <MenuItem value='naver'>Naver</MenuItem>
+                      <MenuItem disabled value="2차 인증 방식">
+                        2차 인증 방식
+                      </MenuItem>
+                      <MenuItem value="kakao_pay">Kakao-Pay</MenuItem>
+                      <MenuItem value="naver">Naver</MenuItem>
                     </Select>
                     <Button
                       type="button"
@@ -171,8 +194,6 @@ const Withdraw = () => {
       </main>
     </div>
   );
-}
-
-
+};
 
 export default Withdraw;

@@ -1,14 +1,18 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Label,
+  ResponsiveContainer,
+} from 'recharts';
 import Title from './Title';
 import Api from '../../../functions/customApi';
 import moment from 'moment';
-import { Button } from 'react-bootstrap';
-
 
 export default function Chart() {
-
   const theme = useTheme();
 
   const [rate, setRate] = React.useState([]);
@@ -34,8 +38,8 @@ export default function Chart() {
 
   function Test() {
     useInterval(() => {
-      setCount(count => count + 1);
-      console.log(count)
+      setCount((count) => count + 1);
+      console.log(count);
     }, 500);
   }
 
@@ -47,12 +51,12 @@ export default function Chart() {
   Test();
 
   React.useEffect(() => {
-    Api.get('api/v1/upbit/revenue')
-      .then(function (response) {
-        setRate(rate.concat(createData(moment().format("HH:mm"), response.data.result)));
-      })
+    Api.get('api/v1/upbit/revenue').then(function (response) {
+      setRate(
+        rate.concat(createData(moment().format('HH:mm'), response.data.result))
+      );
+    });
   }, [count]);
-
 
   return (
     <React.Fragment>

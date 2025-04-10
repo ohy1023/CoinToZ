@@ -1,13 +1,12 @@
-import styles from "./MyBoard.module.css";
+import styles from './MyBoard.module.css';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useTheme,styled } from '@mui/material/styles';
+import { useTheme, styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
-import TableCell,{ tableCellClasses } from '@mui/material/TableCell';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
@@ -16,9 +15,8 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import Post from "../Community/Post";
-import Api from "../../../functions/customApi";
-
+import Post from '../Community/Post';
+import Api from '../../../functions/customApi';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -54,14 +52,22 @@ function TablePaginationActions(props) {
         disabled={page === 0}
         aria-label="previous page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
@@ -81,9 +87,7 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-
 const MyBoard = () => {
-
   const userName = localStorage.getItem('userName');
   const imageUrl = localStorage.getItem('imageUrl');
 
@@ -108,7 +112,7 @@ const MyBoard = () => {
       })
       .catch(function (error) {
         console.log(error);
-      })
+      });
   }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -124,39 +128,56 @@ const MyBoard = () => {
     setPage(0);
   };
 
-
   return (
     <div className={styles.Layout}>
-      <main className={[styles.Content, styles.Clearfix].join(" ")}>
+      <main className={[styles.Content, styles.Clearfix].join(' ')}>
         <div className={styles.Clearfix}>
-          <section className={styles.Member}><div className={styles.MemberSide}>
-            <div className={[styles.MemberCard, styles.Clearfix].join(" ")}>
-              <div className={styles.MemberCardBody}>
-                <div className={[styles.Avatar, styles.TwMb2].join(" ")}>
-                  {imageUrl === 'null' ? <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="profile_image" /> : <img src={imageUrl} alt="profile_image" />}
+          <section className={styles.Member}>
+            <div className={styles.MemberSide}>
+              <div className={[styles.MemberCard, styles.Clearfix].join(' ')}>
+                <div className={styles.MemberCardBody}>
+                  <div className={[styles.Avatar, styles.TwMb2].join(' ')}>
+                    {imageUrl === 'null' ? (
+                      <img
+                        src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                        alt="profile_image"
+                      />
+                    ) : (
+                      <img src={imageUrl} alt="profile_image" />
+                    )}
+                  </div>
+                  <div>
+                    <div
+                      className={[styles.TwFontBold, styles.TwMb1].join(' ')}
+                    >
+                      {userName}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className={[styles.TwFontBold, styles.TwMb1].join(" ")}>{userName}</div>
-                </div>
+              </div>{' '}
+              <div className={[styles.MemberCard, styles.MemberMenu].join(' ')}>
+                <ul>
+                  <li>
+                    <a href="/mypage">회원정보 보기</a>
+                  </li>
+                  <li>
+                    <a href="/mypage/upbitkey">업비트 키 등록 / 수정</a>
+                  </li>
+                  <li>
+                    <a href="/mypage/wage">입금 하기</a>
+                  </li>
+                  <li>
+                    <a href="/mypage/withdraw">출금 하기</a>
+                  </li>
+                  <li className={styles.Active}>
+                    <a href="/mypage/myboard">작성 글 보기</a>
+                  </li>
+                  <li>
+                    <a href="/diary">매매일지 & 포트폴리오</a>
+                  </li>
+                </ul>
               </div>
-            </div>  <div className={[styles.MemberCard, styles.MemberMenu].join(" ")}>
-              <ul>
-                <li>
-                  <a href="/mypage">회원정보 보기</a>
-                </li><li>
-                  <a href="/mypage/upbitkey">업비트 키 등록 / 수정</a>
-                </li>
-                <li>
-                  <a href="/mypage/wage">입금 하기</a>
-                </li><li>
-                  <a href="/mypage/withdraw">출금 하기</a>
-                </li>
-                <li className={styles.Active}>
-                  <a href="/mypage/myboard">작성 글 보기</a>
-                </li><li>
-                  <a href="/diary">매매일지 & 포트폴리오</a>
-                </li></ul>
-            </div></div>
+            </div>
             <div className={styles.MemberContent}>
               <div className={styles.MemberCard}>
                 <div className={styles.MemberCardHeader}>
@@ -165,20 +186,59 @@ const MyBoard = () => {
 
                 <div className={styles.MemberCardBody}>
                   <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: '80%' }} stickyHeader aria-label="sticky table">
+                    <Table
+                      sx={{ minWidth: '80%' }}
+                      stickyHeader
+                      aria-label="sticky table"
+                    >
                       <TableHead>
                         <TableRow>
-                          <StyledTableCell style={{fontSize:18}} align='center' >No</StyledTableCell>
-                          <StyledTableCell style={{fontSize:18}} align='center' >제목</StyledTableCell>
-                          <StyledTableCell style={{fontSize:18}} align='center' >글쓴이</StyledTableCell>
-                          <StyledTableCell style={{fontSize:18}} align='center' >작성일</StyledTableCell>
-                          <StyledTableCell style={{fontSize:18}} align='center' >좋아요</StyledTableCell>
+                          <StyledTableCell
+                            style={{ fontSize: 18 }}
+                            align="center"
+                          >
+                            No
+                          </StyledTableCell>
+                          <StyledTableCell
+                            style={{ fontSize: 18 }}
+                            align="center"
+                          >
+                            제목
+                          </StyledTableCell>
+                          <StyledTableCell
+                            style={{ fontSize: 18 }}
+                            align="center"
+                          >
+                            글쓴이
+                          </StyledTableCell>
+                          <StyledTableCell
+                            style={{ fontSize: 18 }}
+                            align="center"
+                          >
+                            작성일
+                          </StyledTableCell>
+                          <StyledTableCell
+                            style={{ fontSize: 18 }}
+                            align="center"
+                          >
+                            좋아요
+                          </StyledTableCell>
                         </TableRow>
                       </TableHead>
-                      <Post posts={posts} rowsPerPage={rowsPerPage} emptyRows={emptyRows} page={page}></Post>
+                      <Post
+                        posts={posts}
+                        rowsPerPage={rowsPerPage}
+                        emptyRows={emptyRows}
+                        page={page}
+                      ></Post>
                     </Table>
                     <TablePagination
-                      rowsPerPageOptions={[5, 10, 25, { value: -1, label: 'All' }]}
+                      rowsPerPageOptions={[
+                        5,
+                        10,
+                        25,
+                        { value: -1, label: 'All' },
+                      ]}
                       component="div"
                       count={posts.length}
                       rowsPerPage={rowsPerPage}
@@ -196,8 +256,6 @@ const MyBoard = () => {
       </main>
     </div>
   );
-}
-
-
+};
 
 export default MyBoard;

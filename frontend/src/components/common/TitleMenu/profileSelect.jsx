@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import {
+  Box,
+  Divider,
+  Typography,
+  Stack,
+  MenuItem,
+  Avatar,
+  IconButton,
+  Popover,
+} from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
-import { userState } from '../../../functions/GlobalState';
-import { removeCookie } from '../../../functions/cookie';
 import Api from '../../../functions/customApi';
 
 const MENU_OPTIONS = [
@@ -28,45 +34,40 @@ const MENU_OPTIONS = [
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
-  const setUser = useSetRecoilState(userState);
   const email = localStorage.getItem('email');
   const userName = localStorage.getItem('userName');
 
   const [account, setAccount] = useState([]);
 
-
   const getInfo = async () => {
-    await Api.get("/api/v1/users")
+    await Api.get('/api/v1/users')
       .then(function (response) {
         console.log(response.data.result);
         setAccount(response.data.result);
       })
       .catch(function (err) {
         console.log(err);
-        alert("유저 정보 조회 실패");
-      })
+        alert('유저 정보 조회 실패');
+      });
   };
 
   useEffect(() => {
     getInfo();
-  }, [sessionStorage.getItem("temp")]);
+  }, []);
 
   const logoutUser = async () => {
-    await Api.get("/api/v1/users/logout")
+    await Api.get('/api/v1/users/logout')
       .then(function (response) {
-        removeCookie('access');
-        removeCookie('refresh');
         localStorage.removeItem('email');
         localStorage.removeItem('userName');
         localStorage.removeItem('imageUrl');
         localStorage.removeItem('createAt');
-        setUser('');
-        alert("로그아웃이 완료되었습니다.");
+        alert('로그아웃이 완료되었습니다.');
         navigate('/');
       })
       .catch(function (err) {
         console.log(err);
-        alert("로그아웃 실패!");
+        alert('로그아웃 실패!');
       });
   };
 
@@ -136,41 +137,53 @@ export default function AccountPopover() {
               {option.label}
             </MenuItem>
           ))} */}
-          <MenuItem key={MENU_OPTIONS[0].label} onClick={() => {
-            navigate('/mypage')
-            handleClose()
-          }}>
+          <MenuItem
+            key={MENU_OPTIONS[0].label}
+            onClick={() => {
+              navigate('/mypage');
+              handleClose();
+            }}
+          >
             {MENU_OPTIONS[0].label}
           </MenuItem>
           {account.needUpbitKey === true ? (
             <>
-            <MenuItem key={MENU_OPTIONS[1].label} onClick={() => {
-              navigate('/upbit/infomation')
-              handleClose()
-            }}>
-              {MENU_OPTIONS[1].label}
-            </MenuItem>
-            <MenuItem key={MENU_OPTIONS[2].label} onClick={() => {
-            navigate('/mypage/upbitkey')
-            handleClose()
-          }}>
-            {MENU_OPTIONS[2].label}
-          </MenuItem>
-          </>
-          ) : (<></>)}
+              <MenuItem
+                key={MENU_OPTIONS[1].label}
+                onClick={() => {
+                  navigate('/upbit/infomation');
+                  handleClose();
+                }}
+              >
+                {MENU_OPTIONS[1].label}
+              </MenuItem>
+              <MenuItem
+                key={MENU_OPTIONS[2].label}
+                onClick={() => {
+                  navigate('/mypage/upbitkey');
+                  handleClose();
+                }}
+              >
+                {MENU_OPTIONS[2].label}
+              </MenuItem>
+            </>
+          ) : (
+            <></>
+          )}
         </Stack>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={() => {
-          logoutUser()
-          handleClose()
-        }} sx={{ m: 1 }}>
+        <MenuItem
+          onClick={() => {
+            logoutUser();
+            handleClose();
+          }}
+          sx={{ m: 1 }}
+        >
           로그아웃
         </MenuItem>
       </Popover>
     </>
   );
 }
-
-
