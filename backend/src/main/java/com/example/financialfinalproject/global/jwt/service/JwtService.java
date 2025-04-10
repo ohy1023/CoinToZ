@@ -110,7 +110,7 @@ public class JwtService {
         refreshTokenCookie.setSecure(true); // HTTPS 환경에서만
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge((int) (refreshTokenExpirationPeriod / 1000));
-        refreshTokenCookie.setDomain("cointoz.store");
+        refreshTokenCookie.setDomain("api.cointoz.store");
 
         response.addCookie(refreshTokenCookie);
 
