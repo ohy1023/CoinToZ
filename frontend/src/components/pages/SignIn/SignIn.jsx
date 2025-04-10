@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,106 +10,92 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
-import KakaoBut from '../../../assets/signIn/kakao_login_medium_wide.png'
-import { setCookie } from "../../../functions/cookie";
-import { useSetRecoilState } from 'recoil';
-import { userState } from '../../../functions/GlobalState';
-import queryString from 'query-string';
-import Api from "../../../functions/customApi";
-import moment from "moment";
+import { useNavigate } from 'react-router-dom';
+import KakaoBut from '../../../assets/signIn/kakao_login_medium_wide.png';
+import { useRecoilState } from 'recoil';
+import { accessTokenState } from '../recoil/authAtom';
+import Api from '../../../functions/customApi';
 
 const theme = createTheme();
 
-
 export default function SignIn({ location }) {
-  const setUser = useSetRecoilState(userState);
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const paths = '/';
+  // const { search } = useLocation();
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const handleQuery = () => {
+  //     const query = queryString.parse(search);
+  //     const { accessToken, email } = query;
 
-    const handleQuery = () => {
-      const query = queryString.parse(search);
-      const { accessToken, refreshToken, email } = query;
-      
+  //     if (accessToken) {
+  //       localStorage.setItem('email', email);
+  //       sessionStorage.setItem('temp', 0);
+  //       getInfo();
+  //       alert('로그인이 완료되었습니다.');
+  //     }
+  //   };
 
-      if (accessToken) {
-        const expires =  moment().add('3','days').toDate()
-        setCookie("access", accessToken,{paths,expires});
-        setCookie("refresh", refreshToken,{paths,expires});
-        localStorage.setItem("email", email);
-        sessionStorage.setItem("temp",0);
-        setUser(localStorage.getItem("email"));
-        getInfo();
-        alert("로그인이 완료되었습니다.");
-      }
-    }
-
-    if (search) {
-      handleQuery();
-      navigate('/');
-    }
-  }, []);
+  //   if (search) {
+  //     handleQuery();
+  //     navigate('/');
+  //   }
+  // }, []);
 
   const getInfo = async () => {
-    await Api.get("/api/v1/users")
+    await Api.get('/api/v1/users')
       .then(function (response) {
         console.log(response.data.result);
-        localStorage.setItem("userName", response.data.result.userName);
-        localStorage.setItem("imageUrl", response.data.result.imageUrl);
-        localStorage.setItem("createAt", response.data.result.createAt);
+        localStorage.setItem('userName', response.data.result.userName);
+        localStorage.setItem('imageUrl', response.data.result.imageUrl);
+        localStorage.setItem('createAt', response.data.result.createAt);
       })
       .catch(function (err) {
         console.log(err);
-        alert("유저 정보 조회 실패");
-      })
+        alert('유저 정보 조회 실패');
+      });
   };
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const joinData = {
       email: data.get('email'),
-      password: data.get('password')
+      password: data.get('password'),
     };
 
-    onhandlePost(joinData)
-
+    onhandlePost(joinData);
   };
 
   const onhandlePost = async (data) => {
-    const { email, password } = data;
-    const postData = { email, password };
+    const postData = {
+      email: data.email,
+      password: data.password,
+    };
 
+    try {
+      const response = await axios.post('/api/v1/users/login', postData);
+      const token = response.data.result.accessToken;
+      const email = response.data.result.email;
 
+      // 토큰 저장
+      setAccessToken(token);
 
-    // post
-    await axios
-      .post('/api/v1/users/login', postData)
-      .then(function (response) {
-        const expires =  moment().add('3','days').toDate()
-        setCookie("access", response.headers.get("Authorization"),{paths,expires});
-        setCookie("refresh", response.headers.get("Authorization-refresh"),{paths,expires});
-        localStorage.setItem("email", email);
-        sessionStorage.setItem("temp",0);
-        setUser(localStorage.getItem("email"));
-        getInfo();
-        alert("로그인이 완료되었습니다.")
-        navigate('/');
-      })
-      .catch(function (err) {
-        console.log(err);
-        alert("로그인에 실패했습니다.(이메일 또는 비밀번호를 확인해주세요.)")
-      });
+      // 기타 로직
+      localStorage.setItem('email', email);
+      sessionStorage.setItem('temp', '0');
+      getInfo();
+      alert('로그인이 완료되었습니다.');
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      alert('로그인에 실패했습니다.(이메일 또는 비밀번호를 확인해주세요.)');
+    }
   };
 
   return (
-
-    <ThemeProvider theme={theme} >
-      <Container component="main" maxWidth="xs" >
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
@@ -118,7 +103,7 @@ export default function SignIn({ location }) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            paddingBottom :'11.8rem'
+            paddingBottom: '11.8rem',
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -128,13 +113,18 @@ export default function SignIn({ location }) {
             로그인
           </Typography>
           <br />
-          <Link href="http://localhost:8081/oauth2/authorization/kakao">
+          <Link href="https://api.cointoz.store/oauth2/authorization/kakao">
             <img style={{}} alt="kakao" src={KakaoBut} />
           </Link>
-          <Link href="http://localhost:8081/oauth2/authorization/naver">
-            <img style={{}} alt="kakao" src={KakaoBut} />
+          <Link href="https://api.cointoz.store/oauth2/authorization/naver">
+            <img style={{}} alt="naver" src={KakaoBut} />
           </Link>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -171,15 +161,13 @@ export default function SignIn({ location }) {
               </Grid>
               <Grid item>
                 <Link href="/join" variant="body2">
-                  {"회원가입 하러 가기"}
+                  {'회원가입 하러 가기'}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
       </Container>
-
     </ThemeProvider>
   );
-
 }
