@@ -76,6 +76,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers(SWAGGER).permitAll()
                 .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll()
+                .antMatchers("api/v1/emails/**").permitAll()
                 .antMatchers("/api/v1/users/{userId}/role").hasRole("ADMIN")
                 .antMatchers("/api/v1/**").authenticated()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
