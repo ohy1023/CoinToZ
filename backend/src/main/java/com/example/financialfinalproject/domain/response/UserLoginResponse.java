@@ -11,5 +11,4 @@ public class UserLoginResponse {
 
     private String email;
     private String accessToken;
-    private String refreshToken;
 }

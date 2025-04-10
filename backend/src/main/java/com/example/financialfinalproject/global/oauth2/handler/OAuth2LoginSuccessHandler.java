@@ -44,14 +44,19 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
 
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+        // AccessToken JSON 바디로 전달 (SPA가 메모리에 저장하도록)
+        jwtService.sendAccessToken(response, oAuth2User.getEmail(), accessToken);
+
+        // RefreshToken HttpOnly 쿠키로 설정
+        jwtService.sendRefreshToken(response, refreshToken);
+
+        jwtService.saveRefreshToken(oAuth2User.getEmail(), refreshToken);
 
 //        String targetUrl = UriComponentsBuilder.fromUriString("http://ec2-43-201-23-107.ap-northeast-2.compute.amazonaws.com:80/login")
         String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/login")
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
-                .queryParam("email",oAuth2User.getEmail())
+                .queryParam("email", oAuth2User.getEmail())
                 .build().toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

@@ -72,14 +72,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .mvcMatchers("/**").permitAll()
                 .antMatchers(SWAGGER).permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/**").authenticated()
-                .antMatchers(HttpMethod.POST, "/api/v1/users/join", "/api/v1/users/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/**").authenticated()
+                .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll()
                 .antMatchers("/api/v1/users/{userId}/role").hasRole("ADMIN")
-                .antMatchers(HttpMethod.PUT).authenticated()
-                .antMatchers(HttpMethod.DELETE).authenticated()
+                .antMatchers("/api/v1/**").authenticated()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .anyRequest().permitAll() // 위의 경로 이외에는 모두 접근 가능
                 .and()
@@ -161,6 +157,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        return new JwtAuthenticationProcessingFilter(jwtService, userRepository,redisTemplate);
+        return new JwtAuthenticationProcessingFilter(jwtService, userRepository, redisTemplate);
     }
 }

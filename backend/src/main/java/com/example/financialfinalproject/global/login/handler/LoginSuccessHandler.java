@@ -33,28 +33,18 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken(); // JwtService의 createRefreshToken을 사용하여 RefreshToken 발급
 
-        // JwtService에서 AccessToken과 RefreshToken을 응답 헤더에 실어서 클라이언트로 보냄
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        // 응답 상태 코드 설정 (200 OK)
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        // JwtService에서 AccessToken을 응답 바디에 실어서 클라이언트로 보냄
+        jwtService.sendAccessToken(response, accessToken, refreshToken);
+
+        // JwtService에서 refreshToken을 HttpOnly 쿠기에 실어서 클라이언트로 보냄
+        jwtService.sendRefreshToken(response, refreshToken);
 
         // Redis에 RefreshToken 저장 (Key: "RT:" + email)
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), refreshToken);
-
-        // 응답 상태 코드 설정 (200 OK)
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        // 응답 형식을 JSON으로 설정
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-
-        // 클라이언트에 응답할 데이터(UserLoginResponse 객체 생성)
-        UserLoginResponse userLoginResponse = new UserLoginResponse(email, accessToken);
-
-        // 성공 응답을 Response<UserLoginResponse>로 감싸서 처리
-        Response<UserLoginResponse> responseBody = Response.success(userLoginResponse);
-
-        // ObjectMapper를 사용하여 JSON으로 직렬화 후 클라이언트에 응답
-        objectMapper.writeValue(response.getWriter(), responseBody);
     }
 
     private String extractUsername(Authentication authentication) {

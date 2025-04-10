@@ -1,6 +1,9 @@
 package com.example.financialfinalproject.global.jwt.service;
 
+import com.example.financialfinalproject.domain.response.Response;
+import com.example.financialfinalproject.domain.response.UserLoginResponse;
 import com.example.financialfinalproject.repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +14,10 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
@@ -44,11 +49,10 @@ public class JwtService {
      */
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String EMAIL_CLAIM = "email";
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
-
+    private final ObjectMapper objectMapper;
     private final RedisTemplate<String, String> redisTemplate;
 
     /**
@@ -80,24 +84,37 @@ public class JwtService {
     }
 
     /**
-     * AccessToken 헤더에 실어서 보내기
-     */
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        response.setHeader(accessHeader, accessToken);
-        log.info("재발급된 Access Token : {}", accessToken);
-    }
-
-    /**
      * AccessToken + RefreshToken 헤더에 실어서 보내기
      */
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
-        response.setStatus(HttpServletResponse.SC_OK);
+    public void sendAccessToken(HttpServletResponse response, String email, String accessToken) throws IOException {
+        // 응답 형식을 JSON으로 설정
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
 
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
+        // 클라이언트에 응답할 데이터(UserLoginResponse 객체 생성)
+        UserLoginResponse userLoginResponse = new UserLoginResponse(email, accessToken);
+
+        // 성공 응답을 Response<UserLoginResponse>로 감싸서 처리
+        Response<UserLoginResponse> responseBody = Response.success(userLoginResponse);
+
+        // ObjectMapper를 사용하여 JSON으로 직렬화 후 클라이언트에 응답
+        objectMapper.writeValue(response.getWriter(), responseBody);
+        log.info("Access Token -> Body 설정 완료");
+    }
+
+    public void sendRefreshToken(HttpServletResponse response, String refreshToken) {
+
+        // RefreshToken은 HttpOnly 쿠키로 저장
+        Cookie refreshTokenCookie = new Cookie(refreshHeader, refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true); // HTTPS 환경에서만
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge((int) (refreshTokenExpirationPeriod / 1000));
+        refreshTokenCookie.setDomain("cointoz.store");
+
+        response.addCookie(refreshTokenCookie);
+
+        log.info("Refresh Token -> 쿠키 설정 완료");
     }
 
     /**
@@ -139,30 +156,14 @@ public class JwtService {
     }
 
     /**
-     * AccessToken 헤더 설정
-     */
-    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
-    }
-
-    /**
-     * RefreshToken 헤더 설정
-     */
-    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
-    }
-
-    /**
-     * RefreshToken Redis 저장(업데이트)
+     * RefreshToken Redis 저장
      */
     @Transactional
-    public void updateRefreshToken(String email, String refreshToken) {
+    public void saveRefreshToken(String email, String refreshToken) {
         log.info("email:{}", email);
         log.info("update:{}", refreshToken);
         redisTemplate.opsForValue().set("RT:" + email, refreshToken, Duration.ofMillis(refreshTokenExpirationPeriod));
-
     }
-
 
     /**
      * AccessToken 타당성 검증
