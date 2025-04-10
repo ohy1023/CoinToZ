@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import KakaoBut from '../../../assets/signIn/kakao_login_medium_wide.png';
 import { useRecoilState } from 'recoil';
-import { accessTokenState } from '../recoil/authAtom';
+import { accessTokenState } from '../../../recoil/authAtom';
 import Api from '../../../functions/customApi';
 
 const theme = createTheme();
