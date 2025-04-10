@@ -37,7 +37,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.setStatus(HttpServletResponse.SC_OK);
 
         // JwtService에서 AccessToken을 응답 바디에 실어서 클라이언트로 보냄
-        jwtService.sendAccessToken(response, accessToken, refreshToken);
+        jwtService.sendAccessToken(response, email, accessToken);
 
         // JwtService에서 refreshToken을 HttpOnly 쿠기에 실어서 클라이언트로 보냄
         jwtService.sendRefreshToken(response, refreshToken);
