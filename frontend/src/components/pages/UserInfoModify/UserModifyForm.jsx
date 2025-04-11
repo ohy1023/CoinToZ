@@ -1,8 +1,8 @@
 import { Box, TextField, Button } from '@mui/material';
 import React, { useState } from 'react';
 import styles from './UserModifyForm.module.css';
-import Api from '../../../functions/customApi';
 import { useNavigate } from 'react-router-dom';
+import { privateApi } from '../../../utils/http-common';
 
 const UserModifyForm = (): JSX.Element => {
   const navigate = useNavigate();
@@ -59,7 +59,8 @@ const UserModifyForm = (): JSX.Element => {
     formData.append('userName', userName);
     formData.append('removeClick', removeClick);
 
-    Api.post('/api/v1/users', formData)
+    privateApi
+      .post('/api/v1/users', formData)
       .then(function (response) {
         sessionStorage.setItem('temp', sessionStorage.getItem('temp') + 1);
         localStorage.setItem('userName', response.data.result.userName);

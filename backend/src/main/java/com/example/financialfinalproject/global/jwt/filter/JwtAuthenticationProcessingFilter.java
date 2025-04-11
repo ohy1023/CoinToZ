@@ -73,7 +73,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 Redis의 리프레시 토큰과 일치하는지 판단 & 만료시간 검증 후,
         // 일치한다면 AccessToken을 재발급해준다.
         if (request.getRequestURI().equals("/api/v1/users/reissuance")) {
-            String email = request.getHeader("email");
+            String email = request.getHeader("X-User-Email");
 
             // 사용자 요청 헤더에서 RefreshToken 추출
             // -> RefreshToken이 없거나 유효하지 않다면(Redis에 저장된 RefreshToken과 다르다면) null을 반환

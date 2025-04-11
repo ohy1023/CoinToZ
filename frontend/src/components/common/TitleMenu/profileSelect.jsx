@@ -12,7 +12,9 @@ import {
 } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
+import { setRecoil } from 'recoil-nexus';
+import { accessTokenState } from '../../../recoil/authAtom';
 
 const MENU_OPTIONS = [
   {
@@ -40,7 +42,8 @@ export default function AccountPopover() {
   const [account, setAccount] = useState([]);
 
   const getInfo = async () => {
-    await Api.get('/api/v1/users')
+    await privateApi
+      .get('/api/v1/users')
       .then(function (response) {
         console.log(response.data.result);
         setAccount(response.data.result);
@@ -56,12 +59,14 @@ export default function AccountPopover() {
   }, []);
 
   const logoutUser = async () => {
-    await Api.get('/api/v1/users/logout')
+    await privateApi
+      .get('/api/v1/users/logout')
       .then(function (response) {
         localStorage.removeItem('email');
         localStorage.removeItem('userName');
         localStorage.removeItem('imageUrl');
         localStorage.removeItem('createAt');
+        setRecoil(accessTokenState, '');
         alert('로그아웃이 완료되었습니다.');
         navigate('/');
       })

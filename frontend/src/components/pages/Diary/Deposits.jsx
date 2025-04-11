@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Title from './Title';
 import { ResponsivePie } from '@nivo/pie';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 
 export default function Deposits() {
   let [sumEtcCnt, setSumEtcCnt] = React.useState(0.0);
@@ -13,7 +13,8 @@ export default function Deposits() {
   const [etcCnt, setEtcCnt] = React.useState(0.0);
 
   const getCoinCount = async () => {
-    await Api.get('/api/v1/upbit/acount')
+    await privateApi
+      .get('/api/v1/upbit/acount')
       .then(function (response) {
         console.log(response.data);
         response.data.map((data) => settingCnt(data));

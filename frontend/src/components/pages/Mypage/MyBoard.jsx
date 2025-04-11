@@ -16,7 +16,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import Post from '../Community/Post';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -106,7 +106,8 @@ const MyBoard = () => {
   }));
 
   useEffect(() => {
-    Api.get('/api/v1/posts/myPost')
+    privateApi
+      .get('/api/v1/posts/myPost')
       .then((response) => {
         setPosts(response.data.result);
       })

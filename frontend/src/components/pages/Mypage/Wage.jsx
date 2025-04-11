@@ -1,6 +1,6 @@
 import styles from './Wage.module.css';
 import { Box, TextField, Button, MenuItem } from '@mui/material';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 import { useEffect, useState, useCallback } from 'react';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useNavigate } from 'react-router-dom';
@@ -37,7 +37,8 @@ const Wage = () => {
     console.log(twoMethod);
 
     // post
-    await Api.post(`/api/v1/upbit/deposit/${amount}/${twoMethod}`)
+    await privateApi
+      .post(`/api/v1/upbit/deposit/${amount}/${twoMethod}`)
       .then(function (response) {
         console.log(response.data);
         alert('인증 요청을 보냈습니다.');
@@ -49,7 +50,8 @@ const Wage = () => {
   };
 
   const getInfo = useCallback(async () => {
-    await Api.get('/api/v1/upbit/acount')
+    await privateApi
+      .get('/api/v1/upbit/acount')
       .then(function (response) {
         console.log(response.data);
         response.data.map((data) => setting(data));

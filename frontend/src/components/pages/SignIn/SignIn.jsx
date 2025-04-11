@@ -9,12 +9,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import KakaoBut from '../../../assets/signIn/kakao_login_medium_wide.png';
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/authAtom';
-import Api from '../../../functions/customApi';
+import { privateApi, publicApi } from '../../../utils/http-common';
 
 const theme = createTheme();
 
@@ -43,7 +42,8 @@ export default function SignIn({ location }) {
   // }, []);
 
   const getInfo = async () => {
-    await Api.get('/api/v1/users')
+    await privateApi
+      .get('/api/v1/users')
       .then(function (response) {
         console.log(response.data.result);
         localStorage.setItem('userName', response.data.result.userName);
@@ -74,7 +74,7 @@ export default function SignIn({ location }) {
     };
 
     try {
-      const response = await axios.post('/api/v1/users/login', postData);
+      const response = await publicApi.post('/api/v1/users/login', postData);
       const token = response.data.result.accessToken;
       const email = response.data.result.email;
 

@@ -1,6 +1,6 @@
 import styles from './UpbitKeyForm.module.css';
 import { Box, TextField, Button } from '@mui/material';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 import { useNavigate } from 'react-router-dom';
 
 const UpbitKey = () => {
@@ -20,7 +20,8 @@ const UpbitKey = () => {
     console.log(postData);
 
     // post
-    await Api.post('/api/v1/users/UpbitToken', postData)
+    await privateApi
+      .post('/api/v1/users/UpbitToken', postData)
       .then(function (response) {
         console.log(response);
         sessionStorage.setItem('temp', sessionStorage.getItem('temp') + 1);

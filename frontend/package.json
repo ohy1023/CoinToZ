@@ -32,6 +32,7 @@
     "react-scripts": "^5.0.1",
     "recharts": "^2.3.2",
     "recoil": "^0.7.6",
+    "recoil-nexus": "^0.5.1",
     "recoil-persist": "^4.2.0",
     "reduce-css-calc": "^2.1.8",
     "styled-components": "^5.3.6",
@@ -62,5 +63,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:8089"
 }

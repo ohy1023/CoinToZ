@@ -1,7 +1,7 @@
 import styles from './Mypage.module.css';
 import { useState, useEffect } from 'react';
 import DeleteUser from './DeleteUser';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 
 const Mypage = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +10,8 @@ const Mypage = () => {
   const [imageUrl, setImageUrl] = useState('');
 
   const getInfo = async () => {
-    await Api.get('/api/v1/users')
+    await privateApi
+      .get('/api/v1/users')
       .then(function (response) {
         console.log(response.data.result);
         setEmail(response.data.result.email);

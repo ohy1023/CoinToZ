@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import Title from './Title';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 import moment from 'moment';
 
 export default function Chart() {
@@ -51,7 +51,7 @@ export default function Chart() {
   Test();
 
   React.useEffect(() => {
-    Api.get('api/v1/upbit/revenue').then(function (response) {
+    privateApi.get('api/v1/upbit/revenue').then(function (response) {
       setRate(
         rate.concat(createData(moment().format('HH:mm'), response.data.result))
       );

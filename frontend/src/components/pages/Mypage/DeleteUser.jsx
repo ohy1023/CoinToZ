@@ -1,14 +1,15 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
-import Api from '../../../functions/customApi';
+import { privateApi } from '../../../utils/http-common';
 import { useNavigate } from 'react-router-dom';
 
 function DeleteUser(props) {
   const navigate = useNavigate();
 
   const deleteUser = async () => {
-    Api.delete('/api/v1/users')
+    privateApi
+      .delete('/api/v1/users')
       .then(function (response) {
         localStorage.removeItem('email');
         localStorage.removeItem('userName');
