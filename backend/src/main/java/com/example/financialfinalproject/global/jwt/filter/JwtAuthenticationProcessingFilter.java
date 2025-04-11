@@ -82,11 +82,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                     .orElse(null);
 
             if (refreshToken != null) {
-                String reIssuedAccessToken = jwtService.createAccessToken(email);
-                jwtService.sendAccessToken(response, email, reIssuedAccessToken);
-
                 String reIssuedRefreshToken = reIssueRefreshToken(email);
                 jwtService.sendRefreshToken(response, reIssuedRefreshToken);
+
+                String reIssuedAccessToken = jwtService.createAccessToken(email);
+                jwtService.sendAccessToken(response, email, reIssuedAccessToken);
                 log.info("재발급 성공");
             }
 

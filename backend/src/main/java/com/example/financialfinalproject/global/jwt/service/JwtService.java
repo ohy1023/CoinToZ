@@ -88,7 +88,7 @@ public class JwtService {
     }
 
     /**
-     * AccessToken + RefreshToken 헤더에 실어서 보내기
+     * AccessToken 바디에 실어서 보내기
      */
     public void sendAccessToken(HttpServletResponse response, String email, String accessToken) throws IOException {
         // 응답 형식을 JSON으로 설정
@@ -112,7 +112,7 @@ public class JwtService {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
+                .sameSite(SameSite.NONE.attributeValue())
                 .domain(".cointoz.store")
                 .path("/")
                 .maxAge(refreshTokenExpirationPeriod / 1000)
@@ -121,20 +121,6 @@ public class JwtService {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         log.info("Refresh Token -> 쿠키 설정 완료. 값: {}", cookie);
-    }
-
-    public ResponseCookie test(String refreshToken) {
-
-        // RefreshToken은 HttpOnly 쿠키로 저장
-        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite(SameSite.NONE.attributeValue())
-                .path("/")
-                .build();
-
-
-        return responseCookie;
     }
 
     /**

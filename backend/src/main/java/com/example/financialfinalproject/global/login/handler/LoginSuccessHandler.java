@@ -38,18 +38,16 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         // 응답 상태 코드 설정 (200 OK)
         response.setStatus(HttpServletResponse.SC_OK);
 
-        // JwtService에서 AccessToken을 응답 바디에 실어서 클라이언트로 보냄
-        jwtService.sendAccessToken(response, email, accessToken);
-
-        // JwtService에서 refreshToken을 HttpOnly 쿠기에 실어서 클라이언트로 보냄
-//        jwtService.sendRefreshToken(response, refreshToken);
-        ResponseCookie cookie = jwtService.test(refreshToken);
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         // Redis에 RefreshToken 저장 (Key: "RT:" + email)
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), refreshToken);
+
+        // JwtService에서 refreshToken을 HttpOnly 쿠기에 실어서 클라이언트로 보냄
+        jwtService.sendRefreshToken(response, refreshToken);
+
+        // JwtService에서 AccessToken을 응답 바디에 실어서 클라이언트로 보냄
+        jwtService.sendAccessToken(response, email, accessToken);
     }
 
     private String extractUsername(Authentication authentication) {
