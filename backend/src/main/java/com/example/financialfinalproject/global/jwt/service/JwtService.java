@@ -122,6 +122,22 @@ public class JwtService {
         log.info("Refresh Token -> 쿠키 설정 완료. 값: {}", cookie);
     }
 
+    public ResponseCookie test(String refreshToken) {
+
+        // RefreshToken은 HttpOnly 쿠키로 저장
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .domain("cointoz.store")
+                .path("/")
+                .maxAge(refreshTokenExpirationPeriod / 1000)
+                .build();
+
+
+        return cookie;
+    }
+
     /**
      * 쿠키에서 RefreshToken 추출
      */

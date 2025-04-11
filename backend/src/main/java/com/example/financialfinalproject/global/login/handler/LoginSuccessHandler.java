@@ -6,6 +6,8 @@ import com.example.financialfinalproject.global.jwt.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -40,7 +42,10 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         jwtService.sendAccessToken(response, email, accessToken);
 
         // JwtService에서 refreshToken을 HttpOnly 쿠기에 실어서 클라이언트로 보냄
-        jwtService.sendRefreshToken(response, refreshToken);
+//        jwtService.sendRefreshToken(response, refreshToken);
+        ResponseCookie cookie = jwtService.test(refreshToken);
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         // Redis에 RefreshToken 저장 (Key: "RT:" + email)
         redisTemplate.opsForValue()
