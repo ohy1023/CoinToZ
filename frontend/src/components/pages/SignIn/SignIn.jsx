@@ -94,10 +94,10 @@ export default function SignIn({ location }) {
             로그인
           </Typography>
           <br />
-          <Link href="https://api.cointoz.store/oauth2/authorization/kakao">
+          <Link href="https://api.cointoz.store:8080/oauth2/authorization/kakao">
             <img style={{}} alt="kakao" src={KakaoBut} />
           </Link>
-          <Link href="https://api.cointoz.store/oauth2/authorization/naver">
+          <Link href="https://api.cointoz.store:8080/oauth2/authorization/naver">
             <img style={{}} alt="naver" src={NaverBut} />
           </Link>
           <Box
