@@ -4,12 +4,12 @@ spring:
       client:
         registration:
           naver:
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: "https://api.cointoz.store:8080/login/oauth2/code/kakao"
             authorization-grant-type: authorization_code
             scope: name, email, profile_image
             client-name: Naver
           kakao:
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: "https://api.cointoz.store:8080/login/oauth2/code/naver"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image
