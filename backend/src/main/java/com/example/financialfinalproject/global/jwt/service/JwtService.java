@@ -107,26 +107,26 @@ public class JwtService {
 
     public void sendRefreshToken(HttpServletResponse response, String refreshToken) {
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .domain("cointoz.store") // 중요: 루트 도메인 지정 시 모든 하위 도메인 공유 가능
-                .path("/")
-                .maxAge((int) (refreshTokenExpirationPeriod / 1000))
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+//        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+//                .httpOnly(true)
+//                .secure(true)
+//                .sameSite("None")
+//                .domain("cointoz.store")
+//                .path("/")
+//                .maxAge((int) (refreshTokenExpirationPeriod / 1000))
+//                .build();
+//
+//        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         // RefreshToken은 HttpOnly 쿠키로 저장
-//        Cookie refreshTokenCookie = new Cookie(refreshHeader, refreshToken);
-//        refreshTokenCookie.setHttpOnly(true);
-//        refreshTokenCookie.setSecure(true); // HTTPS 환경에서만
-//        refreshTokenCookie.setPath("/");
-//        refreshTokenCookie.setMaxAge((int) (refreshTokenExpirationPeriod / 1000));
-//        refreshTokenCookie.setDomain("cointoz.store");
-//
-//        response.addCookie(refreshTokenCookie);
+        Cookie refreshTokenCookie = new Cookie(refreshHeader, refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true); // HTTPS 환경에서만
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge((int) (refreshTokenExpirationPeriod / 1000));
+        refreshTokenCookie.setDomain("cointoz.store");
+
+        response.addCookie(refreshTokenCookie);
 
         log.info("Refresh Token-> 쿠키 설정 완료");
     }
