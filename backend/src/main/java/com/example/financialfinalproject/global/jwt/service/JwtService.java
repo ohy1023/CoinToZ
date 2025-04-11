@@ -112,7 +112,7 @@ public class JwtService {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
-                .domain("cointoz.store")
+                .domain(".cointoz.store")
                 .path("/")
                 .maxAge((int) (refreshTokenExpirationPeriod / 1000))
                 .build();
