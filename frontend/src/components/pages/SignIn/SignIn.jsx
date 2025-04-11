@@ -95,10 +95,29 @@ export default function SignIn({ location }) {
           </Typography>
           <br />
           <Link href="https://api.cointoz.store:8080/oauth2/authorization/kakao">
-            <img style={{}} alt="kakao" src={KakaoBut} />
+            <img
+              alt="kakao"
+              src={KakaoBut}
+              style={{
+                width: '300px',
+                height: '45px',
+                objectFit: 'contain',
+                marginBottom: '12px',
+              }}
+            />
           </Link>
+
           <Link href="https://api.cointoz.store:8080/oauth2/authorization/naver">
-            <img style={{}} alt="naver" src={NaverBut} />
+            <img
+              alt="naver"
+              src={NaverBut}
+              style={{
+                width: '300px',
+                height: '45px',
+                objectFit: 'contain',
+                marginBottom: '12px',
+              }}
+            />
           </Link>
           <Box
             component="form"
