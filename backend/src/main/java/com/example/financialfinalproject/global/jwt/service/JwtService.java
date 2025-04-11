@@ -113,14 +113,14 @@ public class JwtService {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite(SameSite.NONE.attributeValue())
-                .domain(".cointoz.store")
+                .domain("cointoz.store")
                 .path("/")
                 .maxAge(refreshTokenExpirationPeriod / 1000)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        log.info("Refresh Token -> 쿠키 설정 완료. 값: {}", cookie);
+        log.info("Refresh Token -> 쿠키 설정 완료.");
     }
 
     /**
@@ -218,7 +218,7 @@ public class JwtService {
      * 레디스에 저장된 RefreshToken 삭제
      */
     @Transactional
-    public void logout(HttpServletRequest request) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = extractAccessToken(request)
                 .filter((this::isTokenValid))
                 .orElse(null);
@@ -226,5 +226,19 @@ public class JwtService {
         long expiredAccessTokenTime = getExpiredTime(accessToken).getTime() - new Date().getTime();
         redisTemplate.opsForValue().set("blackList:" + accessToken, email, Duration.ofMillis(expiredAccessTokenTime));
         redisTemplate.delete("RT:" + email); // Redis에서 유저 리프레시 토큰 삭제
+
+        ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite(SameSite.NONE.attributeValue())
+                .maxAge(0)  // <== 만료시간 0으로 설정해서 삭제
+                .domain("cointoz.store")
+                .build();
+
+        // 응답 상태 코드 설정 (200 OK)
+        response.setStatus(HttpServletResponse.SC_OK);
+
+        response.addHeader("Set-Cookie", deleteCookie.toString());
     }
 }

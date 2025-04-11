@@ -63,7 +63,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         // 해당 url 요청시 로그아웃 실행
         if (request.getRequestURI().equals("/api/v1/users/logout")) {
-            jwtService.logout(request);
+            jwtService.logout(request, response);
             log.info("로그아웃 성공");
             return;
         }
@@ -85,6 +85,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
             if (refreshToken != null) {
                 log.info("refreshToken 동일성 검증 통과");
+
+                // 응답 상태 코드 설정 (200 OK)
+                response.setStatus(HttpServletResponse.SC_OK);
+
                 String reIssuedRefreshToken = reIssueRefreshToken(email);
                 jwtService.sendRefreshToken(response, reIssuedRefreshToken);
 

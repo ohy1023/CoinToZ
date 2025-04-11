@@ -38,7 +38,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         // 응답 상태 코드 설정 (200 OK)
         response.setStatus(HttpServletResponse.SC_OK);
 
-
         // Redis에 RefreshToken 저장 (Key: "RT:" + email)
         redisTemplate.opsForValue()
                 .set("RT:" + authentication.getName(), refreshToken);
