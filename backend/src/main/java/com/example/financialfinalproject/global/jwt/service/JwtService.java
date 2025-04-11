@@ -166,7 +166,7 @@ public class JwtService {
      * RefreshToken Redis 저장
      */
     @Transactional
-    public void saveRefreshToken(String email, String refreshToken) {
+    public void saveRefreshTokenInRedis(String email, String refreshToken) {
         log.info("email:{}", email);
         log.info("update:{}", refreshToken);
         redisTemplate.opsForValue().set("RT:" + email, refreshToken, Duration.ofMillis(refreshTokenExpirationPeriod));

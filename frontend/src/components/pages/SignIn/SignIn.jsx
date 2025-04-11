@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import KakaoBut from '../../../assets/signIn/kakao_login_medium_wide.png';
+import NaverBut from '../../../assets/signIn/naver_login.png';
 import { useRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/authAtom';
 import { privateApi, publicApi } from '../../../utils/http-common';
@@ -20,26 +21,6 @@ const theme = createTheme();
 export default function SignIn({ location }) {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const navigate = useNavigate();
-  // const { search } = useLocation();
-
-  // useEffect(() => {
-  //   const handleQuery = () => {
-  //     const query = queryString.parse(search);
-  //     const { accessToken, email } = query;
-
-  //     if (accessToken) {
-  //       localStorage.setItem('email', email);
-  //       sessionStorage.setItem('temp', 0);
-  //       getInfo();
-  //       alert('로그인이 완료되었습니다.');
-  //     }
-  //   };
-
-  //   if (search) {
-  //     handleQuery();
-  //     navigate('/');
-  //   }
-  // }, []);
 
   const getInfo = async () => {
     await privateApi
@@ -117,7 +98,7 @@ export default function SignIn({ location }) {
             <img style={{}} alt="kakao" src={KakaoBut} />
           </Link>
           <Link href="https://api.cointoz.store/oauth2/authorization/naver">
-            <img style={{}} alt="naver" src={KakaoBut} />
+            <img style={{}} alt="naver" src={NaverBut} />
           </Link>
           <Box
             component="form"

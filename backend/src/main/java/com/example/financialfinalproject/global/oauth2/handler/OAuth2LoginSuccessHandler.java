@@ -37,29 +37,18 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     }
 
     private void loginSuccess(HttpServletRequest request, HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+
         log.info("getEmail:{}", oAuth2User.getEmail());
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
         String refreshToken = jwtService.createRefreshToken();
-
-        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
-
-        // AccessToken JSON 바디로 전달 (SPA가 메모리에 저장하도록)
-        jwtService.sendAccessToken(response, oAuth2User.getEmail(), accessToken);
 
         // RefreshToken HttpOnly 쿠키로 설정
         jwtService.sendRefreshToken(response, refreshToken);
 
-        jwtService.saveRefreshToken(oAuth2User.getEmail(), refreshToken);
-
-        String targetUrl = UriComponentsBuilder.fromUriString("https://api.cointoz.store/login")
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
+        String redirectUrl = UriComponentsBuilder.fromUriString("https://cointoz.store/oauth2/success")
                 .queryParam("email", oAuth2User.getEmail())
                 .build().toUriString();
 
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
-
+        getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 
     }
 }
