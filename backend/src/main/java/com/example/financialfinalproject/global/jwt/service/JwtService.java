@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.Cookie.SameSite;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpHeaders;
@@ -125,17 +126,15 @@ public class JwtService {
     public ResponseCookie test(String refreshToken) {
 
         // RefreshToken은 HttpOnly 쿠키로 저장
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("None")
-                .domain("cointoz.store")
+                .sameSite(SameSite.NONE.attributeValue())
                 .path("/")
-                .maxAge(refreshTokenExpirationPeriod / 1000)
                 .build();
 
 
-        return cookie;
+        return responseCookie;
     }
 
     /**
