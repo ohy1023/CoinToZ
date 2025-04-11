@@ -4,7 +4,6 @@ import { useSetRecoilState } from 'recoil';
 import { accessTokenState } from '../../../recoil/authAtom';
 import { userTokenRefresh } from '../../../functions/userTokenRefresh';
 import { Box, Typography, CircularProgress, Paper } from '@mui/material';
-import { privateApi } from '../../../utils/http-common';
 
 const OAuth2Success = () => {
   const navigate = useNavigate();
@@ -25,30 +24,14 @@ const OAuth2Success = () => {
         const newAccessToken = res.data.result.accessToken;
 
         setAccessToken(newAccessToken); // 메모리 저장
+        navigate('/'); // 홈으로 이동
       } catch (err) {
         console.error('토큰 재발급 실패', err);
         navigate('/login');
       }
     };
 
-    const getInfo = async () => {
-      await privateApi
-        .get('/api/v1/users')
-        .then(function (response) {
-          console.log(response.data.result);
-          localStorage.setItem('userName', response.data.result.userName);
-          localStorage.setItem('imageUrl', response.data.result.imageUrl);
-          localStorage.setItem('createAt', response.data.result.createAt);
-        })
-        .catch(function (err) {
-          console.log(err);
-          alert('유저 정보 조회 실패');
-        });
-    };
-
     reissue();
-    getInfo();
-    navigate('/'); // 홈으로 이동
   }, [location.search, navigate, setAccessToken]);
 
   return (
