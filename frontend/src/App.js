@@ -36,6 +36,7 @@ import Withdraw from './components/pages/Mypage/Withdraw';
 import Information from './components/pages/UpbitKeyInformation/Information';
 import AppBar from './components/common/TitleMenu/AppBar';
 import Footer from './components/common/Footer/Footer';
+import OAuth2Success from './components/pages/SignIn/Oauth2Success';
 
 function App() {
   return (
@@ -46,10 +47,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/join" element={<Joinform />} />
-          <Route
-            path="/login/:accessToken?/:refreshToken?/:email?"
-            element={<SignIn />}
-          />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/oauth2/success" element={<OAuth2Success />} />
           <Route path="/test" element={<Test />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route
