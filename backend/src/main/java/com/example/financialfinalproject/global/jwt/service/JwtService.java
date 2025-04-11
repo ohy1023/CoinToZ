@@ -114,7 +114,7 @@ public class JwtService {
                 .sameSite("None")
                 .domain(".cointoz.store")
                 .path("/")
-                .maxAge((int) (refreshTokenExpirationPeriod / 1000))
+                .maxAge(refreshTokenExpirationPeriod / 1000)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
