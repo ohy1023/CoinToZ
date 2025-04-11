@@ -107,28 +107,19 @@ public class JwtService {
 
     public void sendRefreshToken(HttpServletResponse response, String refreshToken) {
 
-//        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-//                .httpOnly(true)
-//                .secure(true)
-//                .sameSite("None")
-//                .domain("cointoz.store")
-//                .path("/")
-//                .maxAge((int) (refreshTokenExpirationPeriod / 1000))
-//                .build();
-//
-//        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
         // RefreshToken은 HttpOnly 쿠키로 저장
-        Cookie refreshTokenCookie = new Cookie(refreshHeader, refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // HTTPS 환경에서만
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge((int) (refreshTokenExpirationPeriod / 1000));
-        refreshTokenCookie.setDomain("cointoz.store");
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .domain("cointoz.store")
+                .path("/")
+                .maxAge((int) (refreshTokenExpirationPeriod / 1000))
+                .build();
 
-        response.addCookie(refreshTokenCookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        log.info("Refresh Token-> 쿠키 설정 완료");
+        log.info("Refresh Token -> 쿠키 설정 완료. 값: {}", cookie);
     }
 
     /**
