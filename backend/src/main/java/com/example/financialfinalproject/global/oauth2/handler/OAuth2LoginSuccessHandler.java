@@ -44,6 +44,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         // RefreshToken HttpOnly 쿠키로 설정
         jwtService.sendRefreshToken(response, refreshToken);
 
+        // Redis에 RefreshToken 저장
+        jwtService.saveRefreshTokenInRedis(oAuth2User.getEmail(), refreshToken);
+
         String redirectUrl = UriComponentsBuilder.fromUriString("https://cointoz.store/oauth2/success")
                 .queryParam("email", oAuth2User.getEmail())
                 .build().toUriString();

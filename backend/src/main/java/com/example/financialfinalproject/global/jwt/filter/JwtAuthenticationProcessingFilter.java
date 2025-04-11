@@ -97,7 +97,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 log.info("재발급 성공");
             }
 
-            log.info("refreshToken 동일성 검증 실패");
             return;
         }
 
