@@ -75,13 +75,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         if (request.getRequestURI().equals("/api/v1/users/reissuance")) {
             String email = request.getHeader("X-User-Email");
 
-            // 사용자 요청 헤더에서 RefreshToken 추출
+            log.info("재발급 요청 email : {}", email);
+
+            // 쿠키에서 RefreshToken 추출
             // -> RefreshToken이 없거나 유효하지 않다면(Redis에 저장된 RefreshToken과 다르다면) null을 반환
             String refreshToken = jwtService.extractRefreshToken(request)
                     .filter((token) -> jwtService.isRefreshTokenValid(token, email))
                     .orElse(null);
 
             if (refreshToken != null) {
+                log.info("refreshToken 동일성 검증 통과");
                 String reIssuedRefreshToken = reIssueRefreshToken(email);
                 jwtService.sendRefreshToken(response, reIssuedRefreshToken);
 
@@ -90,6 +93,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 log.info("재발급 성공");
             }
 
+            log.info("refreshToken 동일성 검증 실패");
             return;
         }
 
