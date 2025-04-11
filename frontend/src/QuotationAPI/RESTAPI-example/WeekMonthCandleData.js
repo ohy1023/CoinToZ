@@ -1,15 +1,15 @@
-import { memo, useEffect, useState } from "react";
-import DateSelector from "../components/DateSelector";
-import getTodayDate from "../functions/getTodayDate";
-import RequestCounter from "../components/RequestCounter";
-import MarketCodeSelector from "../components/MarketCodeSelector";
-import { useFetchMarketCode } from "use-upbit-api";
+import { memo, useEffect, useState } from 'react';
+import DateSelector from '../components/DateSelector';
+import getTodayDate from '../functions/getTodayDate';
+import RequestCounter from '../components/RequestCounter';
+import MarketCodeSelector from '../components/MarketCodeSelector';
+import { useFetchMarketCode } from 'use-upbit-api';
 
 const UnitSelector = memo(function UnitSelector({ isWeek, setIsWeek }) {
   const handleUnit = (evt) => {
     const unit = evt.target.value;
-    if (unit == "weeks") setIsWeek(true);
-    else if (unit == "months") setIsWeek(false);
+    if (unit == 'weeks') setIsWeek(true);
+    else if (unit == 'months') setIsWeek(false);
   };
 
   return (
@@ -19,10 +19,10 @@ const UnitSelector = memo(function UnitSelector({ isWeek, setIsWeek }) {
         <select
           name="unit"
           onChange={handleUnit}
-          value={isWeek ? "weeks" : "months"}
+          value={isWeek ? 'weeks' : 'months'}
         >
-          <option value={"weeks"}>주봉</option>
-          <option value={"months"}>월봉</option>
+          <option value={'weeks'}>주봉</option>
+          <option value={'months'}>월봉</option>
         </select>
       </label>
     </div>
@@ -74,7 +74,7 @@ function WeekMonthCandleData() {
 
   // MarketCodeSelector state
   const { isLoading, marketCodes } = useFetchMarketCode();
-  const [curMarketCode, setCurMarketCode] = useState("KRW-BTC");
+  const [curMarketCode, setCurMarketCode] = useState('KRW-BTC');
 
   // dateSelector state
   const [startDate, setStartDate] = useState(getTodayDate());
@@ -91,18 +91,18 @@ function WeekMonthCandleData() {
   };
 
   // Upbit 일봉 fetch 함수
-  const options = { method: "GET", headers: { Accept: "application/json" } };
+  const options = { method: 'GET', headers: { Accept: 'application/json' } };
   async function fetchWeekCandle(isWeek, marketCode, date, count) {
     try {
-      console.log("fetching Week Candle Started!");
+      console.log('fetching Week Candle Started!');
       const response = await fetch(
         `https://api.upbit.com/v1/candles/${
-          isWeek ? "weeks" : "months"
+          isWeek ? 'weeks' : 'months'
         }?market=${marketCode}&to=${date}T09:00:00Z&count=${count}`,
         options
       );
       const result = await response.json();
-      console.log("fetching Week Candle Finished!");
+      console.log('fetching Week Candle Finished!');
       setFetchedData(result);
     } catch (error) {
       console.error(error);

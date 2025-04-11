@@ -1,16 +1,13 @@
-import React , { useEffect, useState }from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme, styled } from '@mui/material/styles';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
-import TableBody from '@mui/material/TableBody';
-import TableCell,{ tableCellClasses } from '@mui/material/TableCell';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
@@ -20,8 +17,8 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import Post from './Post';
-import SideMenu from '../../common/SideMenu/SideMenu';
 import { Col, Row } from 'antd';
+import { publicApi } from '../../../utils/http-common';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -57,14 +54,22 @@ function TablePaginationActions(props) {
         disabled={page === 0}
         aria-label="previous page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
@@ -100,14 +105,15 @@ export default function Board() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-      axios.get('api/v1/posts') 
-        .then((response) => {
-            setPosts(response.data.result);
-            console.log(posts);
-        })
-        .catch(function(error){
-            console.log(error);
-        })
+    publicApi
+      .get('/api/v1/posts')
+      .then((response) => {
+        console.log(response.data.result);
+        setPosts(response.data.result);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -125,38 +131,67 @@ export default function Board() {
 
   return (
     <Row>
-      <Col span={19}><h3 style={{marginLeft:'180px', marginTop:'20px'}}>COMMUNITY</h3></Col>
-      <Col span={5}><Link style={{marginTop:'20px'}} className="btn btn-outline-primary" to="/post"><CreateIcon></CreateIcon> 글 작성</Link></Col>
-        <Col span={24}>
-          <Box sx={{pl : '12%', pr: '12%', pt: '15px', height : '80vh'}}>
-          <Paper sx={{ width: '100%', height:'90%' , overflow: 'hidden'}}>
-          <TableContainer sx={{maxHeight: '100%'}}>
-            <Table sx={{ minWidth: '80%' }} stickyHeader aria-label="sticky table">
-              <TableHead>
+      <Col span={19}>
+        <h3 style={{ marginLeft: '180px', marginTop: '20px' }}>COMMUNITY</h3>
+      </Col>
+      <Col span={5}>
+        <Link
+          style={{ marginTop: '20px' }}
+          className="btn btn-outline-primary"
+          to="/post"
+        >
+          <CreateIcon></CreateIcon> 글 작성
+        </Link>
+      </Col>
+      <Col span={24}>
+        <Box sx={{ pl: '12%', pr: '12%', pt: '15px', height: '80vh' }}>
+          <Paper sx={{ width: '100%', height: '90%', overflow: 'hidden' }}>
+            <TableContainer sx={{ maxHeight: '100%' }}>
+              <Table
+                sx={{ minWidth: '80%' }}
+                stickyHeader
+                aria-label="sticky table"
+              >
+                <TableHead>
                   <TableRow>
-                      <StyledTableCell style={{fontSize:18}} align='center'>No</StyledTableCell>
-                      <StyledTableCell style={{fontSize:18}} align='center'>제목</StyledTableCell>
-                      <StyledTableCell style={{fontSize:18}} align='center'>글쓴이</StyledTableCell>
-                      <StyledTableCell style={{fontSize:18}} align='center'>작성일</StyledTableCell>
-                      <StyledTableCell style={{fontSize:18}} align='center'>좋아요</StyledTableCell>
+                    <StyledTableCell style={{ fontSize: 18 }} align="center">
+                      No
+                    </StyledTableCell>
+                    <StyledTableCell style={{ fontSize: 18 }} align="center">
+                      제목
+                    </StyledTableCell>
+                    <StyledTableCell style={{ fontSize: 18 }} align="center">
+                      글쓴이
+                    </StyledTableCell>
+                    <StyledTableCell style={{ fontSize: 18 }} align="center">
+                      작성일
+                    </StyledTableCell>
+                    <StyledTableCell style={{ fontSize: 18 }} align="center">
+                      좋아요
+                    </StyledTableCell>
                   </TableRow>
-              </TableHead>
-              <Post posts={posts} rowsPerPage={rowsPerPage} emptyRows={emptyRows} page={page}></Post>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { value: -1, label: 'All' }]}
-              component="div"
-              count={posts.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableContainer>
+                </TableHead>
+                <Post
+                  posts={posts}
+                  rowsPerPage={rowsPerPage}
+                  emptyRows={emptyRows}
+                  page={page}
+                ></Post>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { value: -1, label: 'All' }]}
+                component="div"
+                count={posts.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableContainer>
           </Paper>
-          </Box>
-        </Col>
+        </Box>
+      </Col>
     </Row>
   );
 }
