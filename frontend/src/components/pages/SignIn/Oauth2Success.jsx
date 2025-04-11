@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { accessTokenState } from '../store/authState';
+import { accessTokenState } from '../../../recoil/authAtom';
 import { userTokenRefresh } from '../../../functions/userTokenRefresh';
 import { Box, Typography, CircularProgress, Paper } from '@mui/material';
 
