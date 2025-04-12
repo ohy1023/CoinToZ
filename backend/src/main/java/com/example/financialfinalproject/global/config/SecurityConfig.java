@@ -58,11 +58,9 @@ public class SecurityConfig {
             // Swagger
             "/v3/api-docs",
             "/swagger-resources/**",
+            "/swagger-ui/**",
             "/configuration/security",
             "/webjars/**",
-            "/swagger-ui.html",
-            "/swagger/**",
-            "/swagger-ui/**",
 
             // 사용자 관련
             "/api/v1/users/join",

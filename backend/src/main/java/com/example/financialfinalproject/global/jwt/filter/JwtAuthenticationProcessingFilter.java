@@ -36,15 +36,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final String[] NO_CHECK_URL = {
-            "/swagger-ui/index.html", "/swagger-ui/springfox.css",
-            "/swagger-ui/swagger-ui.css", "/swagger-ui/swagger-ui-standalone-preset.js",
-            "/swagger-ui/springfox.js", "/swagger-ui/swagger-ui-bundle.js",
-            "/swagger-resources/configuration/ui", "/swagger-ui/favicon-32x32.png",
-            "/swagger-resources/configuration/security", "/swagger-resources",
-            "/v3/api-docs", "api/v1/users/login", "/"
-    };
-
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
@@ -55,11 +46,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info(request.getRequestURI());
-        if (Arrays.stream(NO_CHECK_URL).anyMatch(s -> s.equals(request.getRequestURI()))) {
-            filterChain.doFilter(request, response);
-            return; // return으로 이후 현재 필터 진행 막기
-        }
-
+//        if (Arrays.stream(NO_CHECK_URL).anyMatch(s -> s.equals(request.getRequestURI()))) {
+//            filterChain.doFilter(request, response);
+//            return; // return으로 이후 현재 필터 진행 막기
+//        }
 
         // 해당 url 요청시 로그아웃 실행
         if (request.getRequestURI().equals("/api/v1/users/logout")) {
