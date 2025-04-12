@@ -65,6 +65,7 @@ public class SecurityConfig {
             // 사용자 관련
             "/api/v1/users/join",
             "/api/v1/users/login",
+            "/api/v1/users/reissuance",
 
             // 이메일 인증 관련
             "/api/v1/emails/**",

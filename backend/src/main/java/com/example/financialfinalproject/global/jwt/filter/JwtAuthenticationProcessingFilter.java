@@ -97,6 +97,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
                 String reIssuedAccessToken = jwtService.createAccessToken(email);
                 jwtService.sendAccessToken(response, email, reIssuedAccessToken);
+
+                jwtService.saveRefreshTokenInRedis(refreshToken, email);
                 log.info("재발급 성공");
             }
 
