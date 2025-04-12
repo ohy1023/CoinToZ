@@ -41,15 +41,11 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info(request.getRequestURI());
-//        if (Arrays.stream(NO_CHECK_URL).anyMatch(s -> s.equals(request.getRequestURI()))) {
-//            filterChain.doFilter(request, response);
-//            return; // return으로 이후 현재 필터 진행 막기
-//        }
 
         // 해당 url 요청시 로그아웃 실행
         if (request.getRequestURI().equals("/api/v1/users/logout")) {

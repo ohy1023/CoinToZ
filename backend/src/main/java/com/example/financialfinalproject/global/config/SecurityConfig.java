@@ -89,6 +89,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers(PERMIT_ALL_URLS).permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/posts/*/comments").permitAll()
                 .antMatchers("/api/v1/users/{userId}/role").hasRole("ADMIN")
                 .antMatchers("/api/v1/**").authenticated()
