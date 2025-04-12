@@ -53,7 +53,12 @@ privateApi.interceptors.response.use(
     const { status } = response;
     const originRequest = config;
 
-    if (status === httpStatusCode.UNAUTHORIZED) {
+    if (
+      status === httpStatusCode.UNAUTHORIZED &&
+      !originRequest._retry &&
+      !originRequest.url.includes('/reissuance')
+    ) {
+      originRequest._retry = true;
       try {
         const res = await userTokenRefresh();
         const newToken = res.data.result.accessToken;
@@ -62,7 +67,10 @@ privateApi.interceptors.response.use(
         originRequest.headers.Authorization = `Bearer ${newToken}`;
         return axios(originRequest);
       } catch (err) {
-        console.error('토큰 갱신 실패');
+        console.error('토큰 재발급 실패로 로그아웃 처리');
+        localStorage.clear();
+        sessionStorage.clear();
+        setRecoil(accessTokenState, '');
         return Promise.reject(err);
       }
     }
