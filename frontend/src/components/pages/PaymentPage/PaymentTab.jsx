@@ -54,7 +54,7 @@ export default function PaymentTab() {
   useEffect(() => {
     getInfo();
     publicApi
-      .get('api/v1/upbit/getMarket')
+      .get('/api/v1/upbit/getMarket')
       .then((response) => {
         console.log(response);
         setMarket(response.data);

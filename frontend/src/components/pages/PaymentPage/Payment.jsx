@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useFetchMarketCode } from 'use-upbit-api';
 import { marketCodesState } from '../../../QuotationAPI/TOTAL-example/atom';
@@ -60,23 +59,6 @@ export default function Payment() {
   const [price, setPrice] = useState('');
   const { isLoading, marketCodes: fetchedMC } = useFetchMarketCode();
   const [marketCodes, setMarketCodes] = useRecoilState(marketCodesState);
-
-  const order = async () => {
-    axios
-      .get('/api/v1/upbit/getMarket', {
-        // side: side,
-        // ordType: ordType,
-        // market: market,
-        // volume: volume,
-        // price: price,
-      })
-      .then((response) => {
-        console.log('User profile', response.data);
-      })
-      .catch((error) => {
-        console.log('주문이 취소되었습니다.', error.response.data);
-      });
-  };
 
   return (
     <>
