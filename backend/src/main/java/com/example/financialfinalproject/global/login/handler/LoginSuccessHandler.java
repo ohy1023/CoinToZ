@@ -25,9 +25,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     // Redis를 사용하여 RefreshToken을 저장하는 데 사용하는 RedisTemplate 주입
     private final RedisTemplate<String, String> redisTemplate;
 
-    // 응답을 JSON으로 변환하기 위한 ObjectMapper 주입
-    private final ObjectMapper objectMapper;
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -39,8 +36,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.setStatus(HttpServletResponse.SC_OK);
 
         // Redis에 RefreshToken 저장 (Key: "RT:" + email)
-        redisTemplate.opsForValue()
-                .set("RT:" + authentication.getName(), refreshToken);
+        jwtService.saveRefreshTokenInRedis(authentication.getName(), refreshToken);
 
         // JwtService에서 refreshToken을 HttpOnly 쿠기에 실어서 클라이언트로 보냄
         jwtService.sendRefreshToken(response, refreshToken);

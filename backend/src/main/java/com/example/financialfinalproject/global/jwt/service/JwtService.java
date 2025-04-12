@@ -163,7 +163,7 @@ public class JwtService {
     }
 
     /**
-     * RefreshToken Redis 저장
+     * RefreshToken Redis 저장 & 업데이트
      */
     @Transactional
     public void saveRefreshTokenInRedis(String email, String refreshToken) {
@@ -198,7 +198,7 @@ public class JwtService {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             String dbToken = redisTemplate.opsForValue().get("RT:" + email);
-            return dbToken.equals(token) && !claims.getBody().getExpiration().before(new Date());
+            return dbToken != null && dbToken.equals(token) && !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }

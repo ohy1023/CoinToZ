@@ -86,20 +86,28 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                     .filter((token) -> jwtService.isRefreshTokenValid(token, email))
                     .orElse(null);
 
+            // 동일성 검증 투과 여부 체크
             if (refreshToken != null) {
                 log.info("refreshToken 동일성 검증 통과");
 
                 // 응답 상태 코드 설정 (200 OK)
                 response.setStatus(HttpServletResponse.SC_OK);
 
+                // RefreshToken 재발급 및 HTTP ONLY 쿠키 설정
                 String reIssuedRefreshToken = reIssueRefreshToken(email);
                 jwtService.sendRefreshToken(response, reIssuedRefreshToken);
 
+                // Redis에 재발급 받은 RefreshToken 저장
+                jwtService.saveRefreshTokenInRedis(email, reIssuedRefreshToken);
+
+                // AccessToken 재발급 및 응답 바디에 AccessToken 반환
                 String reIssuedAccessToken = jwtService.createAccessToken(email);
                 jwtService.sendAccessToken(response, email, reIssuedAccessToken);
 
-                jwtService.saveRefreshTokenInRedis(refreshToken, email);
                 log.info("재발급 성공");
+            } else {
+                log.warn("refreshToken 검증 실패: 유효하지 않거나 Redis 정보와 일치하지 않음");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
 
             return;
