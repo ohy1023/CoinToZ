@@ -54,10 +54,26 @@ public class SecurityConfig {
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
 
-    private final String[] SWAGGER = {
+    private final String[] PERMIT_ALL_URLS = {
+            // Swagger
             "/v3/api-docs",
-            "/swagger-resources/**", "/configuration/security", "/webjars/**",
-            "/swagger-ui.html", "/swagger/**", "/swagger-ui/**"};
+            "/swagger-resources/**",
+            "/configuration/security",
+            "/webjars/**",
+            "/swagger-ui.html",
+            "/swagger/**",
+            "/swagger-ui/**",
+
+            // 사용자 관련
+            "/api/v1/users/join",
+            "/api/v1/users/login",
+
+            // 이메일 인증 관련
+            "/api/v1/emails/**",
+
+            // 정적 리소스 (Spring 제공)
+            "/css/**", "/js/**", "/images/**", "/favicon.ico"
+    };
 
 
     @Bean
@@ -74,9 +90,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers(SWAGGER).permitAll()
-                .antMatchers("/api/v1/users/join", "/api/v1/users/login").permitAll()
-                .antMatchers("api/v1/emails/**").permitAll()
+                .antMatchers(PERMIT_ALL_URLS).permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/*/comments").permitAll()
                 .antMatchers("/api/v1/users/{userId}/role").hasRole("ADMIN")
                 .antMatchers("/api/v1/**").authenticated()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
