@@ -1,12 +1,7 @@
-import React , { useEffect, useState }from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
-import TableHead from '@mui/material/TableHead';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
@@ -18,6 +13,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import Comment from './Comment';
+import { publicApi } from '../../../../utils/http-common';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -53,14 +49,22 @@ function TablePaginationActions(props) {
         disabled={page === 0}
         aria-label="previous page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
         aria-label="next page"
       >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
@@ -73,20 +77,20 @@ function TablePaginationActions(props) {
   );
 }
 
-
-export default function CommentList({postId}) {
+export default function CommentList({ postId }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
-      axios.get(`/api/v1/posts/${postId}/comments`) 
-          .then((response) => {
-              setComments(response.data.result.content);
-          })
-          .catch(function(error){
-              console.log(error);
-          })
+    publicApi
+      .get(`/api/v1/posts/${postId}/comments`)
+      .then((response) => {
+        setComments(response.data.result.content);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }, []);
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -103,10 +107,15 @@ export default function CommentList({postId}) {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden'}}>
-      <TableContainer >
-        <Table sx={{ minWidth: '80%'}}>
-          <Comment comments={comments} rowsPerPage={rowsPerPage} emptyRows={emptyRows} page={page}></Comment>
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer>
+        <Table sx={{ minWidth: '80%' }}>
+          <Comment
+            comments={comments}
+            rowsPerPage={rowsPerPage}
+            emptyRows={emptyRows}
+            page={page}
+          ></Comment>
           <TableFooter>
             <TableRow>
               <TablePagination
