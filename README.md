@@ -43,12 +43,11 @@
 | SPRING_DATASOUCE_USER      | [root]                                             |
 | SPRING_DATASOURCE_PASSWORD | [password]                                         |
 | SPRING_REDIS_HOST          | [EC2 퍼블릭 IPv4 DNS]                               |
-| SPRING_REDIS_HOST          | [port]                                             |
+| SPRING_REDIS_PORT          | [port]                                             |
+| SPRING_REDIS_PASSWORD      | [password]                                        |
 | S3_NAME                    | [S3 Bucket Name]                                   |
 | S3_ACCESS_KEY              | [IAM AccessKey]                                    |
 | S3_SECRET_KEY              | [IAM SecretKey]                                    |
-| GOOGLE_CLIENT_ID           | [googleKey]                                        |
-| GOOGLE_CLIENT_SECRET       | [googleSecret]                                         |
 | KAKAO_CLIENT_ID            | [kakaoKey]                                         |
 | KAKAO_CLIENT_SECRET        | [kakaoSecret]                                         |
 | NAVER_CLIENT_ID            | [naverKey]                                        |
