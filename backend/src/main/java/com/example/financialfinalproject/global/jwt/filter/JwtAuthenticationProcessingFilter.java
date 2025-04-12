@@ -20,7 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Jwt 인증 필터
@@ -43,9 +43,26 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
+    private static final List<String> NO_CHECK_URLS = List.of(
+            "/api/v1/users/login",
+            "/api/v1/users/join",
+            "/api/v1/emails/",
+            "/v3/api-docs",
+            "/swagger",
+            "/swagger-ui",
+            "/swagger-resources",
+            "/css", "/js", "/images", "/favicon.ico", "/webjars"
+    );
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info(request.getRequestURI());
+
+        // 인증이 필요 없는 URL의 경우 JWT 필터를 건너뜀
+        if (isNoCheckPath(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         // 해당 url 요청시 로그아웃 실행
         if (request.getRequestURI().equals("/api/v1/users/logout")) {
@@ -87,9 +104,24 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
 
         // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
-        // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
+        // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 401 에러 발생
         // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
         checkAccessTokenAndAuthentication(request, response, filterChain);
+    }
+
+    /**
+     * 인증 처리를 건너뛸 경로를 확인하는 메서드
+     * - permitAll()로 설정된 URL 경로
+     * - GET /api/v1/posts/{postId}/comments 와 같이 인증이 필요 없는 경로에 대해
+     * JWT 필터를 타지 않고 바로 다음 필터로 넘기기 위함
+     */
+    private boolean isNoCheckPath(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String method = request.getMethod();
+
+        return NO_CHECK_URLS.stream().anyMatch(uri::startsWith) // 허용된 경로(prefix 매칭)
+                || (uri.equals("/api/v1/posts") && method.equals("GET")) // 게시글 목록 조회
+                || (uri.matches("/api/v1/posts/\\d+/comments") && method.equals("GET")); // 댓글 조회(GET)은 예외 처리
     }
 
 
@@ -115,11 +147,19 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
-        String email = jwtService.extractEmail(accessToken);
-        userRepository.findByEmail(email).ifPresent(this::saveAuthentication);
+        try {
+            jwtService.extractAccessToken(request)
+                    .filter(jwtService::isTokenValid)
+                    .ifPresent(accessToken -> {
+                        String email = jwtService.extractEmail(accessToken);
+                        userRepository.findByEmail(email)
+                                .ifPresent(this::saveAuthentication);
+                    });
+        } catch (Exception e) {
+            // 필요시 로그만 남기고 무시 (비회원 접근이 가능할 수 있으므로)
+            log.warn("AccessToken 인증 실패: {}", e.getMessage());
+        }
+
         filterChain.doFilter(request, response);
     }
 
