@@ -17,19 +17,6 @@ function PostDetail() {
   const { postId } = useParams();
   const navigate = useNavigate();
 
-  const getPostDetail = async () => {
-    await publicApi
-      .get(`/api/v1/posts/${postId}`)
-      .then((response) => {
-        setBoard(response.data.result);
-        console.log(userName);
-        console.log(board);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const deleteBoard = async () => {
     await privateApi
       .delete(`/api/v1/posts/${postId}`)
@@ -47,7 +34,6 @@ function PostDetail() {
     await privateApi
       .post(`/api/v1/posts/${postId}/likes`, postId)
       .then((response) => {
-        console.log(response);
         alert('게시글에 좋아요를 눌렀습니다!');
       })
       .catch((err) => {
@@ -67,7 +53,6 @@ function PostDetail() {
       .post(`/api/v1/posts/${postId}/comments`, postData)
       .then(() => {
         alert('댓글 등록이 완료되었습니다.');
-        window.location.reload();
       })
       .catch(function (err) {
         console.log(err);
@@ -85,8 +70,18 @@ function PostDetail() {
   };
 
   useEffect(() => {
+    const getPostDetail = async () => {
+      await publicApi
+        .get(`/api/v1/posts/${postId}`)
+        .then((response) => {
+          setBoard(response.data.result);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
     getPostDetail();
-  }, []);
+  }, [postId]);
 
   //PostUpdate.jsx에 전달
   const postUpdate = {
