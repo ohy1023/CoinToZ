@@ -104,12 +104,11 @@ public class PostService {
                         .id(lists.getId())
                         .title(lists.getTitle())
                         .body(lists.getBody())
-                        .userName(lists.getUser().getUserName())
+                        .userName(lists.getUser() == null ? "알 수 없음" : lists.getUser().getUserName())
                         .createdAt(lists.getRegisteredAt())
                         .lastModifiedAt(lists.getUpdatedAt())
                         .likeCount(lists.getLikeCount())
                         .disLikeCount(lists.getDisLikeCount())
-
                         .build())
                 .collect(Collectors.toList());
 
