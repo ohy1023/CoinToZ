@@ -1,13 +1,9 @@
 package com.example.financialfinalproject.global.login.handler;
 
-import com.example.financialfinalproject.domain.response.Response;
-import com.example.financialfinalproject.domain.response.UserLoginResponse;
 import com.example.financialfinalproject.global.jwt.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -21,9 +17,6 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     // JWT 관련 로직을 처리하는 JwtService 객체 주입
     private final JwtService jwtService;
-
-    // Redis를 사용하여 RefreshToken을 저장하는 데 사용하는 RedisTemplate 주입
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

@@ -146,7 +146,7 @@ public class SecurityConfig {
      */
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, redisTemplate, objectMapper);
+        return new LoginSuccessHandler(jwtService);
     }
 
     /**
