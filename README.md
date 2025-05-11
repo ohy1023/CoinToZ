@@ -26,7 +26,8 @@
 
 ### 시연 영상 ( 이미지 클릭 시 유튜브 이동 )
 
-[![Video Label](http://img.youtube.com/vi/AynJiAHG3Tk/0.jpg)](https://www.youtube.com/watch?v=AynJiAHG3Tk&feature=youtu.be)
+[![YouTube 썸네일](https://img.youtube.com/vi/3bD6J7-hjfs/0.jpg)](https://youtu.be/3bD6J7-hjfs)
+<!-- [![Video Label](http://img.youtube.com/vi/AynJiAHG3Tk/0.jpg)](https://www.youtube.com/watch?v=AynJiAHG3Tk&feature=youtu.be)  -->
 
 ### 주요 기능
 
