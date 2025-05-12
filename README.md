@@ -85,12 +85,14 @@
 
 ## 6. API 명세서 📡
 
-- Swagger: [http://ec2-52-78-23-203.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html](http://ec2-52-78-23-203.ap-northeast-2.compute.amazonaws.com:8080/swagger-ui/index.html)
 - Notion: [API 명세서 바로가기](https://www.notion.so/API-Docs-7a6e8c5f1ca245459829f1bbff9bb7f2)
 
 ## 7. ERD 🗄️
 
-![image](https://user-images.githubusercontent.com/68420044/219264127-993d04f6-21c9-4af7-88bd-0651cdd166e6.png)
+<!-- ![image](https://user-images.githubusercontent.com/68420044/219264127-993d04f6-21c9-4af7-88bd-0651cdd166e6.png) -->
+
+<img width="3261" alt="ERD" src="https://github.com/user-attachments/assets/83dd9289-6d22-4b75-95f6-b6331d4a67f8" />
+
 
 ## 8. 외부 리소스 정보 📁
 
