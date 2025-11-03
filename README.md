@@ -1,6 +1,5 @@
 # CoinToZ 💸
 
-- [CoinToZ 바로가기](http://ec2-43-201-23-107.ap-northeast-2.compute.amazonaws.com/)
 - Z세대들을 위한 커뮤니티 기반 가상화폐 관리 서비스
 
 ## 1. 프로젝트 소개 🗒
